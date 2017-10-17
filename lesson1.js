@@ -36,16 +36,16 @@ var findNumberKeys = function (obj) {
 
     keys.forEach(function (key) {
         var value = obj[key];
-        var value_type = (typeof value);
+        var valueType = (typeof value);
 
-        if (value_type === 'number') {
+        if (valueType === 'number') {
             result.push(key);
-        } else if (value_type === 'object') {
-            var child_keys = Object.keys(value);
+        } else if (valueType === 'object') {
+            var childKeys = Object.keys(value);
 
-            if (child_keys.length > 0) {
-                var child_number_keys = findNumberKeys(value);
-                result = result.concat(child_number_keys);
+            if (childKeys.length > 0) {
+                var childNumberKeys = findNumberKeys(value);
+                result = result.concat(childNumberKeys);
             }
         }
     });
