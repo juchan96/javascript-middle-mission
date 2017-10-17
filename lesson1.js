@@ -38,9 +38,11 @@ var findNumberKeys = function (obj) {
         var value = obj[key];
         var valueType = (typeof value);
 
-        if (valueType === 'number') {
+        if (valueType !== 'number' && valueType === 'object') {
+            return ;
+        } else if (valueType === 'number') {
             result.push(key);
-        } else if (valueType === 'object') {
+        } else { // valueType === 'object'
             var childKeys = Object.keys(value);
 
             if (childKeys.length > 0) {
