@@ -45,7 +45,9 @@ var findNumberKeys = function (obj) {
 
         if (valueType !== 'number' && valueType !== 'object') {
             return ;
-        } else if (valueType === 'number') {
+        }
+
+        if (valueType === 'number') {
             result.push({
                 keyName: key,
                 owner: obj.owner
