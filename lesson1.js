@@ -27,37 +27,25 @@ const widget = {
         "onMouseUp": "sun1.opacity = (sun1.opacity / 100) * 90;"
     },
     "test": 1,
-    "test2": {
-        "width": 500,
-        "height": 500
-    }
+    "test2": {}
 }
 
 var findNumberKeys = function (obj) {
-    obj.owner = obj.owner || 'widget';
-
     var result = [];
     var keys = Object.keys(obj);
 
     keys.forEach(function (key) {
         var value = obj[key];
-        var valueType = (typeof value);
+        var value_type = (typeof value);
 
-        if (valueType !== 'number' && valueType !== 'object') {
-            return ;
-        } else if (valueType === 'number') {
-            result.push({
-                keyName: key,
-                owner: obj.owner
-            });
-        } else { // valueType === 'object'
-            var childKeys = Object.keys(value);
+        if (value_type === 'number') {
+            result.push(key);
+        } else if (value_type === 'object') {
+            var child_keys = Object.keys(value);
 
-            if (childKeys.length > 0) {
-                value.owner = key;
-
-                var childNumberKeys = findNumberKeys(value);
-                result = result.concat(childNumberKeys);
+            if (child_keys.length > 0) {
+                var child_number_keys = findNumberKeys(value);
+                result = result.concat(child_number_keys);
             }
         }
     });
@@ -65,27 +53,7 @@ var findNumberKeys = function (obj) {
     return result;
 };
 
-var displayKeys = function (keys) {
-    keys.forEach(function (item, index) {
-        var msg = '';
-
-        //중복 element 검사
-        var duplicatedKeys = keys.filter(function (thisItem) {
-            return item.keyName === thisItem.keyName;
-        });
-
-        if (duplicatedKeys.length > 1) {
-            msg = item.keyName + ' of ' + item.owner;
-        } else {
-            msg = item.keyName;
-        }
-
-        console.log(msg);
-    });
-}
-
-var foundKeys = findNumberKeys(widget);
-displayKeys(foundKeys);
+console.log(findNumberKeys(widget));
 
 //실행결과
 //["width", "height", "hOffset", "vOffset", "size", "hOffset", "vOffset"]
