@@ -31,17 +31,17 @@ showNumberTypeElements(widget);
 
 
 function showNumberTypeElements(elements) {
-	numberTypeElements = getNumberTypeElements(elements);
+	var numberTypeElements = getNumberTypeElements(elements);
 	console.log(numberTypeElements);
 }
 function getNumberTypeElements(elements) {
-	let numberTypeElements = [];
+	var numberTypeElements = [];
 	for (element in elements) {
-		if (typeof (elements[element]) == 'object') {
+		if (typeof elements[element] === 'object' && elements[element] != null) {
 			newElements = getNumberTypeElements(elements[element]);
 			numberTypeElements = numberTypeElements.concat(newElements);
 		}
-		if (typeof elements[element] == 'number') {
+		if (typeof elements[element] === 'number' && isFinite(elements[element])) {
 			numberTypeElements.push(element);
 		}
 	}
