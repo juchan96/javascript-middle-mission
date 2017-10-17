@@ -31,24 +31,19 @@ showNumberTypeElements(widget);
 
 
 function showNumberTypeElements(elements) {
-	numberTypeElements = [];
-	numberTypeElements.concat(getNumberTypeElements(elements));
-	for (element in elements) {
-		if (typeof (elements[element]) == 'object') {
-			numberTypeElements = numberTypeElements.concat(getNumberTypeElements(elements[element]));
-		}
-	}
+	numberTypeElements = getNumberTypeElements(elements);
 	console.log(numberTypeElements);
 }
 function getNumberTypeElements(elements) {
-	numberTypeElements = [];
+	let numberTypeElements = [];
 	for (element in elements) {
+		if (typeof (elements[element]) == 'object') {
+			newElements = getNumberTypeElements(elements[element]);
+			numberTypeElements = numberTypeElements.concat(newElements);
+		}
 		if (typeof elements[element] == 'number') {
 			numberTypeElements.push(element);
 		}
 	}
 	return numberTypeElements;
 }
-
-
-
