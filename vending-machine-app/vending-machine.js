@@ -1,7 +1,7 @@
 var readline = require("./config/readline")();
 
 function VendingMachine() {
-	//음료수 생성 drinks = new Drinks
+	this.drinks = new Drinks();
 	//enum 상태 목록: 처음 켬, 동전 대기, 음료 대기, 구매/반환 대기, 종료
 	//돈
 	//함수: 머신 제어(키보드 입력)
@@ -15,27 +15,58 @@ function VendingMachine() {
 }
 
 function Drinks() {
-	//음료 배열: 객체 - (상수)이름, 수량, (상수)가격
-	//생성: 콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
-	//함수: 음료수 제거
+	this.list = [];
+	this.addDrink = function (name, price, amount) {
+		var drink = new Drink(name, price, amount);
+		this.list.push(drink);
+	}
+	this.takeDrink = function (drinkName) {
+		//순회
+	}
+}
+
+function Drink(name, price, amount) {
+	this.name = name;
+	this.price = price;
+	this.amount = amount;
 }
 
 function showDrinks(drinks) {
+	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
+	var showText = [];
+	drinks.forEach(function (drink) {
+		if (showText != "") {
+			showText += ", ";
+		}
+		showText += drink.name + "(" + drink.price + ")";
+	});
+	console.log(showText);
 }
 
+
+machine = new VendingMachine();
+machine.drinks.addDrink("콜라", 1000, 1);
+machine.drinks.addDrink("사이다", 1000, 1);
+machine.drinks.addDrink("포도쥬스", 700, 1);
+machine.drinks.addDrink("딸기우유", 500, 1);
+machine.drinks.addDrink("미에로화이바", 900, 1);
+machine.drinks.addDrink("물", 500, 1);
+machine.drinks.addDrink("파워에이드", 1000, 0);
+
+showDrinks(machine.drinks.list);
 //머신 생성
 //머신 입력 대기(머신)
 
 //입력대기 함수로 만들기
-readline.on("line", function (line) {
-	if (line == "exit") {
-		readline.close();
-	}
+// readline.on("line", function (line) {
+// 	if (line == "exit") {
+// 		readline.close();
+// 	}
 
-	controlVendingMachine(line);
-	//종료 여부 확인하여 종료, 아니면 재개
-	readline.prompt();
-});
+// 	controlVendingMachine(line);
+// 	//종료 여부 확인하여 종료, 아니면 재개
+// 	readline.prompt();
+// });
 
 //처음 켰을 때
 //동전 넣으세요
