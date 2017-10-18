@@ -79,18 +79,18 @@ var obj = [{
 	}]
 }];
 
-function parse(objJson, phoneType) {
-	resultObj[telecom] = [];
-	findPerson(objJson, phoneType);
+function parse(objJson, objTelecom) {
+	resultObj[objTelecom] = [];
+	telecomCheck(objJson, objTelecom);
 };
 
-function findPerson(objJson, phoneType) {
+function telecomCheck(objJson, objTelecom) {
 	objJson.forEach(function (person) {
-		if (person.type === phoneType) {
-			resultObj[phoneType].push(person.name);
+		if (person.type === objTelecom) {
+			resultObj[objTelecom].push(person.name);
 		}
 		if (typeof person.childnode === 'object' && person.childnode != null) {
-			findPerson(person.childnode, phoneType);
+			telecomCheck(person.childnode, objTelecom);
 		}
 	});
 }
