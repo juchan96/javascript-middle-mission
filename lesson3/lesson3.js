@@ -41,6 +41,38 @@ var vendingMachine = {
         }
     ],
 
+    displayPurchasableItems: function () {
+        var message = '사용가능한 음료수: ';
+        var count = 0;
+        var lastIndex = this.items.length - 1;
+        var that = this;
+
+        this.items.forEach(function (item, index) {
+            if (item.price > that.coin) {
+                return ;
+            }
+
+            message += item.name;
+            count++;
+
+            if (item.stock === 0) {
+                message += '(재고없음)';
+            } else {
+                message += '(' + item.price + ')';
+            }
+
+            if (index !== lastIndex) {
+                message += ', ';
+            }
+        });
+
+        if (count === 0) {
+            message += '없음';
+        }
+
+        console.log(message);
+    },
+
     inputCoin: function () {
         var rl = getReadLine();
         var that = this;
@@ -50,6 +82,7 @@ var vendingMachine = {
                 that.coin += Number(input);
 
                 // 구매가능한 음료수 보여주기
+                that.displayPurchasableItems();
                 // 구매할 음료수 선택
             } else {
                 console.log('올바른 금액을 입력해 주세요.');
@@ -65,3 +98,7 @@ var vendingMachine = {
 (function main() {
     vendingMachine.inputCoin();
 })();
+
+function isPositiveInteger(input) {
+    return /^\d+$/.test(input);
+}
