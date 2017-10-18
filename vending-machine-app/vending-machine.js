@@ -1,26 +1,46 @@
-var readline = require("./config/readline")();
+// var readline = require("./config/readline")();
 
 function VendingMachine() {
 	this.drinks = new Drinks();
-	//enum 상태 목록: 처음 켬, 동전 대기, 음료 대기, 구매/반환 대기, 종료
-	//돈
-	//함수: 머신 제어(키보드 입력)
-	//함수: 돈 넣기
-	//함수: 음료수 구매
+	this.stateList = { "BEGIN": 0, "WAIT_MONEY": 1, "WAIT_CHOOSE_DRINK": 3, "WAIT_CHOOSE_REFUND": 4, "FINISHED": 5 }
+	this.state = this.stateList.BEGIN;
+	this.fund = 0;
+
 	//함수: 구매 가능한 음료 배열 반환
-	function command(command) {
-		//상태 따라서 switch
-		//처음 켬, 동전 대기, 음료 대기, 구매/반환 대기
+	this.getBuyableDrinkList = function (money) {
+		var drinkList = [];
+		this.drinks.drinkList.forEach(function (drink) {
+			if (drink.price <= money) {
+				drinkList.push(drink);
+			}
+		});
+		return drinkList;
+	}
+	this.buyDrink = function (name) {
+		var price = this.drinks.getDrinkPrice(name);
+		this.fund -= price;
+		this.drinks.removeDrink(name);
+	}
+	this.deposit = function (fund) {
+		this.fund = fund;
+	}
+	this.refund = function () {
+		tmp = this.fund;
+		this.fund = 0;
+		return tmp;
 	}
 }
 
 function Drinks() {
-	this.list = [];
+	this.drinkList = [];
 	this.addDrink = function (name, price, amount) {
 		var drink = new Drink(name, price, amount);
-		this.list.push(drink);
+		this.drinkList.push(drink);
 	}
-	this.takeDrink = function (drinkName) {
+	this.getDrinkPrice = function (drinkName) {
+		//순회
+	}
+	this.removeDrink = function (drinkName) {
 		//순회
 	}
 }
@@ -53,9 +73,18 @@ machine.drinks.addDrink("미에로화이바", 900, 1);
 machine.drinks.addDrink("물", 500, 1);
 machine.drinks.addDrink("파워에이드", 1000, 0);
 
-showDrinks(machine.drinks.list);
-//머신 생성
+list = machine.getBuyableDrinkList(800);
+showDrinks(list);
 //머신 입력 대기(머신)
+
+this.command = function (command) {
+	switch (this.state) {
+		case this.stateList.BEGIN:
+
+	}
+	//상태 따라서 switch
+	//처음 켬, 동전 대기, 음료 대기, 구매/반환 대기
+}
 
 //입력대기 함수로 만들기
 // readline.on("line", function (line) {
