@@ -135,15 +135,15 @@ function commandChooseDrink(machine, command) {
 	var drinkName = command;
 	drink = machine.getNamedDrink(drinkName);
 	if (isEmpty(drink)) {
-		showItsNothing();
-		showBuyAbleDrinks(machine);
-		showPleaseChoose();
+		showItsNothing(machine);
 		return;
 	}
 	if (drink.amount === 0) {
-		showItsRanOut();
-		showBuyAbleDrinks(machine);
-		showPleaseChoose();
+		showItsRanOut(machine);
+		return;
+	}
+	if (drink.price > machine.fund) {
+		showMoneyNotEnough(machine);
 		return;
 	}
 	machine.buyDrink(drinkName);
@@ -213,12 +213,22 @@ function showPleaseChoose() {
 	console.log('선택하세요.');
 }
 
-function showItsNothing() {
+function showItsNothing(machine) {
 	console.log('그런 건 없습니다.');
+	showBuyAbleDrinks(machine);
+	showPleaseChoose();
 }
 
-function showItsRanOut() {
+function showItsRanOut(machine) {
 	console.log('그거 다 떨어졌어요.');
+	showBuyAbleDrinks(machine);
+	showPleaseChoose();
+}
+
+function showMoneyNotEnough(machine) {
+	console.log('잔액이 부족합니다.');
+	showBuyAbleDrinks(machine);
+	showPleaseChoose();
 }
 
 function showDrinkCome(drink) {
@@ -232,6 +242,7 @@ function showBuyOrRefund() {
 function showTheChange(money) {
 	console.log('잔액은 ' + money + '원입니다.');
 }
+
 
 // [], {} 도 빈값으로 처리
 var isEmpty = function (value) {
