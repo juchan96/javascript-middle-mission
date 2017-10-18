@@ -88,6 +88,7 @@ function waitCommand(machine) {
 	readline.on("line", function (line) {
 
 		commandToMachine(machine, line);
+
 		if (machine.state == machine.stateList.FINISHED) {
 			readline.close();
 		} else {
@@ -120,10 +121,10 @@ function commandWaitMoney(machine, command) {
 		return;
 	}
 	machine.deposit(money);
-	showInsertedCoin(machine);
+	showFund(machine); //잔액: 00원
 	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
 	if (isEmpty(buyableDrinks)) {
-		showCanBuyNothing();
+		showNothingCanBuy();
 		showInsertCoin();
 		return;
 	}
@@ -149,7 +150,7 @@ function commandChooseDrink(machine, command) {
 	}
 	machine.buyDrink(drinkName);
 	showDrinkCome(drink);
-	showInsertedCoin(machine);
+	showFund(machine);
 	showBuyAbleDrinks(machine);
 	showBuyOrRefund();
 	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
@@ -157,7 +158,7 @@ function commandChooseDrink(machine, command) {
 
 function commandChooseRefund(machine, command) {
 	if (command === "반환") {
-		showTheChange(machine.fund);
+		showTheChange(machine);
 		machine.state = machine.stateList.FINISHED;
 		return;
 	}
@@ -208,11 +209,11 @@ function showInsertCoin() {
 	console.log("동전을 넣으세요.");
 }
 
-function showInsertedCoin(machine) {
+function showFund(machine) {
 	console.log("잔액: " + machine.fund + "원");
 }
 
-function showCanBuyNothing() {
+function showNothingCanBuy() {
 	console.log("아무것도 못 삽니다.");
 }
 
@@ -253,10 +254,9 @@ function showBuyOrRefund() {
 	console.log('다른걸 구매할까요? 반환할까요?');
 }
 
-function showTheChange(money) {
-	console.log('잔액은 ' + money + '원입니다.');
+function showTheChange(machine) {
+	console.log('잔액은 ' + machine.fund + '원입니다.');
 }
-
 
 // [], {} 도 빈값으로 처리
 var isEmpty = function (value) {
