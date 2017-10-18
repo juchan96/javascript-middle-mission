@@ -91,8 +91,11 @@ var vendingMachine = {
                 that.displayPurchasableItems();
 
                 // 구매할 음료수 선택
-
-                that.selectDrink();
+                if (that.isAvailable()) {
+                    that.selectDrink();
+                } else {
+                    that.purchaseAnotherOrNot();
+                }
             } else {
                 console.log('올바른 금액을 입력해 주세요.');
 
