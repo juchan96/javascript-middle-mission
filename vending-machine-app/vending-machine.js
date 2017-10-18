@@ -120,6 +120,7 @@ function commandWaitMoney(machine, command) {
 		return;
 	}
 	machine.deposit(money);
+	showInsertedCoin(machine);
 	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
 	if (isEmpty(buyableDrinks)) {
 		showCanBuyNothing();
@@ -127,7 +128,7 @@ function commandWaitMoney(machine, command) {
 		return;
 	}
 	showBuyAbleDrinks(machine);
-	showPleaseChoose();
+	showPleaseChoose(machine);
 	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
 }
 
@@ -148,6 +149,7 @@ function commandChooseDrink(machine, command) {
 	}
 	machine.buyDrink(drinkName);
 	showDrinkCome(drink);
+	showInsertedCoin(machine);
 	showBuyAbleDrinks(machine);
 	showBuyOrRefund();
 	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
@@ -165,6 +167,11 @@ function commandChooseRefund(machine, command) {
 		machine.state = machine.stateList.WAIT_MONEY;
 		commandWaitMoney(machine, command);
 		return;
+	}
+
+	drink = machine.getNamedDrink(command);
+	if (!isEmpty(drink)) {
+		commandChooseDrink(machine, command);
 	}
 
 	showBuyOrRefund();
@@ -201,6 +208,10 @@ function showInsertCoin() {
 	console.log("동전을 넣으세요.");
 }
 
+function showInsertedCoin(machine) {
+	console.log("잔액: " + machine.fund + "원");
+}
+
 function showCanBuyNothing() {
 	console.log("아무것도 못 삽니다.");
 }
@@ -209,26 +220,29 @@ function showMachineOffed() {
 	console.log('자판기가 꺼져 있습니다.');
 }
 
-function showPleaseChoose() {
-	console.log('선택하세요.');
+function showPleaseChoose(machine) {
+	var list = machine.getBuyableDrinkList(machine.fund);
+	if (!isEmpty(list)) {
+		console.log('선택하세요.');
+	}
 }
 
 function showItsNothing(machine) {
 	console.log('그런 건 없습니다.');
 	showBuyAbleDrinks(machine);
-	showPleaseChoose();
+	showPleaseChoose(machine);
 }
 
 function showItsRanOut(machine) {
 	console.log('그거 다 떨어졌어요.');
 	showBuyAbleDrinks(machine);
-	showPleaseChoose();
+	showPleaseChoose(machine);
 }
 
 function showMoneyNotEnough(machine) {
 	console.log('잔액이 부족합니다.');
 	showBuyAbleDrinks(machine);
-	showPleaseChoose();
+	showPleaseChoose(machine);
 }
 
 function showDrinkCome(drink) {
