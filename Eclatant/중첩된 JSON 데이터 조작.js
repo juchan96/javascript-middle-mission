@@ -22,3 +22,25 @@ function checkExpectation(target) {
 
   return false;
 }
+
+function recursive(store, data, typeValue) {
+  if (data.type === typeValue) {
+    checkExistenceForAdd(store, typeValue, data.name);
+  }
+
+  if (checkExpectation(data.childnode)) {
+    data.childnode.forEach(function(child) {
+      recursive(store, child, typeValue);
+    });
+  } else {
+    return false;
+  }
+}
+
+function parse(jsonData, typeValue) {
+  recursive(resultObj, jsonData[0], typeValue);
+}
+
+parse(jsonData, "sk");
+
+console.log(resultObj.sk);
