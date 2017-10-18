@@ -10,8 +10,10 @@ function VendingMachine() {
 	this.getBuyableDrinkList = function (money) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
-			if (drink.price <= money) {
-				drinkList.push(drink);
+			if (drink.amount != 0) {
+				if (drink.price <= money) {
+					drinkList.push(drink);
+				}
 			}
 		});
 		return drinkList;
@@ -58,7 +60,12 @@ function showDrinks(drinks) {
 		if (showText != "") {
 			showText += ", ";
 		}
-		showText += drink.name + "(" + drink.price + ")";
+		if (drink.amount != 0) {
+			showText += drink.name + "(" + drink.price + ")";
+		}
+		else {
+			showText += drink.name + "(재고없음)";
+		}
 	});
 	console.log(showText);
 }
@@ -73,8 +80,9 @@ machine.drinks.addDrink("미에로화이바", 900, 1);
 machine.drinks.addDrink("물", 500, 1);
 machine.drinks.addDrink("파워에이드", 1000, 0);
 
-list = machine.getBuyableDrinkList(800);
+list = machine.getBuyableDrinkList(1000);
 showDrinks(list);
+showDrinks(machine.drinks.drinkList);
 //머신 입력 대기(머신)
 
 this.command = function (command) {
