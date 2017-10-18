@@ -83,7 +83,9 @@ var vendingMachine = {
 
                 // 구매가능한 음료수 보여주기
                 that.displayPurchasableItems();
+
                 // 구매할 음료수 선택
+                that.selectDrink();
             } else {
                 console.log('올바른 금액을 입력해 주세요.');
 
@@ -91,6 +93,32 @@ var vendingMachine = {
                 that.inputCoin();
                 return ;
             }
+        });
+    },
+    selectDrink: function () {
+        var rl = getReadLine();
+        var that = this;
+
+        rl.question('음료수를 선택해 주세요: ', function (drinkName) {
+            var thisDrink = that.items.find(function (item) {
+                return drinkName === item.name;
+            });
+
+            //예외 처리
+            if (!thisDrink) {
+                console.log('잘못 입력하셨습니다.');
+                that.selectDrink();
+                return ;
+            } else if (thisDrink.stock === 0) {
+                console.log('재고가 없습니다.');
+                that.selectDrink();
+                return ;
+            }
+
+            that.coin -= thisDrink.price;
+            thisDrink.stock--;
+
+            console.log(thisDrink.name + ' 나왔음.');
         });
     }
 };
