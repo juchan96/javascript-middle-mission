@@ -154,24 +154,33 @@ function commandChooseDrink(machine, command) {
 }
 
 function commandChooseRefund(machine, command) {
-	console.log('4')
-	machine.state = machine.stateList.FINISHED;
+	if (command === "반환") {
+		showTheChange(machine.fund);
+		machine.state = machine.stateList.FINISHED;
+		return;
+	}
+
+	money = parseInt(command);
+	if (typeof money === "number" && !isNaN(money)) {
+		machine.state = machine.stateList.WAIT_MONEY;
+		commandWaitMoney(machine, command);
+		return;
+	}
+
+	showBuyOrRefund();
 }
-//구매/반환 대기
-//숫자인가? - 동전 대기로 상태 변환. 46으로
-//반환인가? - 잔액은 얼마입니다. 끝으로 상태 변환
-//다른 걸 구매? 반환?
-
-
 
 function showBuyAbleDrinks(machine) {
 	var list = machine.getBuyableDrinkList(machine.fund);
+	if (isEmpty(list)) {
+		console.log("사용 가능한 음료수 : 없음");
+	}
 	showDrinks(list);
 }
 
 function showDrinks(drinks) {
 	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
-	var showText = [];
+	var drinksText = [];
 	drinks.forEach(function (drink) {
 		if (showText != "") {
 			showText += ", ";
@@ -183,6 +192,7 @@ function showDrinks(drinks) {
 			showText += drink.name + "(재고없음)";
 		}
 	});
+	showText = "사용 가능한 음료수 : " + drinksText;
 	console.log(showText);
 }
 
@@ -216,6 +226,10 @@ function showDrinkCome(drink) {
 
 function showBuyOrRefund() {
 	console.log('다른걸 구매할까요? 반환할까요?');
+}
+
+function showTheChange(money) {
+	console.log('잔액은 ' + money + '원입니다.');
 }
 
 // [], {} 도 빈값으로 처리
