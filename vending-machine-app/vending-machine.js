@@ -30,7 +30,7 @@ function VendingMachine() {
 		this.drinks.takeOutDrink(name);
 	}
 	this.deposit = function (fund) {
-		this.fund = fund;
+		this.fund += fund;
 	}
 	this.refund = function () {
 		tmp = this.fund;
