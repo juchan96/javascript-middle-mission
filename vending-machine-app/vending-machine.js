@@ -1,4 +1,4 @@
-// var readline = require("./config/readline")();
+var readline = require("./config/readline")();
 
 function VendingMachine() {
 	this.drinks = new Drinks();
@@ -6,7 +6,6 @@ function VendingMachine() {
 	this.state = this.stateList.BEGIN;
 	this.fund = 0;
 
-	//함수: 구매 가능한 음료 배열 반환
 	this.getBuyableDrinkList = function (money) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
@@ -80,35 +79,58 @@ machine.drinks.addDrink("미에로화이바", 900, 1);
 machine.drinks.addDrink("물", 500, 1);
 machine.drinks.addDrink("파워에이드", 1000, 0);
 
-list = machine.getBuyableDrinkList(1000);
-showDrinks(list);
-showDrinks(machine.drinks.drinkList);
-//머신 입력 대기(머신)
+waitCommand(machine);
 
-this.command = function (command) {
-	switch (this.state) {
-		case this.stateList.BEGIN:
+// list = machine.getBuyableDrinkList(1000);
+// showDrinks(list);
+// showDrinks(machine.drinks.drinkList);
 
-	}
-	//상태 따라서 switch
-	//처음 켬, 동전 대기, 음료 대기, 구매/반환 대기
+
+function waitCommand(machine) {
+	readline.on("line", function (line) {
+		if (line == "exit") {
+			readline.close();
+		}
+
+		commandToMachine(machine, line);
+
+		if (machine.state == machine.stateList.FINISHED) {
+			readline.close();
+		} else {
+			readline.prompt();
+		}
+	});
 }
 
-//입력대기 함수로 만들기
-// readline.on("line", function (line) {
-// 	if (line == "exit") {
-// 		readline.close();
-// 	}
+function commandToMachine(machine, command) {
+	switch (machine.state) {
+		case machine.stateList.BEGIN:
+			commandBegin(machine, command);
+			break;
+		case machine.stateList.WAIT_MONEY:
+			commandWaitMoney(machine, command);
+			break;
+		case machine.stateList.WAIT_CHOOSE_DRINK:
+			commandChooseDrink(machine, command);
+			break;
+		case machine.stateList.WAIT_CHOOSE_REFUND:
+			commandChooseRefund(machine, command);
+			break;
+	}
+}
 
-// 	controlVendingMachine(line);
-// 	//종료 여부 확인하여 종료, 아니면 재개
-// 	readline.prompt();
-// });
-
+function commandBegin(machine, command) {
+	console.log('1')
+	machine.state = machine.stateList.WAIT_MONEY;
+}
 //처음 켰을 때
 //동전 넣으세요
 //동전 대기로 상태 변환.
 
+function commandWaitMoney(machine, command) {
+	console.log('2')
+	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
+}
 //동전 대기
 //숫자 아닌가? - 동전을 넣으세요
 //돈 넣기 함수
@@ -117,6 +139,10 @@ this.command = function (command) {
 //가능음료.isEmpty? - 아무것도 못 삽니다. 동전을 넣으세요. 
 //음료 대기로 상태 변환. 선택하세요.
 
+function commandChooseDrink(machine, command) {
+	console.log('3')
+	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
+}
 //음료 대기
 //음료수 이름 아님? - 그런 건 없습니다. 구매 가능한 음료 목록 출력. 선택하세요.
 //재고 없나? - 그거 다 떨어졌어요. 구매 가능한 음료 목록 출력. 선택하세요.
@@ -125,7 +151,11 @@ this.command = function (command) {
 //구매/반환 대기로 상태 변화
 //다른 걸 구매? 반환?
 
-//구매/반환 대기
+function commandChooseRefund(machine, command) {
+	console.log('4')
+	machine.state = machine.stateList.FINISHED;
+}
+	//구매/반환 대기
 //숫자인가? - 동전 대기로 상태 변환. 46으로
 //반환인가? - 잔액은 얼마입니다. 끝으로 상태 변환
 //다른 걸 구매? 반환?
