@@ -6,6 +6,10 @@ function VendingMachine() {
 	this.state = this.stateList.BEGIN;
 	this.fund = 0;
 
+	this.boot = function () {
+		this.state = this.stateList.WAIT_MONEY;
+		showBootingMessage();
+	}
 	this.getBuyableDrinkList = function (money) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
@@ -69,6 +73,9 @@ function showDrinks(drinks) {
 	console.log(showText);
 }
 
+function showBootingMessage() {
+	console.log("동전을 넣으세요.")
+}
 
 machine = new VendingMachine();
 machine.drinks.addDrink("콜라", 1000, 1);
@@ -79,6 +86,7 @@ machine.drinks.addDrink("미에로화이바", 900, 1);
 machine.drinks.addDrink("물", 500, 1);
 machine.drinks.addDrink("파워에이드", 1000, 0);
 
+machine.boot();
 waitCommand(machine);
 
 // list = machine.getBuyableDrinkList(1000);
@@ -104,9 +112,6 @@ function waitCommand(machine) {
 
 function commandToMachine(machine, command) {
 	switch (machine.state) {
-		case machine.stateList.BEGIN:
-			commandBegin(machine, command);
-			break;
 		case machine.stateList.WAIT_MONEY:
 			commandWaitMoney(machine, command);
 			break;
@@ -116,16 +121,15 @@ function commandToMachine(machine, command) {
 		case machine.stateList.WAIT_CHOOSE_REFUND:
 			commandChooseRefund(machine, command);
 			break;
+		default:
+			showMachineOffed();
+			break;
 	}
 }
 
-function commandBegin(machine, command) {
-	console.log('1')
-	machine.state = machine.stateList.WAIT_MONEY;
+function showMachineOffed() {
+	console.log('자판기가 꺼져 있습니다.');
 }
-//처음 켰을 때
-//동전 넣으세요
-//동전 대기로 상태 변환.
 
 function commandWaitMoney(machine, command) {
 	console.log('2')
@@ -155,7 +159,8 @@ function commandChooseRefund(machine, command) {
 	console.log('4')
 	machine.state = machine.stateList.FINISHED;
 }
-	//구매/반환 대기
+//구매/반환 대기
 //숫자인가? - 동전 대기로 상태 변환. 46으로
 //반환인가? - 잔액은 얼마입니다. 끝으로 상태 변환
 //다른 걸 구매? 반환?
+
