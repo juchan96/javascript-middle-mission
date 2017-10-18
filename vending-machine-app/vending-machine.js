@@ -9,10 +9,8 @@ function VendingMachine() {
 	this.getBuyableDrinkList = function (money) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
-			if (drink.amount != 0) {
-				if (drink.price <= money) {
-					drinkList.push(drink);
-				}
+			if (drink.price <= money) {
+				drinkList.push(drink);
 			}
 		});
 		return drinkList;
@@ -98,30 +96,25 @@ function commandToMachine(machine, command) {
 	}
 }
 
-function showMachineOffed() {
-	console.log('자판기가 꺼져 있습니다.');
-}
-
 function commandWaitMoney(machine, command) {
-	command = parseInt(command);
-	if (typeof command !== "number" && isNaN(command)) {
-		showMachineStarted();
+	money = parseInt(command);
+	if (typeof money !== "number" || isNaN(money)) {
+		showInsertCoin();
 		return;
 	}
+	machine.deposit(money);
+	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
+	if (isEmpty(buyableDrinks)) {
+		showCanBuyNothing();
+		showInsertCoin();
+		return;
+	}
+	showBuyAbleDrinks(machine);
 	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
-
+	showPleaseChoose();
 }
-//동전 대기
-//숫자 아닌가? - 동전을 넣으세요
-//돈 넣기 함수
-//구매 가능한 음료 배열 반환
-//구매 가능한 음료 목록 출력
-//가능음료.isEmpty? - 아무것도 못 삽니다. 동전을 넣으세요. 
-//음료 대기로 상태 변환. 선택하세요.
 
 function commandChooseDrink(machine, command) {
-	console.log('3')
-	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
 }
 //음료 대기
 //음료수 이름 아님? - 그런 건 없습니다. 구매 가능한 음료 목록 출력. 선택하세요.
@@ -140,9 +133,12 @@ function commandChooseRefund(machine, command) {
 //반환인가? - 잔액은 얼마입니다. 끝으로 상태 변환
 //다른 걸 구매? 반환?
 
-// list = machine.getBuyableDrinkList(1000);
-// showDrinks(list);
-// showDrinks(machine.drinks.drinkList);
+
+
+function showBuyAbleDrinks(machine) {
+	var list = machine.getBuyableDrinkList(machine.fund);
+	showDrinks(list);
+}
 
 function showDrinks(drinks) {
 	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
@@ -165,3 +161,23 @@ function showInsertCoin() {
 	console.log("동전을 넣으세요.");
 }
 
+function showCanBuyNothing() {
+	console.log("아무것도 못 삽니다.");
+}
+
+function showMachineOffed() {
+	console.log('자판기가 꺼져 있습니다.');
+}
+
+function showPleaseChoose() {
+	console.log('선택하세요.');
+}
+
+// [], {} 도 빈값으로 처리
+var isEmpty = function (value) {
+	if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+		return true;
+	} else {
+		return false;
+	}
+};
