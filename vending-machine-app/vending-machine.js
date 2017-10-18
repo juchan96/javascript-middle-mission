@@ -15,10 +15,19 @@ function VendingMachine() {
 		});
 		return drinkList;
 	}
+	this.getNamedDrink = function (drinkName) {
+		var NamedDrink = '';
+		this.drinks.drinkList.forEach(function (drink) {
+			if (drink.name === drinkName) {
+				NamedDrink = drink;
+			}
+		});
+		return NamedDrink;
+	}
 	this.buyDrink = function (name) {
 		var price = this.drinks.getDrinkPrice(name);
 		this.fund -= price;
-		this.drinks.removeDrink(name);
+		this.drinks.takeOutDrink(name);
 	}
 	this.deposit = function (fund) {
 		this.fund = fund;
@@ -37,10 +46,18 @@ function Drinks() {
 		this.drinkList.push(drink);
 	}
 	this.getDrinkPrice = function (drinkName) {
-		//순회
+		var price = 0;
+		this.drinkList.forEach(function (drink) {
+			if (drink.name === drinkName)
+				price = drink.price;
+		});
+		return price;
 	}
-	this.removeDrink = function (drinkName) {
-		//순회
+	this.takeOutDrink = function (drinkName) {
+		this.drinkList.forEach(function (drink) {
+			if (drink.name === drinkName)
+				drink.amount--;
+		});
 	}
 }
 
@@ -110,19 +127,31 @@ function commandWaitMoney(machine, command) {
 		return;
 	}
 	showBuyAbleDrinks(machine);
-	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
 	showPleaseChoose();
+	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
 }
 
 function commandChooseDrink(machine, command) {
+	var drinkName = command;
+	drink = machine.getNamedDrink(drinkName);
+	if (isEmpty(drink)) {
+		showItsNothing();
+		showBuyAbleDrinks(machine);
+		showPleaseChoose();
+		return;
+	}
+	if (drink.amount === 0) {
+		showItsRanOut();
+		showBuyAbleDrinks(machine);
+		showPleaseChoose();
+		return;
+	}
+	machine.buyDrink(drinkName);
+	showDrinkCome(drink);
+	showBuyAbleDrinks(machine);
+	showBuyOrRefund();
+	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
 }
-//음료 대기
-//음료수 이름 아님? - 그런 건 없습니다. 구매 가능한 음료 목록 출력. 선택하세요.
-//재고 없나? - 그거 다 떨어졌어요. 구매 가능한 음료 목록 출력. 선택하세요.
-//음료수 나왔습니다.
-//음료수 구매
-//구매/반환 대기로 상태 변화
-//다른 걸 구매? 반환?
 
 function commandChooseRefund(machine, command) {
 	console.log('4')
@@ -171,6 +200,22 @@ function showMachineOffed() {
 
 function showPleaseChoose() {
 	console.log('선택하세요.');
+}
+
+function showItsNothing() {
+	console.log('그런 건 없습니다.');
+}
+
+function showItsRanOut() {
+	console.log('그거 다 떨어졌어요.');
+}
+
+function showDrinkCome(drink) {
+	console.log(drink.name + '가 나왔습니다.');
+}
+
+function showBuyOrRefund() {
+	console.log('다른걸 구매할까요? 반환할까요?');
 }
 
 // [], {} 도 빈값으로 처리
