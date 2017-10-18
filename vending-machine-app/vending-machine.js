@@ -2,14 +2,10 @@ var readline = require("./config/readline")();
 
 function VendingMachine() {
 	this.drinks = new Drinks();
-	this.stateList = { "BEGIN": 0, "WAIT_MONEY": 1, "WAIT_CHOOSE_DRINK": 3, "WAIT_CHOOSE_REFUND": 4, "FINISHED": 5 }
-	this.state = this.stateList.BEGIN;
+	this.stateList = { "WAIT_MONEY": 1, "WAIT_CHOOSE_DRINK": 3, "WAIT_CHOOSE_REFUND": 4, "FINISHED": 5 }
+	this.state = this.stateList.WAIT_MONEY;
 	this.fund = 0;
 
-	this.boot = function () {
-		this.state = this.stateList.WAIT_MONEY;
-		showBootingMessage();
-	}
 	this.getBuyableDrinkList = function (money) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
@@ -56,43 +52,22 @@ function Drink(name, price, amount) {
 	this.amount = amount;
 }
 
-function showDrinks(drinks) {
-	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
-	var showText = [];
-	drinks.forEach(function (drink) {
-		if (showText != "") {
-			showText += ", ";
-		}
-		if (drink.amount != 0) {
-			showText += drink.name + "(" + drink.price + ")";
-		}
-		else {
-			showText += drink.name + "(재고없음)";
-		}
-	});
-	console.log(showText);
-}
-
-function showBootingMessage() {
-	console.log("동전을 넣으세요.")
-}
-
-machine = new VendingMachine();
-machine.drinks.addDrink("콜라", 1000, 1);
-machine.drinks.addDrink("사이다", 1000, 1);
-machine.drinks.addDrink("포도쥬스", 700, 1);
-machine.drinks.addDrink("딸기우유", 500, 1);
-machine.drinks.addDrink("미에로화이바", 900, 1);
-machine.drinks.addDrink("물", 500, 1);
-machine.drinks.addDrink("파워에이드", 1000, 0);
-
-machine.boot();
+machine = makeMachine();
+showInsertCoin();
+readline.prompt();
 waitCommand(machine);
 
-// list = machine.getBuyableDrinkList(1000);
-// showDrinks(list);
-// showDrinks(machine.drinks.drinkList);
-
+function makeMachine() {
+	machine = new VendingMachine();
+	machine.drinks.addDrink("콜라", 1000, 1);
+	machine.drinks.addDrink("사이다", 1000, 1);
+	machine.drinks.addDrink("포도쥬스", 700, 1);
+	machine.drinks.addDrink("딸기우유", 500, 1);
+	machine.drinks.addDrink("미에로화이바", 900, 1);
+	machine.drinks.addDrink("물", 500, 1);
+	machine.drinks.addDrink("파워에이드", 1000, 0);
+	return machine;
+}
 
 function waitCommand(machine) {
 	readline.on("line", function (line) {
@@ -132,8 +107,13 @@ function showMachineOffed() {
 }
 
 function commandWaitMoney(machine, command) {
-	console.log('2')
+	command = parseInt(command);
+	if (typeof command !== "number" && isNaN(command)) {
+		showMachineStarted();
+		return;
+	}
 	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
+
 }
 //동전 대기
 //숫자 아닌가? - 동전을 넣으세요
@@ -163,4 +143,29 @@ function commandChooseRefund(machine, command) {
 //숫자인가? - 동전 대기로 상태 변환. 46으로
 //반환인가? - 잔액은 얼마입니다. 끝으로 상태 변환
 //다른 걸 구매? 반환?
+
+// list = machine.getBuyableDrinkList(1000);
+// showDrinks(list);
+// showDrinks(machine.drinks.drinkList);
+
+function showDrinks(drinks) {
+	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
+	var showText = [];
+	drinks.forEach(function (drink) {
+		if (showText != "") {
+			showText += ", ";
+		}
+		if (drink.amount != 0) {
+			showText += drink.name + "(" + drink.price + ")";
+		}
+		else {
+			showText += drink.name + "(재고없음)";
+		}
+	});
+	console.log(showText);
+}
+
+function showInsertCoin() {
+	console.log("동전을 넣으세요.");
+}
 
