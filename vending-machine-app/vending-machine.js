@@ -106,7 +106,7 @@ function commandToMachine(machine, command) {
 			commandChooseDrink(machine, command);
 			break;
 		case machine.stateList.WAIT_CHOOSE_REFUND:
-			commandChooseRefund(machine, command);
+			commandContinueOrRefund(machine, command);
 			break;
 		default:
 			showMachineOffed();
@@ -121,7 +121,7 @@ function commandWaitMoney(machine, command) {
 		return;
 	}
 	machine.deposit(money);
-	showFund(machine); //잔액: 00원
+	showFund(machine);
 	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
 	if (isEmpty(buyableDrinks)) {
 		showNothingCanBuy();
@@ -134,6 +134,12 @@ function commandWaitMoney(machine, command) {
 }
 
 function commandChooseDrink(machine, command) {
+	if (command === "반환") {
+		showTheChange(machine);
+		machine.state = machine.stateList.FINISHED;
+		return;
+	}
+
 	var drinkName = command;
 	drink = machine.getNamedDrink(drinkName);
 	if (isEmpty(drink)) {
@@ -156,7 +162,7 @@ function commandChooseDrink(machine, command) {
 	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
 }
 
-function commandChooseRefund(machine, command) {
+function commandContinueOrRefund(machine, command) {
 	if (command === "반환") {
 		showTheChange(machine);
 		machine.state = machine.stateList.FINISHED;
