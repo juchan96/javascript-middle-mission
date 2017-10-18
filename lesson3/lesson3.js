@@ -40,7 +40,14 @@ var vendingMachine = {
             stock: 3
         }
     ],
+    isAvailable: function () {
+        var that = this;
+        var availableDrinks = this.items.filter(function (item) {
+            return item.price <= that.coin;
+        });
 
+        return availableDrinks.length > 0;
+    },
     displayPurchasableItems: function () {
         var message = '사용가능한 음료수: ';
         var count = 0;
@@ -72,7 +79,6 @@ var vendingMachine = {
 
         console.log(message);
     },
-
     inputCoin: function () {
         var rl = getReadLine();
         var that = this;
@@ -85,6 +91,7 @@ var vendingMachine = {
                 that.displayPurchasableItems();
 
                 // 구매할 음료수 선택
+
                 that.selectDrink();
             } else {
                 console.log('올바른 금액을 입력해 주세요.');
@@ -118,8 +125,32 @@ var vendingMachine = {
             that.coin -= thisDrink.price;
             thisDrink.stock--;
 
-            console.log(thisDrink.name + ' 나왔음.');
+            console.log(thisDrink.name + ' 나왔음. (잔액: ' + that.coin + ')');
+            that.displayPurchasableItems();
+            that.purchaseAnotherOrNot();
         });
+    },
+    purchaseAnotherOrNot: function () {
+        var rl = getReadLine();
+        var that = this;
+
+        rl.question('다른걸 구매할까요? 반환할까요? ', function (answer) {
+            if (answer === '반환') {
+                that.giveBackChange();
+
+                rl.close();
+                return ;
+            }
+
+            if (that.isAvailable()) {
+                that.selectDrink();
+            } else {
+                that.inputCoin();
+            }
+        });
+    },
+    giveBackChange: function () {
+        console.log('잔액은 ' + this.coin + '원입니다.');
     }
 };
 
