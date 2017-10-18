@@ -6,7 +6,6 @@ module.exports = function () {
 		output: process.stdout
 	});
 	r.setPrompt('> ');
-	r.prompt();
 
 	r.on('close', function () {
 		process.exit();
