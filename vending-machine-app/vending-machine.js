@@ -53,8 +53,8 @@ function Drink(name, price, amount) {
 }
 
 machine = makeMachine();
-showInsertCoin();
-readline.prompt();
+showInsertCoin(); //동전을 넣으세요
+readline.prompt(); // >
 waitCommand(machine);
 
 function makeMachine() {
@@ -71,12 +71,8 @@ function makeMachine() {
 
 function waitCommand(machine) {
 	readline.on("line", function (line) {
-		if (line == "exit") {
-			readline.close();
-		}
 
 		commandToMachine(machine, line);
-
 		if (machine.state == machine.stateList.FINISHED) {
 			readline.close();
 		} else {
