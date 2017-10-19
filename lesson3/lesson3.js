@@ -42,8 +42,10 @@ var drinks = [
 var vendingMachine = {
     coin: 0,
     existPurchasableItem: function () {
+        var coin = this.coin;
+
         var availableDrinks = drinks.filter(function (item) {
-            return item.price <= this.coin;
+            return item.price <= coin;
         });
 
         return availableDrinks.length > 0;
@@ -51,9 +53,10 @@ var vendingMachine = {
     displayPurchasableItems: function () {
         var message = '사용가능한 음료수: ';
         var lastIndex = drinks.length - 1;
+        var coin = this.coin;
 
         var availableDrinks = drinks.filter(function (item) {
-            return item.price > this.coin;
+            return item.price <= coin;
         });
 
         availableDrinks.forEach(function (item, index) {
@@ -96,13 +99,12 @@ var vendingMachine = {
     },
     requireCoin: function () {
         var rl = getReadLine();
-        rl.question('동전을 입력하세요 : ', this.inputCoin);
+        rl.question('동전을 입력하세요 : ', this.inputCoin.bind(this));
     },
     inputDrink: function (drinkName) {
-        var thisDrink = drinks
-            .filter(function (item) {
-                return drinkName === item.name;
-            });
+        var thisDrink = drinks.filter(function (item) {
+            return drinkName === item.name;
+        })[0];
 
         //예외 처리
         if (!thisDrink) {
@@ -125,12 +127,12 @@ var vendingMachine = {
     },
     requireDrink: function () {
         var rl = getReadLine();
-        rl.question('음료수를 선택해 주세요: ', this.inputDrink);
+        rl.question('음료수를 선택해 주세요: ', this.inputDrink.bind(this));
     },
     inputContinueToUse: function (answer) {
         if (answer === '반환') {
             console.log('잔액은 ' + this.coin + '원입니다.');
-            rl.close();
+            getReadLine().close();
             return ;
         }
 
@@ -142,7 +144,7 @@ var vendingMachine = {
     },
     requireContinueToUse: function () {
         var rl = getReadLine();
-        rl.question('다른걸 구매할까요? 반환할까요? ', this.inputContinueToUse);
+        rl.question('다른걸 구매할까요? 반환할까요? ', this.inputContinueToUse.bind(this));
     }
 };
 
