@@ -184,9 +184,6 @@ function commandError(machine, error) {
 			display.nothingCanBuy();
 			display.insertCoin();
 			break;
-		case "ITS_NOT_COIN":
-			display.insertCoin();
-			break;
 		case "ITS_NOTHING":
 			display.itsNothing(machine);
 			break;
