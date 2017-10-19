@@ -29,6 +29,9 @@ function VendingMachine() {
 		this.fund -= price;
 		this.drinks.takeOutDrink(name);
 	}
+	this.addDrink = function (name, price, amount) {
+		this.drinks.addDrink(name, price, amount);
+	}
 	this.deposit = function (fund) {
 		this.fund += fund;
 	}
@@ -74,13 +77,13 @@ waitCommand(machine);
 
 function makeMachine() {
 	machine = new VendingMachine();
-	machine.drinks.addDrink("콜라", 1000, 1);
-	machine.drinks.addDrink("사이다", 1000, 1);
-	machine.drinks.addDrink("포도쥬스", 700, 1);
-	machine.drinks.addDrink("딸기우유", 500, 1);
-	machine.drinks.addDrink("미에로화이바", 900, 1);
-	machine.drinks.addDrink("물", 500, 1);
-	machine.drinks.addDrink("파워에이드", 1000, 0);
+	machine.addDrink("콜라", 1000, 1);
+	machine.addDrink("사이다", 1000, 1);
+	machine.addDrink("포도쥬스", 700, 1);
+	machine.addDrink("딸기우유", 500, 1);
+	machine.addDrink("미에로화이바", 900, 1);
+	machine.addDrink("물", 500, 1);
+	machine.addDrink("파워에이드", 1000, 0);
 	return machine;
 }
 
