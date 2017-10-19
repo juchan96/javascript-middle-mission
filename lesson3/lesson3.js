@@ -41,7 +41,7 @@ var drinks = [
 
 var vendingMachine = {
     coin: 0,
-    isAvailable: function () {
+    existPurchasableItem: function () {
         var availableDrinks = drinks.filter(function (item) {
             return item.price <= coin;
         });
@@ -76,88 +76,78 @@ var vendingMachine = {
 
         console.log(message);
     },
-    inputCoin: function () {
-        var rl = getReadLine();
-        var that = this;
+    inputCoin: function (input) {
+        if (!isPositiveInteger(input)) {
+            console.log('올바른 금액을 입력해 주세요.');
 
-        rl.question('동전을 입력하세요 : ', function (input) {
-            if (isPositiveInteger(input)) {
-                that.coin += Number(input);
+            //입력 다시 받기
+            this.requireCoin();
+            return ;
+        }
 
-                // 구매가능한 음료수 보여주기
-                that.displayPurchasableItems();
+        this.coin += Number(input);
+        this.displayPurchasableItems();
 
-                // 구매할 음료수 선택
-                if (that.isAvailable()) {
-                    that.selectDrink();
-                } else {
-                    that.purchaseAnotherOrNot();
-                }
-            } else {
-                console.log('올바른 금액을 입력해 주세요.');
-
-                //입력 다시 받기
-                that.inputCoin();
-                return ;
-            }
-        });
+        if (this.existPurchasableItem()) {
+            this.requireDrink();
+        } else {
+            this.requireContinueToUse();
+        }
     },
-    selectDrink: function () {
+    requireCoin: function () {
         var rl = getReadLine();
-        var that = this;
-
-        rl.question('음료수를 선택해 주세요: ', function (drinkName) {
-            var thisDrink = drinks
-                .filter(function (item) {
-                    return drinkName === item.name;
-                })
-                .pop();
-
-            //예외 처리
-            if (!thisDrink) {
-                console.log('잘못 입력하셨습니다.');
-                that.selectDrink();
-                return ;
-            } else if (thisDrink.stock === 0) {
-                console.log('재고가 없습니다.');
-                that.selectDrink();
-                return ;
-            }
-
-            that.coin -= thisDrink.price;
-            thisDrink.stock--;
-
-            console.log(thisDrink.name + ' 나왔음. (잔액: ' + that.coin + ')');
-            that.displayPurchasableItems();
-            that.purchaseAnotherOrNot();
-        });
+        rl.question('동전을 입력하세요 : ', this.inputCoin);
     },
-    purchaseAnotherOrNot: function () {
+    inputDrink: function (drinkName) {
+        var thisDrink = drinks
+            .filter(function (item) {
+                return drinkName === item.name;
+            });
+
+        //예외 처리
+        if (!thisDrink) {
+            console.log('잘못 입력하셨습니다.');
+            this.requireDrink();
+            return ;
+        } else if (thisDrink.stock === 0) {
+            console.log('재고가 없습니다.');
+            this.requireDrink();
+            return ;
+        }
+
+        this.coin -= thisDrink.price;
+        thisDrink.stock--;
+
+        console.log(thisDrink.name + ' 나왔음. (잔액: ' + this.coin + ')');
+
+        this.displayPurchasableItems();
+        this.requireContinueToUse();
+    },
+    requireDrink: function () {
         var rl = getReadLine();
-        var that = this;
-
-        rl.question('다른걸 구매할까요? 반환할까요? ', function (answer) {
-            if (answer === '반환') {
-                that.giveBackChange();
-
-                rl.close();
-                return ;
-            }
-
-            if (that.isAvailable()) {
-                that.selectDrink();
-            } else {
-                that.inputCoin();
-            }
-        });
+        rl.question('음료수를 선택해 주세요: ', this.inputDrink);
     },
-    giveBackChange: function () {
-        console.log('잔액은 ' + this.coin + '원입니다.');
+    inputContinueToUse: function (answer) {
+        if (answer === '반환') {
+            console.log('잔액은 ' + this.coin + '원입니다.');
+            rl.close();
+            return ;
+        }
+
+        if (this.existPurchasableItem()) {
+            this.requireDrink();
+        } else {
+            this.requireCoin();
+        }
+    },
+    requireContinueToUse: function () {
+        var rl = getReadLine();
+        rl.question('다른걸 구매할까요? 반환할까요? ', this.inputContinueToUse);
     }
 };
 
 (function main() {
-    vendingMachine.inputCoin();
+    vendingMachine.requireCoin();
 })();
 
 function isPositiveInteger(input) {
