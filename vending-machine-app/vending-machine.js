@@ -70,8 +70,75 @@ function Drink(name, price, amount) {
 	this.amount = amount;
 }
 
+var display = {
+	insertCoin: function () {
+		console.log("동전을 넣으세요.");
+	},
+	fund: function (machine) {
+		console.log("잔액: " + machine.fund + "원");
+	},
+	nothingCanBuy: function (machine) {
+		console.log("아무것도 못 삽니다.");
+	},
+	machineOffed: function (machine) {
+		console.log('자판기가 꺼져 있습니다.');
+	},
+	pleaseChoose: function (machine) {
+		var list = machine.getBuyableDrinkList(machine.fund);
+		if (!isEmpty(list))
+			console.log('선택하세요.');
+	},
+	itsNothing: function (machine) {
+		console.log('그런 건 없습니다.');
+		display.buyableDrinks(machine);
+	},
+	itsRanOut: function (machine) {
+		console.log('그거 다 떨어졌어요.');
+		display.buyableDrinks(machine);
+	},
+	notEnoughMoney: function (machine) {
+		console.log('잔액이 부족합니다.');
+		display.buyableDrinks(machine);
+	},
+	drinkCome: function (drink) {
+		console.log(drink.name + '가 나왔습니다.');
+	},
+	buyOrRefund: function (machine) {
+		console.log('다른걸 구매할까요? 반환할까요?');
+	},
+	getChange: function (machine) {
+		console.log('잔액은 ' + machine.fund + '원입니다.');
+	},
+	buyableDrinks: function (machine) {
+		var list = machine.getBuyableDrinkList(machine.fund);
+		if (isEmpty(list)) {
+			console.log("사용 가능한 음료수 : 없음");
+		} else {
+			display.drinks(list);
+			display.pleaseChoose(machine);
+		}
+	},
+	drinks: function (drinks) {
+		var drinksText = [];
+		drinks.forEach(function (drink) {
+			if (drinksText !== "") {
+				drinksText += ", ";
+			}
+			if (drink.amount === 0) {
+				drinksText += drink.name + "(재고없음)";
+			} else {
+				drinksText += drink.name + "(" + drink.price + ")";
+			}
+		});
+		var showText = "사용 가능한 음료수 : " + drinksText;
+		console.log(showText);
+	}
+}
+
+
+
 machine = makeMachine();
-showInsertCoin(); //동전을 넣으세요
+display.insertCoin(); //동전을 넣으세요
 readline.prompt(); // >
 waitCommand(machine);
 
@@ -108,30 +175,29 @@ function waitCommand(machine) {
 function commandError(machine, error) {
 	switch (error) {
 		case "MACHINE_OFFED":
-			showMachineOffed();
+			display.machineOffed();
 			break;
 		case "ITS_NOT_COIN":
-			showInsertCoin();
+			display.insertCoin();
 			break;
 		case "NO_BUYABLE_DRINKS":
-			showNothingCanBuy();
-			showInsertCoin();
+			display.nothingCanBuy();
+			display.insertCoin();
 			break;
 		case "ITS_NOT_COIN":
-			showInsertCoin();
+			display.insertCoin();
 			break;
 		case "ITS_NOTHING":
-			showItsNothing(machine);
+			display.itsNothing(machine);
 			break;
 		case "ITS_RANOUT":
-			showItsRanOut(machine);
+			display.itsRanOut(machine);
 			break;
 		case "NOT_ENOUGH_MONEY":
-			showMoneyNotEnough(machine);
+			display.notEnoughMoney(machine);
 			break;
 	}
 }
-
 
 function commandToMachine(machine, command) {
 	switch (machine.state) {
@@ -152,21 +218,21 @@ function commandToMachine(machine, command) {
 
 function commandWaitMoney(machine, command) {
 	var coin = parseInt(command);
-	if (typeof coin !== "number" || isNaN(coin))
+	if (typeof coin !== "number" || isNaN(coin)) {
 		throw "ITS_NOT_COIN";
+	}
 	machine.deposit(coin);
-	showFund(machine);
-	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
-	if (isEmpty(buyableDrinks))
+	display.fund(machine);
+	buyableDrinkList = machine.getBuyableDrinkList(machine.fund);
+	if (isEmpty(buyableDrinkList))
 		throw "NO_BUYABLE_DRINKS";
-	showBuyAbleDrinks(machine);
-	showPleaseChoose(machine);
+	display.buyableDrinks(machine);
 	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
 }
 
 function commandChooseDrink(machine, command) {
 	if (command === "반환") {
-		showTheChange(machine);
+		display.getChange(machine);
 		machine.state = machine.stateList.FINISHED;
 		return;
 	}
@@ -180,16 +246,16 @@ function commandChooseDrink(machine, command) {
 	if (drink.price > machine.fund)
 		throw "NOT_ENOUGH_MONEY";
 	machine.buyDrink(drinkName);
-	showDrinkCome(drink);
-	showFund(machine);
-	showBuyAbleDrinks(machine);
-	showBuyOrRefund();
+	display.drinkCome(drink);
+	display.fund(machine);
+	display.buyableDrinks(machine);
+	display.buyOrRefund();
 	machine.state = machine.stateList.WAIT_CHOOSE_REFUND;
 }
 
 function commandContinueOrRefund(machine, command) {
 	if (command === "반환") {
-		showTheChange(machine);
+		display.getChange(machine);
 		machine.state = machine.stateList.FINISHED;
 		return;
 	}
@@ -206,87 +272,9 @@ function commandContinueOrRefund(machine, command) {
 		commandChooseDrink(machine, command);
 	}
 
-	showBuyOrRefund();
+	display.buyOrRefund();
 }
 
-function showBuyAbleDrinks(machine) {
-	var list = machine.getBuyableDrinkList(machine.fund);
-	if (isEmpty(list)) {
-		console.log("사용 가능한 음료수 : 없음");
-	} else {
-		showDrinks(list);
-	}
-}
-
-function showDrinks(drinks) {
-	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
-	var drinksText = [];
-	drinks.forEach(function (drink) {
-		if (drinksText !== "") {
-			drinksText += ", ";
-		}
-		if (drink.amount === 0) {
-			drinksText += drink.name + "(재고없음)";
-		} else {
-			drinksText += drink.name + "(" + drink.price + ")";
-		}
-	});
-	var showText = "사용 가능한 음료수 : " + drinksText;
-	console.log(showText);
-}
-
-function showInsertCoin() {
-	console.log("동전을 넣으세요.");
-}
-
-function showFund(machine) {
-	console.log("잔액: " + machine.fund + "원");
-}
-
-function showNothingCanBuy() {
-	console.log("아무것도 못 삽니다.");
-}
-
-function showMachineOffed() {
-	console.log('자판기가 꺼져 있습니다.');
-}
-
-function showPleaseChoose(machine) {
-	var list = machine.getBuyableDrinkList(machine.fund);
-	if (!isEmpty(list)) {
-		console.log('선택하세요.');
-	}
-}
-
-function showItsNothing(machine) {
-	console.log('그런 건 없습니다.');
-	showBuyAbleDrinks(machine);
-	showPleaseChoose(machine);
-}
-
-function showItsRanOut(machine) {
-	console.log('그거 다 떨어졌어요.');
-	showBuyAbleDrinks(machine);
-	showPleaseChoose(machine);
-}
-
-function showMoneyNotEnough(machine) {
-	console.log('잔액이 부족합니다.');
-	showBuyAbleDrinks(machine);
-	showPleaseChoose(machine);
-}
-
-function showDrinkCome(drink) {
-	console.log(drink.name + '가 나왔습니다.');
-}
-
-function showBuyOrRefund() {
-	console.log('다른걸 구매할까요? 반환할까요?');
-}
-
-function showTheChange(machine) {
-	console.log('잔액은 ' + machine.fund + '원입니다.');
-}
 
 // [], {} 도 빈값으로 처리
 var isEmpty = function (value) {
