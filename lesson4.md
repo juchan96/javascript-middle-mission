@@ -1,12 +1,14 @@
 - 비트연산자 보수이해하기
-  비트연산에서 NOT에 해당한다. 연산자: ~
-  ~(0000) // 1111
-  ~(1111) // 0000
+  비트연산에서 NOT에 해당한다.
+  연산자: ~
+  
+      ~(0000) // 1111
+      ~(1111) // 0000
 
 - 10을 2진표현으로 변경하려면 어떤 순서로 계산해야 하는지 설명하기.
   1. 직접 계산
 
-        function decimalToBinary(num) {
+         function decimalToBinary(num) {
             var result = '';
             var remainder;
             var quotient = num;
@@ -23,13 +25,13 @@
             }
 
             return result;
-        }
+         }
 
   2. Number.toString 활용
 
-        function decimalToBinary(num) {
-            return Number(num).toString(2);
-        }
+         function decimalToBinary(num) {
+             return Number(num).toString(2);
+         }
 
 - hoisting 에 대해서 설명하기
   리터럴로 할당된 함수가 아닌 선언문 형태로 만들어진 함수는 선언된 위치에 관계없이 사용 가능
