@@ -119,19 +119,19 @@ var display = {
 		}
 	},
 	drinks: function (drinks) {
-		var drinksText = [];
-		drinks.forEach(function (drink) {
-			if (drinksText !== "") {
-				drinksText += ", ";
-			}
+		var lastIndex = drinks.length - 1;
+		var displayText = "사용 가능한 음료수 : ";
+		drinks.forEach(function (drink, index) {
 			if (drink.amount === 0) {
-				drinksText += drink.name + "(재고없음)";
+				displayText += drink.name + "(재고없음)";
 			} else {
-				drinksText += drink.name + "(" + drink.price + ")";
+				displayText += drink.name + "(" + drink.price + ")";
+			}
+			if (index !== lastIndex) {
+				displayText += ", ";
 			}
 		});
-		var showText = "사용 가능한 음료수 : " + drinksText;
-		console.log(showText);
+		console.log(displayText);
 	}
 }
 
