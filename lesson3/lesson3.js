@@ -11,56 +11,53 @@ var getReadLine = (function () {
     }
 })();
 
+var drinks = [
+    {
+        name: '포카리스웨트',
+        price: 1200,
+        stock: 3
+    },
+    {
+        name: '핫식스',
+        price: 1000,
+        stock: 3
+    },
+    {
+        name: '레쓰비',
+        price: 600,
+        stock: 3
+    },
+    {
+        name: '코코팜',
+        price: 700,
+        stock: 3
+    },
+    {
+        name: '쌕쌕감귤쥬스',
+        price: 600,
+        stock: 3
+    }
+];
+
 var vendingMachine = {
     coin: 0,
-    items: [
-        {
-            name: '포카리스웨트',
-            price: 1200,
-            stock: 3
-        },
-        {
-            name: '핫식스',
-            price: 1000,
-            stock: 3
-        },
-        {
-            name: '레쓰비',
-            price: 600,
-            stock: 3
-        },
-        {
-            name: '코코팜',
-            price: 700,
-            stock: 3
-        },
-        {
-            name: '쌕쌕감귤쥬스',
-            price: 600,
-            stock: 3
-        }
-    ],
     isAvailable: function () {
-        var that = this;
-        var availableDrinks = this.items.filter(function (item) {
-            return item.price <= that.coin;
+        var availableDrinks = drinks.filter(function (item) {
+            return item.price <= coin;
         });
 
         return availableDrinks.length > 0;
     },
     displayPurchasableItems: function () {
         var message = '사용가능한 음료수: ';
-        var count = 0;
-        var lastIndex = this.items.length - 1;
-        var that = this;
+        var lastIndex = drinks.length - 1;
 
-        this.items.forEach(function (item, index) {
-            if (item.price > that.coin) {
-                return ;
-            }
+        var availableDrinks = drinks.filter(function (item) {
+            return item.price > coin;
+        });
 
+        availableDrinks.forEach(function (item, index) {
             message += item.name;
-            count++;
 
             if (item.stock === 0) {
                 message += '(재고없음)';
@@ -73,7 +70,7 @@ var vendingMachine = {
             }
         });
 
-        if (count === 0) {
+        if (availableDrinks.length === 0) {
             message += '없음';
         }
 
@@ -110,9 +107,11 @@ var vendingMachine = {
         var that = this;
 
         rl.question('음료수를 선택해 주세요: ', function (drinkName) {
-            var thisDrink = that.items.find(function (item) {
-                return drinkName === item.name;
-            });
+            var thisDrink = drinks
+                .filter(function (item) {
+                    return drinkName === item.name;
+                })
+                .pop();
 
             //예외 처리
             if (!thisDrink) {
