@@ -1,3 +1,7 @@
+function isPositiveInteger(input) {
+    return /^\d+$/.test(input);
+}
+
 var getReadLine = (function () {
     var readline = require('readline');
 
@@ -42,22 +46,19 @@ var drinks = [
 var vendingMachine = {
     coin: 0,
     existPurchasableItem: function () {
-        var coin = this.coin;
-
         var availableDrinks = drinks.filter(function (item) {
-            return item.price <= coin;
-        });
+            return item.price <= this.coin;
+        }.bind(this));
 
         return availableDrinks.length > 0;
     },
     displayPurchasableItems: function () {
         var message = '사용가능한 음료수: ';
         var lastIndex = drinks.length - 1;
-        var coin = this.coin;
 
         var availableDrinks = drinks.filter(function (item) {
-            return item.price <= coin;
-        });
+            return item.price <= this.coin;
+        }.bind(this));
 
         availableDrinks.forEach(function (item, index) {
             message += item.name;
@@ -103,8 +104,10 @@ var vendingMachine = {
     },
     inputDrink: function (drinkName) {
         var thisDrink = drinks.filter(function (item) {
-            return drinkName === item.name;
-        })[0];
+            return item.name === drinkName;
+        }); //array
+
+        thisDrink = thisDrink[0];
 
         //예외 처리
         if (!thisDrink) {
@@ -148,10 +151,4 @@ var vendingMachine = {
     }
 };
 
-(function main() {
-    vendingMachine.requireCoin();
-})();
-
-function isPositiveInteger(input) {
-    return /^\d+$/.test(input);
-}
+vendingMachine.requireCoin();
