@@ -90,7 +90,12 @@ function makeMachine() {
 function waitCommand(machine) {
 	readline.on("line", function (line) {
 
-		commandToMachine(machine, line);
+		try {
+			commandToMachine(machine, line);
+		}
+		catch (error) {
+			commandError(machine, error);
+		}
 
 		if (machine.state == machine.stateList.FINISHED) {
 			readline.close();
@@ -99,6 +104,34 @@ function waitCommand(machine) {
 		}
 	});
 }
+
+function commandError(machine, error) {
+	switch (error) {
+		case "MACHINE_OFFED":
+			showMachineOffed();
+			break;
+		case "ITS_NOT_COIN":
+			showInsertCoin();
+			break;
+		case "NO_BUYABLE_DRINKS":
+			showNothingCanBuy();
+			showInsertCoin();
+			break;
+		case "ITS_NOT_COIN":
+			showInsertCoin();
+			break;
+		case "ITS_NOTHING":
+			showItsNothing(machine);
+			break;
+		case "ITS_RANOUT":
+			showItsRanOut(machine);
+			break;
+		case "NOT_ENOUGH_MONEY":
+			showMoneyNotEnough(machine);
+			break;
+	}
+}
+
 
 function commandToMachine(machine, command) {
 	switch (machine.state) {
@@ -112,25 +145,20 @@ function commandToMachine(machine, command) {
 			commandContinueOrRefund(machine, command);
 			break;
 		default:
-			showMachineOffed();
+			throw "MACHINE_OFFED";
 			break;
 	}
 }
 
 function commandWaitMoney(machine, command) {
 	var coin = parseInt(command);
-	if (typeof coin !== "number" || isNaN(coin)) {
-		showInsertCoin();
-		return;
-	}
+	if (typeof coin !== "number" || isNaN(coin))
+		throw "ITS_NOT_COIN";
 	machine.deposit(coin);
 	showFund(machine);
 	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
-	if (isEmpty(buyableDrinks)) {
-		showNothingCanBuy();
-		showInsertCoin();
-		return;
-	}
+	if (isEmpty(buyableDrinks))
+		throw "NO_BUYABLE_DRINKS";
 	showBuyAbleDrinks(machine);
 	showPleaseChoose(machine);
 	machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
@@ -145,18 +173,12 @@ function commandChooseDrink(machine, command) {
 
 	var drinkName = command;
 	drink = machine.getNamedDrink(drinkName);
-	if (isEmpty(drink)) {
-		showItsNothing(machine);
-		return;
-	}
-	if (drink.amount === 0) {
-		showItsRanOut(machine);
-		return;
-	}
-	if (drink.price > machine.fund) {
-		showMoneyNotEnough(machine);
-		return;
-	}
+	if (isEmpty(drink))
+		throw "ITS_NOTHING";
+	if (drink.amount === 0)
+		throw "ITS_RANOUT";
+	if (drink.price > machine.fund)
+		throw "NOT_ENOUGH_MONEY";
 	machine.buyDrink(drinkName);
 	showDrinkCome(drink);
 	showFund(machine);
@@ -172,14 +194,14 @@ function commandContinueOrRefund(machine, command) {
 		return;
 	}
 
-	coin = parseInt(command);
+	var coin = parseInt(command);
 	if (typeof coin === "number" && !isNaN(coin)) {
 		machine.state = machine.stateList.WAIT_MONEY;
 		commandWaitMoney(machine, command);
 		return;
 	}
 
-	drink = machine.getNamedDrink(command);
+	var drink = machine.getNamedDrink(command);
 	if (!isEmpty(drink)) {
 		commandChooseDrink(machine, command);
 	}
@@ -200,14 +222,13 @@ function showDrinks(drinks) {
 	//콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
 	var drinksText = [];
 	drinks.forEach(function (drink) {
-		if (drinksText != "") {
+		if (drinksText !== "") {
 			drinksText += ", ";
 		}
-		if (drink.amount != 0) {
-			drinksText += drink.name + "(" + drink.price + ")";
-		}
-		else {
+		if (drink.amount === 0) {
 			drinksText += drink.name + "(재고없음)";
+		} else {
+			drinksText += drink.name + "(" + drink.price + ")";
 		}
 	});
 	var showText = "사용 가능한 음료수 : " + drinksText;
