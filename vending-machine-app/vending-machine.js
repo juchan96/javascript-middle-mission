@@ -267,7 +267,9 @@ function commandContinueOrRefund(machine, command) {
 
 	var drink = machine.getNamedDrink(command);
 	if (!isEmpty(drink)) {
+		machine.state = machine.stateList.WAIT_CHOOSE_DRINK;
 		commandChooseDrink(machine, command);
+		return;
 	}
 
 	display.buyOrRefund();
