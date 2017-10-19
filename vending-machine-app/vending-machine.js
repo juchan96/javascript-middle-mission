@@ -6,10 +6,10 @@ function VendingMachine() {
 	this.state = this.stateList.WAIT_MONEY;
 	this.fund = 0;
 
-	this.getBuyableDrinkList = function (money) {
+	this.getBuyableDrinkList = function (price) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
-			if (drink.price <= money) {
+			if (drink.price <= price) {
 				drinkList.push(drink);
 			}
 		});
@@ -115,12 +115,12 @@ function commandToMachine(machine, command) {
 }
 
 function commandWaitMoney(machine, command) {
-	money = parseInt(command);
-	if (typeof money !== "number" || isNaN(money)) {
+	var coin = parseInt(command);
+	if (typeof coin !== "number" || isNaN(coin)) {
 		showInsertCoin();
 		return;
 	}
-	machine.deposit(money);
+	machine.deposit(coin);
 	showFund(machine);
 	buyableDrinks = machine.getBuyableDrinkList(machine.fund);
 	if (isEmpty(buyableDrinks)) {
@@ -169,8 +169,8 @@ function commandContinueOrRefund(machine, command) {
 		return;
 	}
 
-	money = parseInt(command);
-	if (typeof money === "number" && !isNaN(money)) {
+	coin = parseInt(command);
+	if (typeof coin === "number" && !isNaN(coin)) {
 		machine.state = machine.stateList.WAIT_MONEY;
 		commandWaitMoney(machine, command);
 		return;
