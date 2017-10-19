@@ -2,11 +2,11 @@ var readline = require("./config/readline")();
 
 function VendingMachine() {
 	this.drinks = new Drinks();
-	this.stateList = { "WAIT_MONEY": 1, "WAIT_CHOOSE_DRINK": 3, "WAIT_CHOOSE_REFUND": 4, "FINISHED": 5 }
+	VendingMachine.prototype.stateList = { "WAIT_MONEY": 1, "WAIT_CHOOSE_DRINK": 3, "WAIT_CHOOSE_REFUND": 4, "FINISHED": 5 }
 	this.state = this.stateList.WAIT_MONEY;
 	this.fund = 0;
 
-	this.getBuyableDrinkList = function (price) {
+	VendingMachine.prototype.getBuyableDrinkList = function (price) {
 		var drinkList = [];
 		this.drinks.drinkList.forEach(function (drink) {
 			if (drink.price <= price) {
@@ -15,7 +15,7 @@ function VendingMachine() {
 		});
 		return drinkList;
 	}
-	this.getNamedDrink = function (drinkName) {
+	VendingMachine.prototype.getNamedDrink = function (drinkName) {
 		var NamedDrink = '';
 		this.drinks.drinkList.forEach(function (drink) {
 			if (drink.name === drinkName) {
@@ -24,18 +24,18 @@ function VendingMachine() {
 		});
 		return NamedDrink;
 	}
-	this.buyDrink = function (name) {
+	VendingMachine.prototype.buyDrink = function (name) {
 		var price = this.drinks.getDrinkPrice(name);
 		this.fund -= price;
 		this.drinks.takeOutDrink(name);
 	}
-	this.addDrink = function (name, price, amount) {
+	VendingMachine.prototype.addDrink = function (name, price, amount) {
 		this.drinks.addDrink(name, price, amount);
 	}
-	this.deposit = function (fund) {
+	VendingMachine.prototype.deposit = function (fund) {
 		this.fund += fund;
 	}
-	this.refund = function () {
+	VendingMachine.prototype.refund = function () {
 		tmp = this.fund;
 		this.fund = 0;
 		return tmp;
@@ -44,11 +44,11 @@ function VendingMachine() {
 
 function Drinks() {
 	this.drinkList = [];
-	this.addDrink = function (name, price, amount) {
+	Drinks.prototype.addDrink = function (name, price, amount) {
 		var drink = new Drink(name, price, amount);
 		this.drinkList.push(drink);
 	}
-	this.getDrinkPrice = function (drinkName) {
+	Drinks.prototype.getDrinkPrice = function (drinkName) {
 		var price = 0;
 		this.drinkList.forEach(function (drink) {
 			if (drink.name === drinkName)
@@ -56,7 +56,7 @@ function Drinks() {
 		});
 		return price;
 	}
-	this.takeOutDrink = function (drinkName) {
+	Drinks.prototype.takeOutDrink = function (drinkName) {
 		this.drinkList.forEach(function (drink) {
 			if (drink.name === drinkName)
 				drink.amount--;
