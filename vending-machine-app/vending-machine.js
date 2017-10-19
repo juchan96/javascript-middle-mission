@@ -74,6 +74,9 @@ var display = {
 	insertCoin: function () {
 		console.log("동전을 넣으세요.");
 	},
+	pleaseCoin: function () {
+		console.log("동전을 넣으라구욧.");
+	},
 	fund: function (machine) {
 		console.log("잔액: " + machine.fund + "원");
 	},
@@ -180,6 +183,9 @@ function commandError(machine, error) {
 		case "ITS_NOT_COIN":
 			display.insertCoin();
 			break;
+		case "PLEASE_COIN":
+			display.pleaseCoin();
+			break;
 		case "NO_BUYABLE_DRINKS":
 			display.nothingCanBuy();
 			display.insertCoin();
@@ -197,6 +203,12 @@ function commandError(machine, error) {
 }
 
 function commandToMachine(machine, command) {
+	if (command === "반환") {
+		display.getChange(machine);
+		machine.state = machine.stateList.FINISHED;
+		return;
+	}
+
 	switch (machine.state) {
 		case machine.stateList.WAIT_MONEY:
 			commandWaitMoney(machine, command);
@@ -215,9 +227,10 @@ function commandToMachine(machine, command) {
 
 function commandWaitMoney(machine, command) {
 	var coin = parseInt(command);
-	if (typeof coin !== "number" || isNaN(coin)) {
+	if (typeof coin !== "number" || isNaN(coin))
 		throw "ITS_NOT_COIN";
-	}
+	if (coin <= 0)
+		throw "PLEASE_COIN";
 	machine.deposit(coin);
 	display.fund(machine);
 	buyableDrinkList = machine.getBuyableDrinkList(machine.fund);
@@ -228,12 +241,6 @@ function commandWaitMoney(machine, command) {
 }
 
 function commandChooseDrink(machine, command) {
-	if (command === "반환") {
-		display.getChange(machine);
-		machine.state = machine.stateList.FINISHED;
-		return;
-	}
-
 	var drinkName = command;
 	drink = machine.getNamedDrink(drinkName);
 	if (isEmpty(drink))
@@ -251,12 +258,6 @@ function commandChooseDrink(machine, command) {
 }
 
 function commandContinueOrRefund(machine, command) {
-	if (command === "반환") {
-		display.getChange(machine);
-		machine.state = machine.stateList.FINISHED;
-		return;
-	}
-
 	var coin = parseInt(command);
 	if (typeof coin === "number" && !isNaN(coin)) {
 		machine.state = machine.stateList.WAIT_MONEY;
