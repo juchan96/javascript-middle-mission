@@ -43,7 +43,7 @@ var vendingMachine = {
     coin: 0,
     existPurchasableItem: function () {
         var availableDrinks = drinks.filter(function (item) {
-            return item.price <= coin;
+            return item.price <= this.coin;
         });
 
         return availableDrinks.length > 0;
@@ -53,7 +53,7 @@ var vendingMachine = {
         var lastIndex = drinks.length - 1;
 
         var availableDrinks = drinks.filter(function (item) {
-            return item.price > coin;
+            return item.price > this.coin;
         });
 
         availableDrinks.forEach(function (item, index) {
