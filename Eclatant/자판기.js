@@ -84,6 +84,10 @@ var helper = {
     chargeError: "적절한 투입이 아닙니다. 다시 투입해주십시오.\n",
     expensive: "현재 잔액에 비해 비싼 제품입니다. 다시 골라주십시오.\n"
   },
+  cmd: {
+    charge: "충전",
+    refund: "반환"
+  },
   eventHandler: {
     exit() {
       console.log(helper.messages.exit());
@@ -139,9 +143,9 @@ function chargeWhether() {
   rl.question(
     `현재 잔액으로 구매할 수 있는 음료가 없습니다. 충전하시려면 "충전", 종료하시려면 "반환"을 입력해주십시오. `,
     function(cmd) {
-      if (cmd === "충전") {
+      if (cmd === helper.cmd.charge) {
         chargeAccount();
-      } else if (cmd === "반환") {
+      } else if (cmd === helper.cmd.refund) {
         helper.eventHandler.exit();
       } else {
         console.log("다시 입력해주십시오.\n");
@@ -156,7 +160,7 @@ function selectDrink(response) {
   rl.question(response, function(input) {
     var targetDrink = data.drinks[data.map[input]];
 
-    if (input === "반환") {
+    if (input === helper.cmd.refund) {
       helper.eventHandler.exit();
     } else if (!targetDrink) {
       console.log(helper.messages.nonExist);
@@ -180,7 +184,7 @@ function chargeAccount() {
   rl.question("금액을 투입해주십시오. ", function(input) {
     var inputNumber = parseInt(input);
 
-    if (input === "반환") {
+    if (input === helper.cmd.refund) {
       helper.eventHandler.exit();
     } else if (isNaN(inputNumber) || inputNumber < 0) {
       console.log(helper.messages.chargeError);
