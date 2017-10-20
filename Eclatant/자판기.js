@@ -70,6 +70,10 @@ var data = {
   ]
 };
 
+function log(message) {
+  console.log(message);
+}
+
 var helper = {
   messages: {
     transaction(productName) {
@@ -90,11 +94,11 @@ var helper = {
   },
   eventHandler: {
     exit() {
-      console.log(helper.messages.exit());
+      log(helper.messages.exit());
       rl.close();
     },
     outOfStock() {
-      console.log("현재 재고가 남아있는 제품이 하나도 없습니다. 돈을 반환해드리겠습니다.");
+      log("현재 재고가 남아있는 제품이 하나도 없습니다. 돈을 반환해드리겠습니다.");
       this.exit();
       rl.close();
     }
@@ -107,7 +111,7 @@ function transaction(productName) {
   data.account -= targetDrink.price;
   targetDrink.stock -= 1;
 
-  console.log(helper.messages.transaction(productName));
+  log(helper.messages.transaction(productName));
 
   controller();
 }
@@ -148,7 +152,7 @@ function chargeWhether() {
       } else if (cmd === helper.cmd.refund) {
         helper.eventHandler.exit();
       } else {
-        console.log("다시 입력해주십시오.\n");
+        log("다시 입력해주십시오.\n");
 
         chargeWhether();
       }
@@ -163,15 +167,15 @@ function selectDrink(response) {
     if (input === helper.cmd.refund) {
       helper.eventHandler.exit();
     } else if (!targetDrink) {
-      console.log(helper.messages.nonExist);
+      log(helper.messages.nonExist);
 
       selectDrink(response);
     } else if (targetDrink.stock === 0) {
-      console.log(helper.messages.outOfStock);
+      log(helper.messages.outOfStock);
 
       selectDrink(response);
     } else if (data.account < targetDrink.price) {
-      console.log(helper.messages.expensive);
+      log(helper.messages.expensive);
 
       selectDrink(response);
     } else {
@@ -187,7 +191,7 @@ function chargeAccount() {
     if (input === helper.cmd.refund) {
       helper.eventHandler.exit();
     } else if (isNaN(inputNumber) || inputNumber < 0) {
-      console.log(helper.messages.chargeError);
+      log(helper.messages.chargeError);
 
       chargeAccount();
     } else {
