@@ -86,8 +86,13 @@ var helper = {
     nonExist: "없는 제품입니다. 다시 입력해주십시오.\n",
     outOfStock: "현재 재고가 없는 상품입니다. 다른 상품을 선택해주십시오.\n",
     chargeError: "적절한 투입이 아닙니다. 다시 투입해주십시오.\n",
+    chargeWhether:
+      '현재 잔액으로 구매할 수 있는 음료가 없습니다. 충전하시려면 "충전", 종료하시려면 "반환"을 입력해주십시오.\n',
     expensive: "현재 잔액에 비해 비싼 제품입니다. 다시 골라주십시오.\n",
-    soldOut: "현재 재고가 남아있는 제품이 하나도 없습니다. 돈을 반환해드리겠습니다.\n"
+    insertCoin: "금액을 투입해주십시오.\n",
+    retry: "다시 입력해주십시오.\n",
+    soldOut: "재고없음",
+    soldOutAll: "현재 재고가 남아있는 제품이 하나도 없습니다. 돈을 반환해드리겠습니다.\n"
   },
   cmd: {
     charge: "충전",
@@ -99,7 +104,7 @@ var helper = {
       rl.close();
     },
     outOfStock() {
-      log(helper.messages.soldOut);
+      log(helper.messages.soldOutAll);
       this.exit();
       rl.close();
     }
@@ -124,7 +129,7 @@ function controller() {
   var responseArray = smallerThanAccount.map(function(drink) {
     return `${drink.name}(${drink.price}원/${drink.stock > 0
       ? drink.stock + "개"
-      : "재고없음"})`;
+      : helper.messages.soldOut})`;
   });
   var responseMessage = "";
 
@@ -145,20 +150,17 @@ function controller() {
 }
 
 function chargeWhether() {
-  rl.question(
-    `현재 잔액으로 구매할 수 있는 음료가 없습니다. 충전하시려면 "충전", 종료하시려면 "반환"을 입력해주십시오. `,
-    function(cmd) {
-      if (cmd === helper.cmd.charge) {
-        chargeAccount();
-      } else if (cmd === helper.cmd.refund) {
-        helper.eventHandler.exit();
-      } else {
-        log("다시 입력해주십시오.\n");
+  rl.question(helper.messages.chargeWhether, function(cmd) {
+    if (cmd === helper.cmd.charge) {
+      chargeAccount();
+    } else if (cmd === helper.cmd.refund) {
+      helper.eventHandler.exit();
+    } else {
+      log(helper.messages.retry);
 
-        chargeWhether();
-      }
+      chargeWhether();
     }
-  );
+  });
 }
 
 function selectDrink(response) {
@@ -186,7 +188,7 @@ function selectDrink(response) {
 }
 
 function chargeAccount() {
-  rl.question("금액을 투입해주십시오. ", function(input) {
+  rl.question(helper.messages.insertCoin, function(input) {
     var inputNumber = parseInt(input);
 
     if (input === helper.cmd.refund) {
