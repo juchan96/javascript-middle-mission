@@ -14,20 +14,14 @@
 
 var readline = require("readline");
 
-var rl = readline
-  .createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-  .on("line", answer => {
-    data.answer = answer;
-    rl.close();
-  });
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 // 콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
 var data = {
   account: 0,
-  answer: "",
   map: {
     콜라: 0,
     사이다: 1,
@@ -80,7 +74,11 @@ function log(message) {
   console.log(message);
 }
 
-var helper = {
+function warn(message) {
+  console.warn(message);
+}
+
+var admin = {
   messages: {
     transaction(productName) {
       return `${productName} 나왔습니다.\n`;
@@ -103,119 +101,112 @@ var helper = {
   cmd: {
     charge: "충전",
     refund: "반환"
+  }
+};
+
+var helper = {
+  response: "",
+  isOutOfStock() {
+    return (
+      data.drinks.filter(function(drink) {
+        return drink.stock > 0;
+      }).length === 0
+    );
   },
-  eventHandler: {
-    exit() {
-      log(helper.messages.exit());
-      rl.close();
-    },
-    outOfStock() {
-      log(helper.messages.soldOutAll);
-      this.exit();
-      rl.close();
+  transaction(productName) {
+    var targetDrink = data.drinks[data.map[productName]];
+
+    data.account -= targetDrink.price;
+    targetDrink.stock -= 1;
+
+    log(admin.messages.transaction(productName));
+
+    this.controller();
+  },
+  controller() {
+    var smallerThanAccount = data.drinks.filter(function(drink) {
+      return drink.price <= data.account;
+    });
+    var responseArray = smallerThanAccount.map(function(drink) {
+      return `${drink.name}(${drink.price}원/${drink.stock > 0
+        ? drink.stock + "개"
+        : admin.messages.soldOut})`;
+    });
+
+    if (this.isOutOfStock()) IO.outOfStock();
+    else if (smallerThanAccount.length === 0) IO.chargeWhether();
+    else {
+      helper.response =
+        responseArray.join(", ") + ` 현재 잔액 ${data.account}원` + "\n";
+
+      IO.getAnswer(helper.response, IO.selectDrink);
     }
   }
 };
 
-function transaction(productName) {
-  var targetDrink = data.drinks[data.map[productName]];
+var IO = {
+  getAnswer(question, method) {
+    console.log(question);
+    console.log("method", method);
+    rl.prompt();
 
-  data.account -= targetDrink.price;
-  targetDrink.stock -= 1;
-
-  log(helper.messages.transaction(productName));
-
-  controller();
-}
-
-function controller() {
-  var smallerThanAccount = data.drinks.filter(function(drink) {
-    return drink.price <= data.account;
-  });
-  var responseArray = smallerThanAccount.map(function(drink) {
-    return `${drink.name}(${drink.price}원/${drink.stock > 0
-      ? drink.stock + "개"
-      : helper.messages.soldOut})`;
-  });
-  var responseMessage = "";
-
-  if (isOutOfStock()) helper.eventHandler.outOfStock();
-  else if (smallerThanAccount.length === 0) chargeWhether();
-  else {
-    responseMessage =
-      responseArray.join(", ") + ` 현재 잔액 ${data.account}원` + "\n";
-
-    selectDrink(responseMessage);
-  }
-}
-
-function chargeWhether() {
-  rl.question(helper.messages.chargeWhether, function(cmd) {
-    if (cmd === helper.cmd.charge) {
-      chargeAccount();
-    } else if (cmd === helper.cmd.refund) {
-      helper.eventHandler.exit();
-    } else {
-      log(helper.messages.retry);
-
-      chargeWhether();
-    }
-  });
-}
-
-function selectDrink(response) {
-  rl.question(response, function(input) {
-    var targetDrink = data.drinks[data.map[input]];
-
-    if (input === helper.cmd.refund) {
-      helper.eventHandler.exit();
-    } else if (!targetDrink) {
-      log(helper.messages.nonExist);
-
-      selectDrink(response);
-    } else if (targetDrink.stock === 0) {
-      log(helper.messages.outOfStock);
-
-      selectDrink(response);
-    } else if (data.account < targetDrink.price) {
-      log(helper.messages.expensive);
-
-      selectDrink(response);
-    } else {
-      transaction(input);
-    }
-  });
-}
-
-function chargeAccount() {
-  rl.question(helper.messages.insertCoin, function(input) {
+    rl.on("line", function(answer) {
+      method(answer);
+    });
+  },
+  exit() {
+    log(admin.messages.exit());
+    rl.close();
+  },
+  outOfStock() {
+    warn(admin.messages.soldOutAll);
+    this.exit();
+  },
+  chargeAccount(input) {
     var inputNumber = parseInt(input);
 
-    if (input === helper.cmd.refund) {
-      helper.eventHandler.exit();
-    } else if (isNaN(inputNumber) || inputNumber < 0) {
-      log(helper.messages.chargeError);
+    if (input === admin.cmd.refund) IO.exit();
+    else if (isNaN(inputNumber) || inputNumber < 0) {
+      warn(admin.messages.chargeError);
 
-      chargeAccount();
+      IO.getAnswer(admin.messages.insertCoin, this.chargeAccount);
     } else {
       data.account += inputNumber;
 
-      controller();
+      helper.controller();
     }
-  });
-}
+  },
+  chargeWhether(cmd) {
+    if (cmd === admin.cmd.charge)
+      IO.getAnswer(admin.messages.insertCoin, this.chargeAccount);
+    else if (cmd === admin.cmd.refund) IO.exit();
+    else {
+      warn(admin.messages.retry);
 
-function isOutOfStock() {
-  return (
-    data.drinks.filter(function(drink) {
-      return drink.stock > 0;
-    }).length === 0
-  );
-}
+      IO.getAnswer(admin.messages.chargeWhether, this.chargeWhether);
+    }
+  },
+  selectDrink(input) {
+    var targetDrink = data.drinks[data.map[input]];
 
-function getAnswer(question) {
-  console.log(question);
-  rl.prompt();
-}
+    if (input === admin.cmd.refund) {
+      admin.eventHandler.exit();
+    } else if (!targetDrink) {
+      warn(admin.messages.nonExist);
 
-chargeAccount();
+      IO.getAnswer(helper.repsonse, this.selectDrink);
+    } else if (targetDrink.stock === 0) {
+      warn(admin.messages.outOfStock);
+
+      IO.getAnswer(helper.repsonse, this.selectDrink);
+    } else if (data.account < targetDrink.price) {
+      warn(admin.messages.expensive);
+
+      IO.getAnswer(helper.repsonse, this.selectDrink);
+    } else {
+      helper.transaction(input);
+    }
+  }
+};
+
+IO.getAnswer(admin.messages.insertCoin, IO.chargeAccount);
