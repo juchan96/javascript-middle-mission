@@ -22,6 +22,7 @@ var rl = readline.createInterface({
 // 콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
 var data = {
   account: 0,
+  answer: "",
   map: {
     콜라: 0,
     사이다: 1,
@@ -133,15 +134,9 @@ function controller() {
   });
   var responseMessage = "";
 
-  if (
-    data.drinks.filter(function(drink) {
-      return drink.stock > 0;
-    }).length === 0
-  ) {
-    helper.eventHandler.outOfStock();
-  } else if (smallerThanAccount.length === 0) {
-    chargeWhether();
-  } else {
+  if (isOutOfStock()) helper.eventHandler.outOfStock();
+  else if (smallerThanAccount.length === 0) chargeWhether();
+  else {
     responseMessage =
       responseArray.join(", ") + ` 현재 잔액 ${data.account}원` + "\n";
 
@@ -203,6 +198,14 @@ function chargeAccount() {
       controller();
     }
   });
+}
+
+function isOutOfStock() {
+  return (
+    data.drinks.filter(function(drink) {
+      return drink.stock > 0;
+    }).length === 0
+  );
 }
 
 chargeAccount();
