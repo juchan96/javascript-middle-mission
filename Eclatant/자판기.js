@@ -86,7 +86,8 @@ var helper = {
     nonExist: "없는 제품입니다. 다시 입력해주십시오.\n",
     outOfStock: "현재 재고가 없는 상품입니다. 다른 상품을 선택해주십시오.\n",
     chargeError: "적절한 투입이 아닙니다. 다시 투입해주십시오.\n",
-    expensive: "현재 잔액에 비해 비싼 제품입니다. 다시 골라주십시오.\n"
+    expensive: "현재 잔액에 비해 비싼 제품입니다. 다시 골라주십시오.\n",
+    soldOut: "현재 재고가 남아있는 제품이 하나도 없습니다. 돈을 반환해드리겠습니다.\n"
   },
   cmd: {
     charge: "충전",
@@ -98,7 +99,7 @@ var helper = {
       rl.close();
     },
     outOfStock() {
-      log("현재 재고가 남아있는 제품이 하나도 없습니다. 돈을 반환해드리겠습니다.");
+      log(helper.messages.soldOut);
       this.exit();
       rl.close();
     }
