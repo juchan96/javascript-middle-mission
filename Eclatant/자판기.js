@@ -14,10 +14,15 @@
 
 var readline = require("readline");
 
-var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+var rl = readline
+  .createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+  .on("line", answer => {
+    data.answer = answer;
+    rl.close();
+  });
 
 // 콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
 var data = {
@@ -206,6 +211,11 @@ function isOutOfStock() {
       return drink.stock > 0;
     }).length === 0
   );
+}
+
+function getAnswer(question) {
+  console.log(question);
+  rl.prompt();
 }
 
 chargeAccount();
