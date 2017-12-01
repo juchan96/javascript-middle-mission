@@ -81,7 +81,7 @@ var obj = [{
 
 var resultObj = {};
 
-var parse = function (obj,target) {
+var findSkKey = function (obj,target) {
 
     /**
      *  resultObj가 값이 없을경우엔 빈배열, 그 이후엔 resultObj에 들어있던 값이 push됨
@@ -101,5 +101,5 @@ var parse = function (obj,target) {
     });
 };
 
-parse(obj,'sk');
+findSkKey(obj,'sk');
 console.log(resultObj);
