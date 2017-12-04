@@ -40,8 +40,14 @@ var vendingMachine = {
         }
     ],
     showDrinks : function () {
-
+        var message = '음료 목록 : ';
+        this.drinks.forEach(function (curr) {
+            message += curr.name;
+            message += '(' + curr.price + '), ';
+        });
+        console.log(message);
     },
+
     isEnoughMoney : function () {
 
     },
@@ -64,3 +70,4 @@ var vendingMachine = {
         
     }
 };
+
