@@ -39,6 +39,12 @@ var vendingMachine = {
             stock: 3
         }
     ],
+    showDrinks : function () {
+
+    },
+    isEnoughMoney : function () {
+
+    },
     inputMoney : function () {
         
     },
@@ -49,6 +55,9 @@ var vendingMachine = {
         
     },
     disposeMoney : function () {
+
+    },
+    returnDrink : function () {
 
     },
     returnMoney : function () {
