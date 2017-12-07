@@ -12,6 +12,7 @@ var getReadLine = (function () {
 })();
 
 var vendingMachine = {
+    coin : 0,
     drinks : [
         {
             name: '데자와',
@@ -39,25 +40,46 @@ var vendingMachine = {
             stock: 3
         }
     ],
+
     showDrinks : function () {
         var message = '음료 목록 : ';
         this.drinks.forEach(function (curr) {
             message += curr.name;
             message += '(' + curr.price + '), ';
+
         });
         console.log(message);
     },
 
-    isEnoughMoney : function () {
-
-    },
     inputMoney : function () {
-        
+        var rl = getReadLine();
+        rl.question('금액을 입력하세요: ', function (input) {
+            this.coin = input;
+        });
     },
+
     showMoney : function () {
-        
+        debugger;
+        console.log('현재' + this.coin +'원이 들어있습니다.')
     },
+    existEnoughMoney : function () {
+        this.drinks.some(function(element){
+            return this.coin >= element.price;
+        }.bind(this));
+    },
+    existPurchasableDrinks: function () {
+        this.drinks.some(function (element) {
+            return element.stock>0;
+        });
+    },
+
     selectDrink : function () {
+        var enoughMoney = existEnoughMoney();
+        var purchasableDrinks = existPurchasableDrinks();
+        if(enoughMoney&&purchasableDrinks){
+
+
+        }
         
     },
     disposeMoney : function () {
@@ -70,4 +92,7 @@ var vendingMachine = {
         
     }
 };
-
+debugger;
+vendingMachine.inputMoney();
+vendingMachine.showMoney();
+vendingMachine.existEnoughMoney();
