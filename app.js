@@ -3,7 +3,8 @@ const READLINE = require('readline').createInterface({
   output: process.stdout
 });
 
-const DATA = [{
+
+const BEVERAGE_LIST = [{
   'name': '콜라',
   'price': 1000,
   'stock': 2
@@ -34,65 +35,89 @@ const DATA = [{
 }]
 
 
-const insertCoin = () => {
+// 돈을 투입하는 함수
+const insertCoin = (coin, change) => {
   READLINE.question('동전을 넣으세요: ', (coin) => {
     coin *= 1;
-    if (typeof (coin) === 'number' && !isNaN(coin)) {
-      console.log('투입금액:', coin + "원");
-      availableBeverages(coin);
+    if (Number.isInteger(coin) && !isNaN(coin)) {
+      checkChange(coin, change)
     } else {
       console.log('숫자만 입력하세요');
       insertCoin()
     }
   })
+};
+
+
+// 잔액이 부족해 돈을 더 넣을 때 거스름돈을 반영하는 함수
+const checkChange = (coin, change) => {
+  if (!change) {
+    console.log('투입 금액:', coin + "원");
+    availableBeverages(coin);
+  } else if (!!change) {
+    let changes = coin + change
+    console.log('현재 금액:', changes + "원");
+    availableBeverages(changes);
+  }
 }
 
-
-const availableBeverages = (obj) => {
+// 현재 이용가능한 음료가 무엇인지 확인하는 함수
+const availableBeverages = (coin) => {
   beverages = [];
-  for (let key in DATA) {
-    let availables = DATA[key];
+  for (let key in BEVERAGE_LIST) {
+    let availables = BEVERAGE_LIST[key];
     beverages.push(availables)
   }
   console.log("선택 가능 음료:", beverages);
-  selectBeverages(obj, beverages)
-}
+  selectBeverages(coin, beverages)
+};
 
 
-const selectBeverages = (obj, arr) => {
+// 이용가능한 음료 중 마실 음료를 선택하는 함수
+const selectBeverages = (coin, bev_lists) => {
   READLINE.question('음료를 선택하세요: ', (name) => {
-    for (let elem in arr) {
-      let bev = arr[elem]
-      let change = obj - bev.price;
+    for (let elem in bev_lists) {
+      let bev = bev_lists[elem]
+      let change = coin - bev.price;
       if (name === bev.name) {
-        statusOfBeverage(name, bev, obj, change, arr)
+        statusOfBeverage(name, bev, coin, bev_lists)
       }
     }
   })
-}
+};
 
 
-const statusOfBeverage = (name, bev, obj, change, arr) => {
+// 선택한 음료의 재고가 남아있는지,
+// 동전이 충분히 투입되었는지 확인하는 함수
+const statusOfBeverage = (name, bev, coin, bev_lists) => {
+  let change = coin - bev.price;
   if (bev.stock === 0) {
     console.log("재고가 없습니다.");
-    selectBeverages(obj, arr)
-  } else if (obj < bev.price || change < 0) {
+    selectBeverages(coin, bev_lists)
+  } else if (coin < bev.price || change < 0) {
     console.log("투입 금액이 부족합니다");
-    insertCoin(obj);
+    change = coin
+    insertCoin(coin, change);
   } else {
     console.log(name + "을 구입했습니다. 잔액은 " + change + "원 입니다.");
     --bev.stock;
     purchaseAnother(change)
   }
-}
+};
 
 
-const purchaseAnother = (obj, arr) => {
+// 다른 음료를 구입할지 반환할지 선택하는 함수
+const purchaseAnother = (beverage, bev_lists) => {
   READLINE.question('다른 음료를 구매할까요 반환할까요?: (구매 / 반환) ', (answer) => {
-    (answer === '구매') ? availableBeverages(obj) && selectBeverages(obj, arr):
-      (answer === '반환') ? READLINE.close() : purchaseAnother(obj, arr)
+    if (answer === '구매') {
+      availableBeverages(beverage) && selectBeverages(beverage, bev_lists)
+    } else if (answer === '반환') {
+      READLINE.close()
+    } else {
+      purchaseAnother(beverage, bev_lists)
+    }
   })
-}
+};
 
 
 insertCoin();
