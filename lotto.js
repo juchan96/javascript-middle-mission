@@ -63,9 +63,9 @@ const insertNum = () => {
 const checkResult = (money) => {
   READLINE.question('지난 주 당첨번호를 입력해 주세요: ', (lottoNum) => {
     let lottoArray = lottoNum.split(',') || lottoNum.split(', ');
-    for (var i = 0; i < lottoArray.length; i++) {
-      INIT_OBJECTS.RESULT.push(Number(lottoArray[i]));
-    }
+    lottoArray.forEach(elem => {
+      INIT_OBJECTS.RESULT.push(Number(elem));
+    });    
     compareResult(money)
     READLINE.close();
   });
@@ -117,7 +117,6 @@ const compareResult = (money) => {
   console.log("4개 일치 (50000원) : " + fourCount + "개");
   console.log("5개 일치 (1500000원) : " + fiveCount + "개");
   console.log("6개 일치 (2000000000원) : " + sixCount + "개");
-
   console.log("나의 수익률은 ", (((INIT_OBJECTS.PRIZEMONEY / money) * 100) - 100).toFixed(0) + "% 입니다.");
 }
 
