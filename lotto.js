@@ -4,9 +4,17 @@
 // 그 함수에서는 이중배열을 처리할 수 있게 반복문을 구현한다.
 // 반복을 하면서 당첨번호와 일치하는 번호가 있는지 확인한다
 // 일치하면 일치하는 갯수를 추가한다.
-let PRIZEMONEY = 0;
-let PICKS = [];
-let RESULT = [];
+
+let INIT_OBJECTS = {
+  PRIZEMONEY: 0,
+  PICKS: [],
+  RESULT: [],
+  LOTTO: []
+}
+
+for (let i = 1; i <= 45; i++) {
+  INIT_OBJECTS.LOTTO.push(i);
+}
 
 
 const READLINE = require('readline').createInterface({
@@ -15,33 +23,39 @@ const READLINE = require('readline').createInterface({
 });
 
 
+
 const purchaseTickets = (money) => {
-  READLINE.question('구입금액을 1000원 단위로 입력해 주세요: ', (money) => {
-    let tickets = money / 1000
-    console.log(tickets + "개를 구매했습니다.");
-    for (var i = 0; i < tickets; i++) {
-      PICKS.push(insertNum(i));
+  READLINE.question('구입금액을 1000원 단위로 입력해 주세요: ', (cash) => {
+    let reg = /^\d{0,9}000$/
+    let tickets = cash / 1000;
+    const thousands = (num) => {
+      return num;
     }
-    console.log(PICKS);
-    checkResult(money);
+    if (reg.test(cash)) {
+      console.log(tickets + "개를 구매했습니다.");
+      for (var i = 0; i < tickets; i++) {
+        INIT_OBJECTS.PICKS.push(insertNum());
+      }
+      console.log(INIT_OBJECTS.PICKS);
+      checkResult(cash);
+    } else {
+      console.log("다시 입력해 주세요.");
+      purchaseTickets();
+    }
   });
 }
 
 
 const insertNum = () => {
-  let lotto = [];
   let temp;
   let random;
-  for (let i = 1; i <= 45; i++) {
-    lotto.push(i);
-  }
-  for (let i = 0; i < lotto.length; i++) {
+  for (let i = 0; i < INIT_OBJECTS.LOTTO.length; i++) {
     random = Math.floor(Math.random() * 45);
-    temp = lotto[i];
-    lotto[i] = lotto[random];
-    lotto[random] = temp;
+    temp = INIT_OBJECTS.LOTTO[i];
+    INIT_OBJECTS.LOTTO[i] = INIT_OBJECTS.LOTTO[random];
+    INIT_OBJECTS.LOTTO[random] = temp;
   }
-  let pick = lotto.slice(0, 6).sort(ascSorting);
+  let pick = INIT_OBJECTS.LOTTO.slice(0, 6).sort(ascSorting);
   return pick;
 }
 
@@ -50,7 +64,7 @@ const checkResult = (money) => {
   READLINE.question('지난 주 당첨번호를 입력해 주세요: ', (lottoNum) => {
     let lottoArray = lottoNum.split(',') || lottoNum.split(', ');
     for (var i = 0; i < lottoArray.length; i++) {
-      RESULT.push(Number(lottoArray[i]));
+      INIT_OBJECTS.RESULT.push(Number(lottoArray[i]));
     }
     compareResult(money)
     READLINE.close();
@@ -65,41 +79,46 @@ const compareResult = (money) => {
   let fourCount = 0;
   let fiveCount = 0;
   let sixCount = 0;
-
-  for (let i = 0; i < RESULT.length; i++) {
-    for (let j = 0; j < PICKS.length; j++) {
-      if (PICKS[j].indexOf(RESULT[i]) !== -1) {
+  for (let i = 0; i < INIT_OBJECTS.RESULT.length; i++) {
+    for (let j = 0; j < INIT_OBJECTS.PICKS.length; j++) {
+      if (INIT_OBJECTS.PICKS[j].indexOf(INIT_OBJECTS.RESULT[i]) !== -1) {
         arr.push(j);
         arr.sort(ascSorting)
       }
     }
   }
-  for (let val in arr) {
-    let idx = arr[val];
+
+  for (let i = 0; i < arr.length; i++) {
+    let idx = arr[i];
     result[idx] = result[idx] === undefined ? 1 : result[idx] += 1;
   }
+
+
   for (let val in result) {
     if (result[val] === 3) {
       threeCount++;
-      PRIZEMONEY += 5000;
+      INIT_OBJECTS.PRIZEMONEY += 5000;
     } else if (result[val] === 4) {
       fourCount++;
-      PRIZEMONEY += 50000;
+      INIT_OBJECTS.PRIZEMONEY += 50000;
     } else if (result[val] === 5) {
       fiveCount++;
-      PRIZEMONEY += 1500000;
+      INIT_OBJECTS.PRIZEMONEY += 1500000;
     } else if (result[val] === 6) {
       sixCount++;
-      PRIZEMONEY += 2000000000;
+      INIT_OBJECTS.PRIZEMONEY += 2000000000;
     }
   }
+
+
   console.log("당첨 통계");
   console.log("---------")
   console.log("3개 일치 (5000원) : " + threeCount + "개");
   console.log("4개 일치 (50000원) : " + fourCount + "개");
   console.log("5개 일치 (1500000원) : " + fiveCount + "개");
   console.log("6개 일치 (2000000000원) : " + sixCount + "개");
-  console.log("나의 수익률은 ", (((PRIZEMONEY / money) * 100) - 100) + "% 입니다.");
+
+  console.log("나의 수익률은 ", (((INIT_OBJECTS.PRIZEMONEY / money) * 100) - 100).toFixed(0) + "% 입니다.");
 }
 
 
