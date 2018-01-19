@@ -6,11 +6,18 @@
 // 일치하면 일치하는 갯수를 추가한다.
 
 let INIT = {
-  prize: 0,
   picks: [],
   result: [],
   lotto: []
 }
+
+let MSG = {
+  request: "구입금액을 1000 원 단위로 입력해 주세요: ",
+  success: "개를 구매했습니다.",
+  error: "금액은 1000원 단위로 입력해야 합니다. 다시 입력해 주세요.",
+  requestNum: "지난 주 당첨번호를 입력해 주세요: "
+}
+
 
 for (let i = 1; i <= 45; i++) {
   INIT.lotto.push(i);
@@ -23,23 +30,22 @@ const READLINE = require('readline').createInterface({
 });
 
 
-
 const purchaseTickets = (money) => {
-  READLINE.question('구입금액을 1000원 단위로 입력해 주세요: ', (cash) => {
-    let reg = /^\d{0,9}000$/
+  READLINE.question(MSG.request, (cash) => {
+    let reg = /^\d+000$/
     let tickets = cash / 1000;
     const thousands = (num) => {
       return num;
     }
     if (reg.test(cash)) {
-      console.log(tickets + "개를 구매했습니다.");
+      console.log(tickets + MSG.success);
       for (var i = 0; i < tickets; i++) {
         INIT.picks.push(insertNum());
       }
       console.log(INIT.picks);
       checkResult(cash);
     } else {
-      console.log("금액은 1000원 단위로 입력해야 합니다. 다시 입력해 주세요.");
+      console.log(MSG.error);
       purchaseTickets();
     }
   });
@@ -61,7 +67,7 @@ const insertNum = () => {
 
 
 const checkResult = (money) => {
-  READLINE.question('지난 주 당첨번호를 입력해 주세요: ', (lottoNum) => {
+  READLINE.question(MSG.requestNum, (lottoNum) => {
     let lottoArray = lottoNum.split(',') || lottoNum.split(', ');
     lottoArray.forEach(elem => {
       INIT.result.push(Number(elem));
@@ -72,22 +78,23 @@ const checkResult = (money) => {
 }
 
 
+let prizeData = {
+  0: 0,
+  1: 0,
+  2: 0,
+  3: 5000,
+  4: 50000,
+  5: 1500000,
+  6: 200000000
+}
+
+
 const compareResult = (money) => {
   let arr = [];
   let prizes = [];
   let result = {};
   let prizeResult = {};
   let totalPrize = 0;
-
-  let getPrize = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: INIT.prize = 5000,
-    4: INIT.prize = 50000,
-    5: INIT.prize = 1500000,
-    6: INIT.prize = 200000000
-  }
 
   INIT.result.map(element => {
     INIT.picks.forEach(elem => {
@@ -97,7 +104,6 @@ const compareResult = (money) => {
       }
     });
   });
-
 
   arr.forEach(elem => {
     let idx = elem;
@@ -109,16 +115,14 @@ const compareResult = (money) => {
   }
 
   prizes.forEach(elem => {
-    totalPrize += getPrize[elem];
+    totalPrize += prizeData[elem];
     let idx = elem;
     prizeResult[idx] = prizeResult[idx] === undefined ? 1 : prizeResult[idx] += 1;
   });
 
-
   for (var key in prizeResult) {
     console.log(key + "개 일치: " + prizeResult[key] + "개");
   }
-
   console.log("나의 수익률은 ", (((totalPrize / money) * 100) - 100).toFixed(0) + "% 입니다.");
 }
 
