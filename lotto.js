@@ -34,9 +34,7 @@ const purchaseTickets = (money) => {
   READLINE.question(MSG.request, (cash) => {
     let reg = /^\d+000$/
     let tickets = cash / 1000;
-    const thousands = (num) => {
-      return num;
-    }
+
     if (reg.test(cash)) {
       console.log(tickets + MSG.success);
       for (var i = 0; i < tickets; i++) {
