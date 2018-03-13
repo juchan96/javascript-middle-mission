@@ -43,7 +43,7 @@ function printAvailableDrinkList() {
     }
 
     if (price <= currentMoney) {
-      price = (!price) ? price = "재고없음" : price;
+      price = (!price) ? "재고없음" : price;
       log(name + "(" + price + ")");
     }
   });
@@ -56,20 +56,20 @@ function findLowestPrice() {
 
   drinks.forEach(function (element, index, array) {
     drinkPrice = array[index].price;
-    lowestPrice = (drinkPrice < lowestPrice) ? lowestPrice = drinkPrice : lowestPrice = lowestPrice;
+    lowestPrice = (drinkPrice < lowestPrice) ? drinkPrice : lowestPrice;
   });
 }
 
 function selectItem(drinkName) {
 
-  var drinkName;
+  var name;
   var price;
   var num;
 
   for (var index in drinks) {
-    drinkName = drinks[index].name;
+    name = drinks[index].name;
 
-    if (drinkName === drinkName) {
+    if (name === drinkName) {
       price = drinks[index].price;
       num = drinks[index].num;
       break;
