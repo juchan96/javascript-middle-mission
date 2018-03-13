@@ -13,74 +13,91 @@ var currentMoney = 0;
 
 function insertCoin(money) {
   currentMoney += money;
-  console.log(" " + money + " 원이 투입되었습니다.");
-  console.log(" 사용 가능한 금액 : " + currentMoney);
-  newLine();
+  log(" " + money + " 원이 투입되었습니다.");
+  log(" 사용 가능한 금액 : " + currentMoney);
   printAvailableDrinkList();
 }
 
 function printAvailableDrinkList() {
 
-  console.log("사용 가능한 음료수 목록 => ");
+  var name;
+  var price;
+  var num;
 
-  if (currentMoney < 500) {
-    console.log("없음");
+  var lowestPrice = findLowestPrice();
+
+  log("사용 가능한 음료수 목록 => ");
+
+  if (currentMoney < lowestPrice) {
+    log("없음");
     return;
   }
 
-  for (var index in drinks) {
-    var _name = drinks[index].name;
-    var _price = drinks[index].price;
-    var _num = drinks[index].num;
+  drinks.forEach(function (element, index, array) {
+    name = array[index].name;
+    price = array[index].price;
+    num = array[index].price;
 
-    if (!_num) {
-      _price = 0;
+    if (!num) {
+      price = 0;
     }
 
-    if (_price <= currentMoney) {
-      var _price = (!_price) ? _price = "재고없음" : _price;
-      console.log(_name + "(" + _price + ")");
+    if (price <= currentMoney) {
+      price = (!price) ? price = "재고없음" : price;
+      log(name + "(" + price + ")");
     }
-  }
-  newLine();
+  });
+}
+
+function findLowestPrice() {
+  var initTempData = 10000;
+  var lowestPrice = initTempData;
+  var drinkPrice;
+
+  drinks.forEach(function (element, index, array) {
+    drinkPrice = array[index].price;
+    lowestPrice = (drinkPrice < lowestPrice) ? lowestPrice = drinkPrice : lowestPrice = lowestPrice;
+  });
 }
 
 function selectItem(drinkName) {
-  for (var index in drinks) {
-    var _drinkName = drinks[index].name;
 
-    if (drinkName === _drinkName) {
-      var _price = drinks[index].price;
-      var _num = drinks[index].num;
+  var drinkName;
+  var price;
+  var num;
+
+  for (var index in drinks) {
+    drinkName = drinks[index].name;
+
+    if (drinkName === drinkName) {
+      price = drinks[index].price;
+      num = drinks[index].num;
       break;
     }
   }
 
-  if (!_num) {
-    console.log(" 해당 음료는 재고가 없습니다.");
-    newLine();
+  if (!num) {
+    log(" 해당 음료는 재고가 없습니다.");
     return;
   }
 
-  currentMoney -= _price;
+  currentMoney -= price;
 
-  console.log(" " + drinkName + "(이/가) 나왔습니다.");
-  console.log(" 현재 잔돈 : " + currentMoney);
-  newLine();
+  log(" " + drinkName + "(이/가) 나왔습니다.");
+  log(" 현재 잔돈 : " + currentMoney);
   printAvailableDrinkList();
 }
 
 function returnMoney() {
-  console.log(" 잔돈 " + currentMoney + " 원이 반환됐습니다.");
-  newLine();
+  log(" 잔돈 " + currentMoney + " 원이 반환됐습니다.");
 }
 
-function newLine() {
-  console.log("");
+function log(data) {
+  console.log(data);
 }
 
 insertCoin(1000);
-selectItem("물");
 selectItem("파워에이드");
+selectItem("물");
 insertCoin(1500);
 returnMoney();
