@@ -59,6 +59,7 @@ class VendingMachine {
     console.log(`현재 금액은 ${this.money}`);
   }
   insertCoin(money) {
+    if (typeof money !== "number") throw new Error("돈을 넣어주세요");
     this.money = money;
   }
   displayDrink() {
@@ -66,12 +67,42 @@ class VendingMachine {
       return drink.price <= this.money && drink.stock > 0;
     });
     console.log("마실 음료를 골라주세요");
-    console.log(displays);
+    displays.map(drink => {
+      console.log(drink.name, drink.price);
+    });
+  }
+  selectDrink(name) {
+    const selectOne = this.drinks.filter(drink => {
+      return drink.name === name;
+    })[0];
+    const selectPrice = selectOne.price;
+    if (selectOne.stock === 0) {
+      console.log("현재 재고가 없습니다");
+      return;
+    }
+    if (selectPrice > this.money) {
+      console.log("잔액이 부족헙니다");
+      return;
+    }
+    console.log(`${selectOne.name}가 나옵니다`);
+    this.money -= selectPrice;
+    this.printMoney();
+    return this.returnMoney();
+  }
+  returnMoney() {
+    console.log(`${this.money} 원을 반환 합니다 또르르`);
+    this.money = 0;
   }
 }
+// 선택하기 전에
+
 const vendingMachine = new VendingMachine(0);
 
 vendingMachine.insertCoin(800);
 vendingMachine.printMoney();
 vendingMachine.displayDrink();
+vendingMachine.selectDrink("mieroFiber");
+vendingMachine.selectDrink("powerAde");
+vendingMachine.selectDrink("water");
+vendingMachine.insertCoin("water");
 //2.1
