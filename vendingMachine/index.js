@@ -46,7 +46,7 @@ const drinks = [
   {
     name: "powerAde",
     price: 1000,
-    stock: 50,
+    stock: 0,
   },
 ];
 
@@ -63,7 +63,7 @@ class VendingMachine {
   }
   displayDrink() {
     const displays = this.drinks.filter(drink => {
-      return drink.price >= this.money;
+      return drink.price <= this.money && drink.stock > 0;
     });
     console.log("마실 음료를 골라주세요");
     console.log(displays);
@@ -71,7 +71,7 @@ class VendingMachine {
 }
 const vendingMachine = new VendingMachine(0);
 
-vendingMachine.insertCoin(1000);
+vendingMachine.insertCoin(800);
 vendingMachine.printMoney();
 vendingMachine.displayDrink();
 //2.1
