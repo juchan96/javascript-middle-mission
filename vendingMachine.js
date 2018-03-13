@@ -1,11 +1,21 @@
+// var drinks = [
+//   { name: "물", price: 500, num: 10 },
+//   { name: "콜라", price: 1000, num: 10 },
+//   { name: "사이다", price: 1000, num: 10 },
+//   { name: "포도쥬스", price: 1200, num: 10 },
+//   { name: "딸기우유", price: 1200, num: 10 },
+//   { name: "미에로화이바", price: 1500, num: 10 },
+//   { name: "파워에이드", price: 1500, num: 0 }
+// ];
+
 var drinks = [
-  { name: "물", price: 500, num: 10 },
-  { name: "콜라", price: 1000, num: 10 },
-  { name: "사이다", price: 1000, num: 10 },
-  { name: "포도쥬스", price: 1200, num: 10 },
+  { name: "파워에이드", price: 1500, num: 0 },
   { name: "딸기우유", price: 1200, num: 10 },
+  { name: "콜라", price: 1000, num: 10 },
+  { name: "포도쥬스", price: 1200, num: 10 },
   { name: "미에로화이바", price: 1500, num: 10 },
-  { name: "파워에이드", price: 1500, num: 0 }
+  { name: "물", price: 500, num: 10 },
+  { name: "사이다", price: 1000, num: 10 }
 ];
 
 var currentMoney = 0;
@@ -54,10 +64,17 @@ function findLowestPrice() {
   var lowestPrice = initTempData;
   var drinkPrice;
 
+  log("함수 시작");
+
   drinks.forEach(function (element, index, array) {
     drinkPrice = array[index].price;
     lowestPrice = (drinkPrice < lowestPrice) ? drinkPrice : lowestPrice;
+    log("음료가격 : " + drinkPrice + " 가장낮은 음료가격 : " + lowestPrice);
   });
+
+  log("함수 끝");
+
+  return lowestPrice;
 }
 
 function selectItem(drinkName) {
