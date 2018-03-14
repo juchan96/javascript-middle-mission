@@ -113,9 +113,9 @@
 
       - buyLottos()
 
-        - [ ] 0 을 삭제해야함
-
-        - createLottosNumber()
+        - [x] 0 을 삭제해야함
+          - 1000 으로 나누면 됨 (천단위니까)
+        - createLottosNumbers()
 
       - setLuckyNumber([1, 2, 3, 4, 5, 6]);
 

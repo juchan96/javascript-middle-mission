@@ -73,8 +73,6 @@ function findLowestPrice() {
   });
 
   log("함수 끝");
-
-  return lowestPrice;
 }
 
 function selectItem(drinkName) {
