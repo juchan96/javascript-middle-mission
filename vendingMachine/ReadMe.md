@@ -28,3 +28,10 @@ https://github.com/code-squad/javascript-middle-mission
     2.2.2 음료수 선택 재고가 없는 경우 -> 선택할 수 없다는 메시지 출력
 3.  사용자가 돈 반환을 누를 경우 입력 받은 돈 반환
 4.  음료수 값 만큼 뺀 잔 돈 주기
+
+## 공부 목표
+
+## 클래스로 구현 + 함수형으로도 구현해보기
+
+1.  클래스 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+2.
