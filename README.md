@@ -116,9 +116,28 @@
         - [x] 0 을 삭제해야함
           - 1000 으로 나누면 됨 (천단위니까)
         - createLottosNumbers()
-
       - setLuckyNumber([1, 2, 3, 4, 5, 6]);
-
-        - printWinningStatistics
+        - findWinNumber(num)
+        - printWinningStatistics(array) : 
+          - matchWinNumber
+      - calRateOfReturnToInvestment : 수익률 계산 기능
+      - log
 
 - ### 학습키워드
+
+  - 비트연산자 보수이해하기
+    - 10을 2진표현으로 변경하려면 어떤 순서로 계산해야 하는지 설명하기.
+  - hoisting 에 대해서 설명하기
+  - !! 은 무엇을 의미하는가? 어떻게 활용할 수 있을까?
+  - 3개이상의 switch 문을 어떻게 3항연산자로 대체할 수 있을까? 코드로 예시를 들라.
+  - ==와 ===의 차이는 정확히 무엇인가?
+  - const value = a || b; 코드의 의미는 무엇인가?
+  - eval 은 무엇인가?
+  - 변수값을 출력할때 null, undefined, is not defined으로 출력되는 차이점은 무엇인가?
+  - Function.prototype.bind 에 대해서 설명하기
+  - this가 가리키는 건 언제 결정되는가?
+  - call과 apply의 차이점은?
+  - add(10)(2) //12 가 되도록 구현해보기
+  - 함수의 인자갯수와 파라미터가 일치하지 않으면 어떤일이 생기는가 설명하기
+  - 함수의 반환값이 없을때 어떻게 되는가?
+  - 익명함수는 무엇인가?
