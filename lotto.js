@@ -45,6 +45,11 @@ function createLottosNumbers() {
     }
   }
 
+  // 나중에 직접 sort를 구현해볼 것
+  lotto.sort(function(a, b) {
+    return a > b;
+  });
+
   // 배열에 담긴 6개의 숫자 리턴
   return lotto;
 }
