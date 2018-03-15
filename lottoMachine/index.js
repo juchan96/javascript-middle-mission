@@ -64,6 +64,24 @@ class LottoMachine {
     }
     return array.slice(0, 6).sort((a, b) => a - b);
   }
+  shuffleLottosOtherway() {
+    const numberList = [...Array(45).keys()].map(x => x + 1);
+    let randomIdx;
+    const lotto = [];
+    const randomIdxList = [];
+    let isUnique = randomIdx => randomIdxList.every(item => item !== randomIdx);
+    while (randomIdxList.length < 6) {
+      randomIdx = Math.floor(Math.random() * 44);
+      if (isUnique(randomIdx)) {
+        randomIdxList.push(randomIdx);
+      }
+    }
+    randomIdxList.sort((a, b) => a - b).map(item => {
+      lotto.push(numberList[item]);
+    });
+    console.log(lotto, "lotto");
+    return lotto;
+  }
   makeLottos(counts) {
     const lottos = [];
     for (let i = 0; i < counts; i++) {
@@ -75,21 +93,24 @@ class LottoMachine {
   printLottos(lottos) {
     console.log(`로또 ${lottos.length} 개를 발행했습니다`);
     console.log(lottos);
-    this.getResult(lottos);
+    this.findSameNumbers(lottos);
   }
   countSameNumbers(lotto) {
     return lotto.concat(this.luckyNumber).filter((item, i, ar) => {
       return ar.indexOf(item) !== i;
     });
   }
-  getResult(lottos) {
-    const sameNumbers = lottos.map(lotto => {
-      return this.countSameNumbers(lotto);
-    });
-    sameNumbers.map(item => {
+  getResult(sameNumbers) {
+    const results = sameNumbers.map(item => {
       let matchNumbers = item.length;
       return this.resultReport(matchNumbers);
     });
+  }
+  findSameNumbers(lottos) {
+    const sameNumbers = lottos.map(lotto => {
+      return this.countSameNumbers(lotto);
+    });
+    this.getResult(sameNumbers);
     this.printRate();
   }
   resultReport(matchNumbers) {
@@ -103,5 +124,6 @@ class LottoMachine {
 }
 
 const lottoMachine = new LottoMachine();
-lottoMachine.setLuckyNumber(1, 2, 3, 4, 5, 6);
-lottoMachine.insertMoney(2500);
+// lottoMachine.setLuckyNumber(1, 1, 1, 4, 5, 6);
+// lottoMachine.insertMoney(2500);
+lottoMachine.shuffleLottosOtherway();
