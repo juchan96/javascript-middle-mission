@@ -32,32 +32,36 @@ class LottoMachine {
     this.winningMoney = 0;
     this.winningPrice = winningPrice;
     this.spendMoney = 0;
+    this.publishLottos = [];
+    this.sameNumbers = [];
   }
   setLuckyNumber() {
     if (arguments.length === 0) {
-      this.luckyNumber = this.suffleLottos();
+      return (this.luckyNumber = this.shuffleLottos(this.numberList));
     }
-    this.luckyNumber = [...arguments];
+    return (this.luckyNumber = [...arguments]);
   }
   insertMoney(money) {
     if (typeof money !== "number") throw new Error("돈을 넣어주세요");
     if (this.luckyNumber.length === 0) throw new Error("Lucky Number 설정해주세요");
     this.money = money;
-    console.log(`${this.money}원이 입력되었습니다`);
-    this.buyLottos();
   }
-  buyLottos() {
-    let counts = parseInt(this.money / 1000);
-    this.spendMoney += counts * 1000;
-    this.money -= this.spendMoney;
-    this.returnMoney();
-    this.makeLottos(counts);
+  printMoney() {
+    console.log(`현재 있는 돈은 ${this.money} 입니다`);
+  }
+  buyLottos(howMany) {
+    if (this.money < howMany * 1000) {
+      throw newError("받은 돈으로는 그만큼 살 수 없어요 다시 입력해주세요");
+    }
+    this.money -= howMany * 1000;
+    this.spendMoney += howMany * 1000;
+    return this.getLottos(howMany);
   }
   returnMoney() {
     console.log(`잔액을 반환합니다. ${this.money}`);
     this.money = 0;
   }
-  suffleLottos(array) {
+  shuffleLottos(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -79,23 +83,21 @@ class LottoMachine {
     randomIdxList.sort((a, b) => a - b).map(item => {
       lotto.push(numberList[item]);
     });
-    console.log(lotto, "lotto");
     return lotto;
   }
-  makeLottos(counts) {
+  getLottos(counts) {
     const lottos = [];
     for (let i = 0; i < counts; i++) {
-      lottos.push(this.suffleLottos(this.numberList));
+      lottos.push(this.shuffleLottosOtherway(this.numberList));
     }
-    this.printLottos(lottos);
-    return lottos;
+    return (this.publishLottos = lottos);
   }
-  printLottos(lottos) {
-    console.log(`로또 ${lottos.length} 개를 발행했습니다`);
-    console.log(lottos);
-    this.findSameNumbers(lottos);
+  printLottos() {
+    return this.publishLottos.map((item, index) => {
+      console.log(`${index + 1} 번 로또를 발행 합니다 ${item}`);
+    });
   }
-  countSameNumbers(lotto) {
+  checkSameNumbers(lotto) {
     return lotto.concat(this.luckyNumber).filter((item, i, ar) => {
       return ar.indexOf(item) !== i;
     });
@@ -106,24 +108,33 @@ class LottoMachine {
       return this.resultReport(matchNumbers);
     });
   }
-  findSameNumbers(lottos) {
-    const sameNumbers = lottos.map(lotto => {
-      return this.countSameNumbers(lotto);
+  checkSameNumberPublished() {
+    const sameNumbers = this.publishLottos.map(lotto => {
+      return this.checkSameNumbers(lotto);
     });
-    this.getResult(sameNumbers);
-    this.printRate();
+    return (this.sameNumbers = sameNumbers);
   }
-  resultReport(matchNumbers) {
-    this.winningMoney += winningPrice[matchNumbers];
-    return console.log(`일치 한 갯수 ${matchNumbers} 상금은 ${winningPrice[matchNumbers]}원 입니다.`);
+  getResultReport() {
+    return this.sameNumbers.map(item => {
+      this.winningMoney += winningPrice[item.length];
+      console.log(`일치 한 갯수 ${item.length} 상금은 ${winningPrice[item.length]}원 입니다.`);
+    });
   }
   printRate() {
-    let rate = (this.winningMoney / this.spendMoney).toFixed(2) * 100;
+    let rate = (this.winningMoney / this.spendMoney).toFixed(4) * 100;
     console.log(`나의 수익률은  ${rate} % 입니다`);
   }
 }
 
 const lottoMachine = new LottoMachine();
-// lottoMachine.setLuckyNumber(1, 1, 1, 4, 5, 6);
-// lottoMachine.insertMoney(2500);
-lottoMachine.shuffleLottosOtherway();
+lottoMachine.setLuckyNumber();
+lottoMachine.setLuckyNumber(1, 2, 3, 4, 5, 6);
+lottoMachine.insertMoney(3000);
+lottoMachine.printMoney();
+// lottoMachine.buyLottos(4); 돈을 넘는 장수 입력해서 에러!
+lottoMachine.buyLottos(3);
+lottoMachine.printLottos();
+lottoMachine.checkSameNumberPublished();
+lottoMachine.getResultReport();
+lottoMachine.printRate();
+lottoMachine.returnMoney();

@@ -67,7 +67,7 @@ class VendingMachine {
       return drink.price <= this.money && drink.stock > 0;
     });
     console.log("마실 음료를 골라주세요");
-    displays.map(drink => {
+    return displays.map(drink => {
       console.log(drink.name, drink.price);
     });
   }
@@ -104,5 +104,5 @@ vendingMachine.displayDrink();
 vendingMachine.selectDrink("mieroFiber");
 vendingMachine.selectDrink("powerAde");
 vendingMachine.selectDrink("water");
-vendingMachine.insertCoin("water");
+// vendingMachine.insertCoin("water");
 //2.1
