@@ -22,7 +22,7 @@ function buyLottos(money) {
   }
 
   winCountCheckArray = new Array(0, 0, 0, 0, 0, 0, 0,
-                                0, 0, 0, 0, 0, 0, 0,);
+                                0, 0, 0, 0, 0, 0, 0);
 }
 
 function createLottosNumbers() {
@@ -90,7 +90,7 @@ function printWinningStatistics(array) {
   // switch-case 문을 이용해서
   // 아까 setLuckyNumber 에서 
 
-  var yield;
+  var yieldData;
   
   var matchedNumbers = matchWinNubmer(array);
 
@@ -103,13 +103,13 @@ function printWinningStatistics(array) {
   log("5개 일치 (1500000원) - " + matchedNumbers.five);
   log("6개 일치 (2000000000원) - " + matchedNumbers.six);
 
-  yield = calRateOfReturnToInvestment(matchedNumbers.three, matchedNumbers.four,
+  yieldData = calRateOfReturnToInvestment(matchedNumbers.three, matchedNumbers.four,
                                       matchedNumbers.five, matchedNumbers.six);
   
-  log(yield);
+  log(yieldData);
   
   // 수익률을 설계할 때 빠트림
-  log("나의 수익률은 " + yield + "% 입니다.");
+  log("나의 수익률은 " + yieldData + "% 입니다.");
   
 }
 
