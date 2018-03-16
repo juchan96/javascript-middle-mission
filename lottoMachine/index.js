@@ -23,21 +23,17 @@ const winningPrice = {
   5: 1500000,
   6: 200000000,
 };
+const accuracyNumber = 4;
 
 class LottoMachine {
   constructor() {
     this.money = 0;
-    this.numberList = [...Array(45).keys()].map(x => x + 1);
     this.luckyNumber = [];
-    this.winningMoney = 0;
-    this.winningPrice = winningPrice;
     this.spendMoney = 0;
-    this.publishLottos = [];
-    this.sameNumbers = [];
   }
   setLuckyNumber() {
     if (arguments.length === 0) {
-      return (this.luckyNumber = this.shuffleLottos(this.numberList));
+      return (this.luckyNumber = this.shuffleLottos([...Array(45).keys()].map(x => x + 1)));
     }
     return (this.luckyNumber = [...arguments]);
   }
@@ -70,58 +66,57 @@ class LottoMachine {
   }
   shuffleLottosOtherway() {
     const numberList = [...Array(45).keys()].map(x => x + 1);
-    let randomIdx;
     const lotto = [];
     const randomIdxList = [];
     let isUnique = randomIdx => randomIdxList.every(item => item !== randomIdx);
     while (randomIdxList.length < 6) {
-      randomIdx = Math.floor(Math.random() * 44);
+      let randomIdx = Math.floor(Math.random() * 44);
       if (isUnique(randomIdx)) {
         randomIdxList.push(randomIdx);
       }
     }
-    randomIdxList.sort((a, b) => a - b).map(item => {
+    // randomIdxList가 idx이므로 이 경우에는 이렇게 적용해도 될 것 같다.
+    // const lotto = randomIdxList.sort((a, b) => a - b).map(x => x+1)
+    randomIdxList.sort((a, b) => a - b).forEach(item => {
       lotto.push(numberList[item]);
     });
     return lotto;
   }
   getLottos(counts) {
-    const lottos = [];
+    const publishLottos = [];
     for (let i = 0; i < counts; i++) {
-      lottos.push(this.shuffleLottosOtherway(this.numberList));
+      publishLottos.push(this.shuffleLottosOtherway());
     }
-    return (this.publishLottos = lottos);
+    return this.printLottos(publishLottos);
   }
-  printLottos() {
-    return this.publishLottos.map((item, index) => {
+  printLottos(publishLottos) {
+    publishLottos.forEach((item, index) => {
       console.log(`${index + 1} 번 로또를 발행 합니다 ${item}`);
     });
+    return this.checkSameNumberPublished(publishLottos);
   }
-  checkSameNumbers(lotto) {
-    return lotto.concat(this.luckyNumber).filter((item, i, ar) => {
+  checkSameNumbers(lotto, luckyNumber) {
+    return lotto.concat(luckyNumber).filter((item, i, ar) => {
       return ar.indexOf(item) !== i;
     });
   }
-  getResult(sameNumbers) {
-    const results = sameNumbers.map(item => {
-      let matchNumbers = item.length;
-      return this.resultReport(matchNumbers);
+  checkSameNumberPublished(publishLottos) {
+    const sameNumbers = publishLottos.map(lotto => {
+      return this.checkSameNumbers(lotto, this.luckyNumber);
     });
+    return this.getResultReport(sameNumbers);
   }
-  checkSameNumberPublished() {
-    const sameNumbers = this.publishLottos.map(lotto => {
-      return this.checkSameNumbers(lotto);
-    });
-    return (this.sameNumbers = sameNumbers);
-  }
-  getResultReport() {
-    return this.sameNumbers.map(item => {
-      this.winningMoney += winningPrice[item.length];
+  getResultReport(sameNumbers) {
+    let winningMoney = 0;
+    sameNumbers.map(item => {
+      winningMoney += winningPrice[item.length];
       console.log(`일치 한 갯수 ${item.length} 상금은 ${winningPrice[item.length]}원 입니다.`);
     });
+    this.money += winningMoney;
+    return this.printRate(winningMoney, accuracyNumber);
   }
-  printRate() {
-    let rate = (this.winningMoney / this.spendMoney).toFixed(4) * 100;
+  printRate(winningMoney, accuracy = accuracyNumber) {
+    let rate = (winningMoney / this.spendMoney).toFixed(accuracy) * 100;
     console.log(`나의 수익률은  ${rate} % 입니다`);
   }
 }
@@ -129,12 +124,8 @@ class LottoMachine {
 const lottoMachine = new LottoMachine();
 lottoMachine.setLuckyNumber();
 lottoMachine.setLuckyNumber(1, 2, 3, 4, 5, 6);
-lottoMachine.insertMoney(3000);
+lottoMachine.insertMoney(10000);
 lottoMachine.printMoney();
 // lottoMachine.buyLottos(4); 돈을 넘는 장수 입력해서 에러!
-lottoMachine.buyLottos(3);
-lottoMachine.printLottos();
-lottoMachine.checkSameNumberPublished();
-lottoMachine.getResultReport();
-lottoMachine.printRate();
+lottoMachine.buyLottos(10);
 lottoMachine.returnMoney();
