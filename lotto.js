@@ -6,6 +6,7 @@
 */
 var lottos = [];
 var winCountCheckArray;
+var prizeMoney = {three: 5000, four: 50000, five: 1500000, six: 2000000000};
 
 function buyLottos(money) {
   var lottoNum = money / 1000;
@@ -21,8 +22,17 @@ function buyLottos(money) {
     log(lotto);
   }
 
-  winCountCheckArray = new Array(0, 0, 0, 0, 0, 0, 0,
-                                0, 0, 0, 0, 0, 0, 0);
+  // winCountCheckArray = new Array(0, 0, 0, 0, 0, 0, 0,
+  //                               0, 0, 0, 0, 0, 0, 0);
+
+  // 배열 초기화 첫번째 방법
+  winCountCheckArray = Array.apply(null, new Array(14)).map(Number.prototype.valueOf, 0);
+
+  // 배열 초기화 두번째 방법
+  // winCountCheckArray = new Array(14);
+  // for (var i=0; i<winCountCheckArray.length; i++) {
+  //     winCountCheckArray[i] = 0;
+  // }
 }
 
 function createLottosNumbers() {
@@ -40,8 +50,6 @@ function createLottosNumbers() {
     // 일단 indexOf를 사용
     if (lotto.indexOf(randNum) === -1) {
       lotto.push(randNum);
-    } else {
-      continue;
     }
   }
 
@@ -67,7 +75,7 @@ function setLuckyNumber(array) {
   printWinningStatistics(winCountCheckArray);
 }
 
-function findWinNumber(num) {
+function increaseWinNumberCount(num) {
 
   // 인자로 받아온 숫자를
   // 다른 카운트 배열을 만들어놓고
@@ -103,8 +111,7 @@ function printWinningStatistics(array) {
   log("5개 일치 (1500000원) - " + matchedNumbers.five);
   log("6개 일치 (2000000000원) - " + matchedNumbers.six);
 
-  yieldData = calRateOfReturnToInvestment(matchedNumbers.three, matchedNumbers.four,
-                                      matchedNumbers.five, matchedNumbers.six);
+  yieldData = calRateOfReturnToInvestment(matchedNumbers);
   
   log(yieldData);
   
@@ -113,7 +120,7 @@ function printWinningStatistics(array) {
   
 }
 
-function matchWinNubmer(array) {
+function checkWinNubmer(array) {
 
   var matchedNumber = { three: 0, four: 0, five: 0, six: 0};
 
@@ -139,12 +146,14 @@ function matchWinNubmer(array) {
   return matchedNumber;
 }
 
-function calRateOfReturnToInvestment(three, four, five, six) {
+function calRateOfReturnToInvestment(matchedNumbers) {
   var money = lottos.length * 1000;
-  var totalPrizeMoney = (three * 5000) + (four * 50000) +
-                        (five * 1500000) + (six * 2000000000);
+  var totalPrizeMoney = (matchedNumbers.three * prizeMoney.three) +
+                        (matchedNumbers.four * prizeMoney.four) +
+                        (matchedNumbers.five * prizeMoney.five) +
+                        (matchedNumbers.six * prizeMoney.six);
 
-  return ((totalPrizeMoney / money) * 100).toFixed(0); 
+  return (((totalPrizeMoney - money) / money) * 100).toFixed(0);
 }
 
 function log(data) {

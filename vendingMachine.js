@@ -8,33 +8,22 @@
 //   { name: "파워에이드", price: 1500, num: 0 }
 // ];
 
-var drinks = [
-  { name: "파워에이드", price: 1500, num: 0 },
-  { name: "딸기우유", price: 1200, num: 10 },
-  { name: "콜라", price: 1000, num: 10 },
-  { name: "포도쥬스", price: 1200, num: 10 },
-  { name: "미에로화이바", price: 1500, num: 10 },
-  { name: "물", price: 500, num: 10 },
-  { name: "사이다", price: 1000, num: 10 }
-];
-
 var currentMoney = 0;
 
-
-function insertCoin(money) {
+function insertCoin(drinks, money) {
   currentMoney += money;
   log(" " + money + " 원이 투입되었습니다.");
   log(" 사용 가능한 금액 : " + currentMoney);
-  printAvailableDrinkList();
+  printAvailableDrinkList(drinks);
 }
 
-function printAvailableDrinkList() {
+function printAvailableDrinkList(drinks) {
 
   var name;
   var price;
   var num;
 
-  var lowestPrice = findLowestPrice();
+  var lowestPrice = findLowestPrice(drinks);
 
   log("사용 가능한 음료수 목록 => ");
 
@@ -43,43 +32,50 @@ function printAvailableDrinkList() {
     return;
   }
 
-  drinks.forEach(function (element, index, array) {
-    name = array[index].name;
-    price = array[index].price;
-    num = array[index].price;
 
-    if (!num) {
-      price = 0;
-    }
 
-    if (price <= currentMoney) {
-      price = (!price) ? "재고없음" : price;
-      log(name + "(" + price + ")");
-    }
-  });
+  for (var i=0; i<Object.keys(drinks).length; i++) {
+      name = drinks[i].name;
+      price = drinks[i].price;
+      num = drinks[i].price;
+
+      if (!num) {
+          price = 0;
+      }
+
+      if (price <= currentMoney) {
+          price = (!price) ? "재고없음" : price;
+          log(name + "(" + price + ")");
+      }
+  }
+
 }
 
-function findLowestPrice() {
+function findLowestPrice(drinks) {
   var initTempData = 10000;
   var lowestPrice = initTempData;
   var drinkPrice;
 
   log("함수 시작");
 
-  drinks.forEach(function (element, index, array) {
-    drinkPrice = array[index].price;
-    lowestPrice = (drinkPrice < lowestPrice) ? drinkPrice : lowestPrice;
-    log("음료가격 : " + drinkPrice + " 가장낮은 음료가격 : " + lowestPrice);
-  });
+  console.log(drinks);
+
+  for (var i=0; i<Object.keys(drinks).length; i++) {
+      drinkPrice = drinks[i].price;
+      lowestPrice = (drinkPrice < lowestPrice) ? drinkPrice : lowestPrice;
+      log("음료가격 : " + drinkPrice + " 가장낮은 음료가격 : " + lowestPrice);
+  }
 
   log("함수 끝");
+
+  return lowestPrice;
 }
 
-function selectItem(drinkName) {
+function selectItem(drinks, drinkName) {
 
-  var name;
-  var price;
-  var num;
+  var name = "";
+  var price = 0;
+  var num = 0;
 
   for (var index in drinks) {
     name = drinks[index].name;
@@ -100,7 +96,7 @@ function selectItem(drinkName) {
 
   log(" " + drinkName + "(이/가) 나왔습니다.");
   log(" 현재 잔돈 : " + currentMoney);
-  printAvailableDrinkList();
+  printAvailableDrinkList(drinks);
 }
 
 function returnMoney() {
@@ -111,8 +107,22 @@ function log(data) {
   console.log(data);
 }
 
-insertCoin(1000);
-selectItem("파워에이드");
-selectItem("물");
-insertCoin(1500);
-returnMoney();
+var run = function() {
+    var drinks = [
+        { name: "파워에이드", price: 1500, num: 0 },
+        { name: "딸기우유", price: 1200, num: 10 },
+        { name: "콜라", price: 1000, num: 10 },
+        { name: "포도쥬스", price: 1200, num: 10 },
+        { name: "미에로화이바", price: 1500, num: 10 },
+        { name: "물", price: 500, num: 10 },
+        { name: "사이다", price: 1000, num: 10 }
+    ];
+
+    insertCoin(drinks, 1000);
+    selectItem(drinks, "파워에이드");
+    selectItem(drinks, "물");
+    insertCoin(drinks, 1500);
+    returnMoney();
+};
+
+run();
