@@ -1,22 +1,28 @@
 /*
-    이렇게 동작하는 make 함수 만들어보기
-    make("circle")(10);
-    make("rect")(10, 10);
+    이렇게 동작하는 make 함수 만들기
+    function rect(a,b) {
+      return a*b;
+    }
+    function circle(a) {
+      return Math.PI * Math.pow(a,2);
+    }
+
+    make(rect)(10,20);
+    make(circle)(10);
 */
 
-function make() {
-    let mode = arguments[0];
+function make () {
+    var mode = arguments[0];
 
-    function inner () {
-        switch (mode) {
-            case "circle":
-                return Math.PI * Math.pow(arguments[0], 2);
-            case "rect":
-                return arguments[0] * arguments[1];
-        }
+    function rect(a, b) {
+        return a*b;
     }
-    return inner;
+    function circle(a) {
+        return Math.PI * Math.pow(a,2);
+    }
+
+    return (mode === "rect") ? rect : circle;
 }
 
 console.log(make("circle")(10));
-console.log(make("rect")(10, 10));
+console.log(make("rect")(10, 20));
