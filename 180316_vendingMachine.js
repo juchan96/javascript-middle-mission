@@ -31,15 +31,15 @@ function returnMoney(){
 
 function printAvailableDrinks(){
   let result = [];
-  for(drinkName in drinks){
-    if(drinks[drinkName]['cost'] <= vendingMachine['money']){
-        if(drinks[drinkName]['number'] === 0){
-          result.push(drinkName + '(재고없음)');
-        }else{
-          result.push(drinkName + '(' + drinks[drinkName]['cost'] + ')');
-        }
+  Object.keys(drinks).forEach(function(key){
+    if(drinks[key]["cost"] <= vendingMachine['money']){
+      if(drinks[key]['number'] === 0){
+        result.push(key + '(재고없음)');
+      }else{
+        result.push(key + '(' + drinks[key]['cost'] + ')');
+      }
     }
-  }
+  });
   console.log('사용가능한 음료수 목록 => ' + result.join());
 }
 
