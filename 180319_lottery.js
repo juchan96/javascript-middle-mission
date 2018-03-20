@@ -23,8 +23,15 @@ function buyLottos(money){
 function createLotto(){
   let result = [];
   while(result.length !== 6){
+    let found = false;
     let randomNumber = Math.ceil(Math.random() * 45);
-    if(!(randomNumber in result)) result.push(randomNumber);
+    for(let e of result){
+      if(randomNumber === e){
+        found = true;
+        break;
+      }
+    }
+    if(!found) result.push(randomNumber);
   }
   return result;
 }
