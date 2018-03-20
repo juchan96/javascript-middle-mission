@@ -39,7 +39,7 @@ function itemList(money){
 	var itemArrStr;
 
 	itemData.forEach(function (v){
-		if( money >= v.price){
+		if( money >= v.price || v.price === "재고없음"){
 			itemArr.push(v.name+"("+v.price+")");
 		}
 	});
