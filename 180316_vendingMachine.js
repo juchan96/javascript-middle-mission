@@ -14,7 +14,9 @@ function insertCoin(money){
 }
   
 function selectItem(drinkName){
-  if(drinks[drinkName]['number'] === 0){
+  if(drinks[drinkName]['cost'] > vendingMachine['money']){
+    console.log('금액이 부족합니다');
+  }else if(drinks[drinkName]['number'] === 0){
     console.log('선택하신 음료의 재고가 없습니다');
   }else{
     drinks[drinkName]['number'] -= 1;
@@ -43,7 +45,7 @@ function printAvailableDrinks(){
   console.log('사용가능한 음료수 목록 => ' + result.join());
 }
 
-insertCoin(3000);
+insertCoin(1000);
 selectItem("커피");
 insertCoin(1000);
 selectItem("콜라");
