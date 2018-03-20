@@ -1,36 +1,42 @@
 // 로또 생성기
 
-// 1. 원하는 개수만큼 돈 넣기
-// 2. 한 개에 6개의 번호가 적혀진 로또를 구입한 개수만큼 발행하고 출력
+// 1. 사고싶은 만큼 돈 넣기
+// 2. 한 개에 6개의 번호가 적혀진 로또를 구입한만큼 발행하고 출력
 // 3. 6개의 수를 임의로 입력해서 내가 구입한 로또들과 비교
-// 4. 비교해서 일치한 개수를 3개부터 6개까지 출력하고 수익률도 계산해서 출력
+// 4. 비교해서 일치한 개수를 3개부터 6개까지 각각 출력하고 수익률도 계산해서 출력
 
-let obj = {};
+// 구매한 로또를 배열로 받아주는 객체
+let myLottos = [];
 
+// 맞춘 개수별 담청금액 객체
 const PRIZE_MONEY = {
   THREE: 5000,
   FOUR: 50000,
   FIVE: 1500000,
   SIX: 2000000000
 };
-let myTotalPrize = 0;
-let myInvest = 0;
 
+let myTotalPrize = 0; // 총 수익
+let myInvest = 0; //총 투자액
+
+// 로또를 넣은 돈만큼 구매
 function buyLottos(money) {
   const PRICE = 1000;
   let number = Math.floor(money / PRICE);
-  myInvest = number * 1000;
+  myInvest += number * 1000;
   let lottoArray = [];
   for (var i = 0; i < number; i++) {
     lottoArray.push(publishNumber());
   }
   console.log(`로또 ${number}개를 발행했습니다`);
-  obj.myLottos = lottoArray;
+  myLottos = lottoArray;
   for (var i = 0; i < number; i++) {
     console.log(lottoArray[i]);
   }
+  console.log();
 }
 
+// 로또 자동 생성기
 function publishNumber() {
   let lottoArray = [];
   for (let i = 0; i < 6; i++) {
@@ -39,14 +45,17 @@ function publishNumber() {
   return lottoArray;
 }
 
+// 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
 let setLuckyNumber = array => {
+  // 맞춘 횟수를 저장할 변수
   let foundThree = 0,
     foundFour = 0,
     foundFive = 0,
     foundSix = 0;
-  let len = obj.myLottos.length;
+  let len = myLottos.length;
+  // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
   for (var i = 0; i < len; i++) {
-    let found = obj.myLottos[i].filter(function (v) {
+    let found = myLottos[i].filter(function (v) {
       return array.indexOf(v) !== -1;
     })
     switch (found.length) {
@@ -64,18 +73,20 @@ let setLuckyNumber = array => {
         break;
     }
   }
-  let total = foundThree * PRIZE_MONEY.THREE + foundFour * PRIZE_MONEY.FOUR +
+  // 나의 총 당첨금액을 저장
+  myTotalPrize += foundThree * PRIZE_MONEY.THREE + foundFour * PRIZE_MONEY.FOUR +
     foundFive * PRIZE_MONEY.FIVE + foundSix * PRIZE_MONEY.SIX;
-  myTotalPrize = total;
   printResult(foundThree, foundFour, foundFive, foundSix);
 }
 
+// 수익률을 계산
 function calculateEarningRate(totalPrizeMoney, investMoney) {
   console.log(totalPrizeMoney, investMoney);
   let result = (totalPrizeMoney / investMoney) * 100;
   return result;
 }
 
+// 당첨통계를 출력
 function printResult(three, four, five, six) {
   let myEarningRate = calculateEarningRate(myTotalPrize, myInvest);
   console.log(`당첨 통계
@@ -86,6 +97,7 @@ function printResult(three, four, five, six) {
   6개 일치 (2,000,000,000원) - ${six}개
   나의 수익률은 ${myEarningRate}%입니다`);
 }
-buyLottos(6000000);
 
+buyLottos(10000);
+buyLottos(10000);
 setLuckyNumber([1, 4, 52, 3, 10, 6]);
