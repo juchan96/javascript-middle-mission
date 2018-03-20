@@ -36,8 +36,12 @@
 
   // 메세지 객체
   let message = {
-    SOLDOUT: '사용가능한 음료수 : 없음',
-    SHORT_OF_MONEY: '금액이 모자랍니다',
+    returnSoldout: function () {
+      return '사용가능한 음료수 없음'
+    },
+    returnShortOfMoney: function () {
+      return '금액이 모자랍니다'
+    },
     returnNoStock: function (item) {
       return `${item}는 재고가 없습니다`
     },
@@ -61,7 +65,7 @@
 
   // 투입된 돈으로 살 수 있는 품목을 리턴하는 함수
   function getBuyableItem(coin) {
-    if (coin < 500) return message.SOLDOUT;
+    if (coin < 500) return message.returnSoldout();
     let itemArray = [];
     for (key in beverageData) {
       let item;
@@ -78,7 +82,7 @@
   // 음료를 고르는 함수
   function selectedItem(item) {
     if (beverageData[item].stock <= 0) return message.returnNoStock(item);
-    if (beverageData[item].price > accumCoin) return message.SHORT_OF_MONEY;
+    if (beverageData[item].price > accumCoin) return message.returnShortOfMoney();
     accumCoin -= beverageData[item].price;
     let result = message.returnSelectedItem(item, accumCoin);
     return result;
@@ -100,3 +104,4 @@
   console.log(insertCoin(600));
   console.log(selectedItem('파워에이드'));
   console.log(returnMoney());
+  console.log(insertCoin(200));
