@@ -23,16 +23,17 @@ function buyLottos(money){
 
 function createLotto(){
   let result = [];
-  while(result.length !== 6){
-    let found = false;
-    let randomNumber = Math.ceil(Math.random() * 45);
-    for(let e of result){
-      if(randomNumber === e){
-        found = true;
-        break;
-      }
+
+  function isIn(searchValue, arr){
+    for(let i = 0; i < arr.length; i++){
+      if(arr[i] === searchValue) return true;
     }
-    if(!found) result.push(randomNumber);
+    return false;
+  }
+  
+  while(result.length !== 6){
+    let randomNumber = Math.ceil(Math.random() * 45);
+    if(!isIn(randomNumber, result)) result.push(randomNumber);
   }
   return result;
 }
