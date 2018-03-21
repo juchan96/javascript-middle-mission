@@ -11,8 +11,9 @@ let statisticsLottos = {
 }
 
 function buyLottos(money){
-  for(let i = 1000; i <= money; i+=1000){
+  while(money >= 1000){
     myLottos.push(createLotto());
+    money -= 1000;    
   }
   console.log(`로또 ${myLottos.length}개를 발행했습니다.`)
   for(let aLotto of myLottos){
