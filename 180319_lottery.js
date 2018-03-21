@@ -40,14 +40,14 @@ function createLotto(){
 
 function setLuckyNumber(winningNummbers){
   for(let aLotto of myLottos){
-    recordScore(checkTwoArrays(aLotto, winningNummbers));
+    recordScore(getNumOfSameVal(aLotto, winningNummbers));
   }
   printStatisticsLottos();
   console.log(`나의 수익률은 ${calculateYield()}% 입니다`);
   initializeEverything();
 }
 
-function checkTwoArrays(arr1, arr2){
+function getNumOfSameVal(arr1, arr2){
   //두 배열을 비교해 일치하는 숫자들의 갯수를 리턴
   let result = 0;
   for(let e1 of arr1){
