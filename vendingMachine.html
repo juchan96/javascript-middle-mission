@@ -15,14 +15,14 @@
 		- selectItem : 음료수를 선택할 때 음료수가 나오는 함수
 		- controlInventory : 자판기의 정보를 변환하고 제어하는 함수
 		- returnMoney : 함수가 호출되면 돈을 반환한다.
+		- control : 에러상황과 재고가 0일경우를 컨트롤해주는 객체
 	2. 함수의 행동
 		(1)itemList : 현재 자판기에 들어있는 돈으로 이용가능한 음료수의 목록(itemArrStr)을 리턴한다.
 		(2)insertCoin : * 돈을 넣을 매개변수 coin을 정하고 money에 coin금액을 추가한다. 
 						* 자판기에 들어있는 돈으로 구매할 수 있는 음료수의 정보를 얻는다.
 		(3)selectItem : 음료수를 뽑고 뽑은 음료수의 정보와 현재 자판기에 있는 값에서 음료수의 값을 뺀 잔액의 
 						  정보와 남은 금액으로 살 수 있는 음료수의 정보를 출력한다.
-		(4)controlInventory : 음료수의 재고가 떨어지면 재고부족이라고 정보를 바꿔준다.
-		(5)returnMoney : 잔돈을 반환하겠다는 메시지를 남기고 자판기에 있는 돈(money)를 초기화한다.
+		(4)returnMoney : 잔돈을 반환하겠다는 메시지를 남기고 자판기에 있는 돈(money)를 초기화한다.
 	3. 코드의 전체적인 흐름!
 		- 자판기에 돈을 넣으면 음료수를 선택하고 음료수가 나오는 코드이다!
 		(1) 자판기의 data(목록, 가격, 재고)가 있다.
@@ -42,7 +42,7 @@ var itemData = [
 	{ name : '물', price : 500, count : 3},
 	{ name : '파워에이드', price : "재고없음", count : 0}
 ]
-var cotrol = new function(){
+var control = new function(){
 	this.errorSituation = function(){
 		if( this.price > money ) throw "돈이 부족해서 음료수를 고를 수가 없습니다.";
 		if( this.price === "재고없음" ) throw "재고가 없습니다.";
@@ -81,10 +81,10 @@ function selectItem(item){
 
 	itemData.some(function (v){
 		if( v.name === item ){
-			cotrol.errorSituation.call(v);
+			control.errorSituation.call(v);
 			money = money - v.price;
 			v.count--;
-			cotrol.controlInventory.call(v);
+			control.controlInventory.call(v);
 		}
 		return v.name === item;
 	});
