@@ -42,6 +42,15 @@ var itemData = [
 	{ name : '물', price : 500, count : 3},
 	{ name : '파워에이드', price : "재고없음", count : 0}
 ]
+var cotrol = new function(){
+	this.errorSituation = function(){
+		if( this.price > money ) throw "돈이 부족해서 음료수를 고를 수가 없습니다.";
+		if( this.price === "재고없음" ) throw "재고가 없습니다.";
+	},
+	this.controlInventory = function(){
+		if( this.count === 0) this.price = "재고없음";
+	}
+}
 function itemList(money){
 	var itemArr = [];
 	var itemArrStr;
@@ -63,34 +72,25 @@ function itemList(money){
 }
 function insertCoin(coin){
 
-	if(!(typeof coin === "number" && coin !== undefined && coin > 0)) throw "돈을 제대로 넣어주세요"
+	if(!(typeof coin === "number" && coin !== undefined && coin > 0)) throw "돈을 제대로 넣어주세요";
 	money = money + coin;
 	console.log("사용가능한 음료수 : " + itemList(money));
 }
 function selectItem(item){
 	//some()메소드는 순회를 하다가 return값이 true가 되는 조건을 찾으면 순회가 멈춘다.
+
 	itemData.some(function (v){
-		if( v.name === item){
-			if(v.price > money ) throw "돈이 부족해서 음료수를 고를 수가 없습니다.";
-			controlInventory(item);
+		if( v.name === item ){
+			cotrol.errorSituation.call(v);
 			money = money - v.price;
-			if(v.count === 0) v.price = "재고없음";
-		}
-		return v.name === item;
-	})
-	console.log(item + "가(이) 나왔습니다. 현재 잔돈 : " + money + " 사용가능한 음료수 : " + itemList(money));
-}
-function controlInventory(item){
-	
-	itemData.some(function (v){
-		if(v.name === item){
-			if(v.price === "재고없음"){
-				throw "재고가 없습니다.";
-			}else v.count--;
+			v.count--;
+			cotrol.controlInventory.call(v);
 		}
 		return v.name === item;
 	});
+	console.log(item + "가(이) 나왔습니다. 현재 잔돈 : " + money + " 사용가능한 음료수 : " + itemList(money));
 }
+
 function returnMoney(){
 
 	console.log("잔돈 " + money + "원이 반환됐습니다.");
