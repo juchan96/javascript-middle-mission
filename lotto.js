@@ -24,22 +24,18 @@ function buyLottos(money) {
   const PRICE = 1000;
   let number = Math.floor(money / PRICE);
   myInvest += number * 1000;
-  let lottoArray = [];
   for (var i = 0; i < number; i++) {
-    lottoArray.push(publishNumber());
+    myLottos.push(publishNumber());
   }
+  console.log(myLottos);
   console.log(`로또 ${number}개를 발행했습니다`);
-  myLottos = lottoArray;
-  for (var i = 0; i < number; i++) {
-    console.log(lottoArray[i]);
-  }
   console.log();
 }
 
 // 로또 자동 생성기
-function publishNumber() {
+function publishNumber(num = 6) {
   let lottoArray = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < num; i++) {
     lottoArray.push(Math.floor(Math.random() * 45) + 1);
   }
   return lottoArray;
