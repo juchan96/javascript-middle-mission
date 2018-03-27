@@ -58,11 +58,12 @@ class LottoMachine {
     this.money = 0;
   }
   shuffleLottos(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array.slice(0, 6).sort((a, b) => a - b);
+    const shuffled = array.reduce((ac, c, ci) => {
+      const j = Math.floor(Math.random() * (ci + 1));
+      [array[ci], array[j]] = [array[j], array[ci]];
+      return array;
+    }, array)
+    return shuffled.slice(0, 6).sort((a, b) => a - b);
   }
   shuffleLottosOtherway() {
     const numberList = [...Array(45).keys()].map(x => x + 1);
@@ -90,15 +91,22 @@ class LottoMachine {
     return this.printLottos(publishLottos);
   }
   printLottos(publishLottos) {
-    publishLottos.forEach((item, index) => {
-      console.log(`${index + 1} 번 로또를 발행 합니다 ${item}`);
-    });
+    let printText = ''
+    printText += publishLottos.reduce((ac, cv, ci) => {
+      ac += `${ci + 1} 번 로또를 발행 합니다 ${cv}\n`;
+      return ac;
+    }, printText);
+    console.log(printText)
     return this.checkSameNumberPublished(publishLottos);
   }
   checkSameNumbers(lotto, luckyNumber) {
-    return lotto.concat(luckyNumber).filter((item, i, ar) => {
-      return ar.indexOf(item) !== i;
-    });
+    console.log('lotto', lotto, 'luckyNunber', luckyNumber);
+
+    const sameNumber = lotto.reduce((ac, cv) => {
+      if (luckyNumber.indexOf(cv) !== -1) ac += 1
+      return ac;
+    }, 0)
+    return sameNumber;
   }
   checkSameNumberPublished(publishLottos) {
     const sameNumbers = publishLottos.map(lotto => {
@@ -109,8 +117,8 @@ class LottoMachine {
   getResultReport(sameNumbers) {
     let winningMoney = 0;
     sameNumbers.map(item => {
-      winningMoney += winningPrice[item.length];
-      console.log(`일치 한 갯수 ${item.length} 상금은 ${winningPrice[item.length]}원 입니다.`);
+      winningMoney += winningPrice[item];
+      console.log(`일치 한 갯수 ${item} 상금은 ${winningPrice[item]}원 입니다.`);
     });
     this.money += winningMoney;
     return this.printRate(winningMoney, accuracyNumber);
@@ -122,6 +130,7 @@ class LottoMachine {
 }
 
 const lottoMachine = new LottoMachine();
+
 lottoMachine.setLuckyNumber();
 lottoMachine.setLuckyNumber(1, 2, 3, 4, 5, 6);
 lottoMachine.insertMoney(10000);
@@ -129,3 +138,5 @@ lottoMachine.printMoney();
 // lottoMachine.buyLottos(4); 돈을 넘는 장수 입력해서 에러!
 lottoMachine.buyLottos(10);
 lottoMachine.returnMoney();
+
+console.log(lottoMachine.shuffleLottos([...Array(45).keys()].map(x => x + 1)));
