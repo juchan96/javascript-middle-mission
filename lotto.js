@@ -27,8 +27,8 @@ function buyLottos(money) {
   for (var i = 0; i < number; i++) {
     myLottos.push(publishNumber());
   }
-  console.log(myLottos);
   console.log(`로또 ${number}개를 발행했습니다`);
+  console.log(myLottos);
   console.log();
 }
 
@@ -43,41 +43,28 @@ function publishNumber(num = 6) {
 
 // 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
 let setLuckyNumber = array => {
-  // 맞춘 횟수를 저장할 변수
-  let foundThree = 0,
-    foundFour = 0,
-    foundFive = 0,
-    foundSix = 0;
+  let countArr = {
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0
+  };
   let len = myLottos.length;
   // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
   for (var i = 0; i < len; i++) {
     let found = myLottos[i].filter(function (v) {
       return array.indexOf(v) !== -1;
     })
-    switch (found.length) {
-      case 3:
-        foundThree++;
-        break;
-      case 4:
-        foundFour++;
-        break;
-      case 5:
-        foundFive++;
-        break;
-      case 6:
-        foundSix++;
-        break;
-    }
+    if (found.length > 2) countArr[found.length] += 1;
   }
   // 나의 총 당첨금액을 저장
-  myTotalPrize += foundThree * PRIZE_MONEY.THREE + foundFour * PRIZE_MONEY.FOUR +
-    foundFive * PRIZE_MONEY.FIVE + foundSix * PRIZE_MONEY.SIX;
-  printResult(foundThree, foundFour, foundFive, foundSix);
+  myTotalPrize += countArr[3] * PRIZE_MONEY.THREE + countArr[4] * PRIZE_MONEY.FOUR +
+    countArr[5] * PRIZE_MONEY.FIVE + countArr[6] * PRIZE_MONEY.SIX;
+  printResult(countArr[3], countArr[4], countArr[5], countArr[6]);
 }
 
 // 수익률을 계산
 function calculateEarningRate(totalPrizeMoney, investMoney) {
-  console.log(totalPrizeMoney, investMoney);
   let result = (totalPrizeMoney / investMoney) * 100;
   return result;
 }
@@ -96,4 +83,4 @@ function printResult(three, four, five, six) {
 
 buyLottos(10000);
 buyLottos(10000);
-setLuckyNumber([1, 4, 52, 3, 10, 6]);
+setLuckyNumber([1, 4, 40, 3, 10, 6]);
