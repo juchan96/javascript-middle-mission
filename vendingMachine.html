@@ -1,0 +1,112 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+/*
+	돈이나 사물은 변수나 객체에 저장한다.
+	함수이름은 동사 + 명사!
+	1. 변수지정
+		- money : 자판기에 들어있는 돈
+		- itemData : 음료수의 정보를 담고 있는 객체
+		- itemList : 음료수 목록의 값을 가지고 있는 함수 
+		- insertCoin : 자판기에 돈을 넣을 때 사용하는 함수
+		- selectItem : 음료수를 선택할 때 음료수가 나오는 함수
+		- controlInventory : 자판기의 정보를 변환하고 제어하는 함수
+		- returnMoney : 함수가 호출되면 돈을 반환한다.
+		- control : 에러상황과 재고가 0일경우를 컨트롤해주는 객체
+	2. 함수의 행동
+		(1)itemList : 현재 자판기에 들어있는 돈으로 이용가능한 음료수의 목록(itemArrStr)을 리턴한다.
+		(2)insertCoin : * 돈을 넣을 매개변수 coin을 정하고 money에 coin금액을 추가한다. 
+						* 자판기에 들어있는 돈으로 구매할 수 있는 음료수의 정보를 얻는다.
+		(3)selectItem : 음료수를 뽑고 뽑은 음료수의 정보와 현재 자판기에 있는 값에서 음료수의 값을 뺀 잔액의 
+						  정보와 남은 금액으로 살 수 있는 음료수의 정보를 출력한다.
+		(4)returnMoney : 잔돈을 반환하겠다는 메시지를 남기고 자판기에 있는 돈(money)를 초기화한다.
+	3. 코드의 전체적인 흐름!
+		- 자판기에 돈을 넣으면 음료수를 선택하고 음료수가 나오는 코드이다!
+		(1) 자판기의 data(목록, 가격, 재고)가 있다.
+		(2) 자판기에 돈을 넣는다.
+		(3) 넣은 금액에 맞게 구매할 수 있는 음료수의 목록을 보여준다.
+		(4) 음료수를 선택하고 선택한 음료수, 잔돈, 잔돈으로 구입할 수 있는 음료수 목록을 보여준다.
+		(5) 음료수의 재고가 없어지면 재고없음이라고 표시하고 구매할 때 메시지를 띄운다. 재고를 관리해준다. 
+		(6) 잔돈을 반환하고 싶을 때 반환한다.
+*/
+var money = 0;
+var itemData = [
+	{ name : '콜라', price : 1000, count : 3},
+	{ name : '사이다', price : 1000, count : 3},
+	{ name : '포도쥬스', price : 700, count : 3},
+	{ name : '딸기우유', price : 500, count : 3},
+	{ name : '미에로화이바', price : 900, count : 3},
+	{ name : '물', price : 500, count : 3},
+	{ name : '파워에이드', price : "재고없음", count : 0}
+]
+var control = new function(){
+	this.errorSituation = function(){
+		if( this.price > money ) throw "돈이 부족해서 음료수를 고를 수가 없습니다.";
+		if( this.price === "재고없음" ) throw "재고가 없습니다.";
+	},
+	this.controlInventory = function(){
+		if( this.count === 0) this.price = "재고없음";
+	}
+}
+function itemList(money){
+	var itemArr = [];
+	var itemArrStr;
+
+	itemArr = itemData.filter(function (v){
+		if( money >= v.price || v.price === "재고없음"){
+			return true;
+		}
+	}).map(function (v){
+		let itemStr = v.name + "(" + v.price + ")";
+		return itemStr;
+	});
+	if(itemArr.length < 1){
+		itemArrStr = "없음";
+	}else{
+		itemArrStr = itemArr.join(", ");
+	}
+	return itemArrStr;
+}
+function insertCoin(coin){
+
+	if(!(typeof coin === "number" && coin !== undefined && coin > 0)) throw "돈을 제대로 넣어주세요";
+	money = money + coin;
+	console.log("사용가능한 음료수 : " + itemList(money));
+}
+function selectItem(item){
+	//some()메소드는 순회를 하다가 return값이 true가 되는 조건을 찾으면 순회가 멈춘다.
+
+	itemData.some(function (v){
+		if( v.name === item ){
+			control.errorSituation.call(v);
+			money = money - v.price;
+			v.count--;
+			control.controlInventory.call(v);
+		}
+		return v.name === item;
+	});
+	console.log(item + "가(이) 나왔습니다. 현재 잔돈 : " + money + " 사용가능한 음료수 : " + itemList(money));
+}
+
+function returnMoney(){
+
+	console.log("잔돈 " + money + "원이 반환됐습니다.");
+	money = 0;
+}
+insertCoin(10000);
+selectItem("콜라");
+selectItem("콜라");
+selectItem("콜라");
+selectItem("사이다");
+console.table(itemData);
+selectItem("파워에이드");
+//selectItem("콜라");
+//insertCoin();
+//insertCoin("백원");
+//insertCoin(-1000);
+</script>
+</body>
+</html>
