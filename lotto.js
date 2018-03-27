@@ -49,20 +49,32 @@ let setLuckyNumber = array => {
     5: 0,
     6: 0
   };
-  let len = myLottos.length;
-  // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
-  for (var i = 0; i < len; i++) {
-    let found = myLottos[i].filter(function (v) {
-      return array.indexOf(v) !== -1;
-    })
-    if (found.length > 2) countArr[found.length] += 1;
+  let arrayObj = {};
+  for (let i = 0; i < array.length; i++) {
+    arrayObj[array[i]] = true;
   }
+  // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
+  let len = myLottos.length;
+  for (var i = 0; i < len; i++) {
+    let compeleted = checkNumber(arrayObj, myLottos[i]);
+    console.log(compeleted);
+    if (compeleted > 2) countArr[compeleted] += 1;
+  }
+
   // 나의 총 당첨금액을 저장
   myTotalPrize += countArr[3] * PRIZE_MONEY.THREE + countArr[4] * PRIZE_MONEY.FOUR +
     countArr[5] * PRIZE_MONEY.FIVE + countArr[6] * PRIZE_MONEY.SIX;
   printResult(countArr[3], countArr[4], countArr[5], countArr[6]);
 }
 
+// 로또 체크 함수
+checkNumber = (comNum, myNum) => {
+  return myNum.reduce((prev, curr) => {
+    if (comNum[curr]) return prev + 1;
+    return prev;
+  }, 0)
+
+}
 // 수익률을 계산
 function calculateEarningRate(totalPrizeMoney, investMoney) {
   let result = (totalPrizeMoney / investMoney) * 100;
