@@ -20,7 +20,7 @@ let myTotalPrize = 0; // 총 수익
 let myInvest = 0; //총 투자액
 
 // 로또를 넣은 돈만큼 구매
-function buyLottos(money) {
+buyLottos = money => {
   const PRICE = 1000;
   let number = Math.floor(money / PRICE);
   myInvest += number * 1000;
@@ -33,7 +33,7 @@ function buyLottos(money) {
 }
 
 // 로또 자동 생성기
-function publishNumber(num = 6) {
+publishNumber = (num = 6) => {
   let lottoArray = [];
   for (let i = 0; i < num; i++) {
     lottoArray.push(Math.floor(Math.random() * 45) + 1);
@@ -42,22 +42,25 @@ function publishNumber(num = 6) {
 }
 
 // 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
-let setLuckyNumber = array => {
-  let countObj = {
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0
-  };
+setLuckyNumber = array => {
+  const PRIZE_MINIMUM = 3; // 당첨 최소 개수 
+
+  // 로또마다 맞춘 개수를 담아줄 객체, array의 길이만큼 생성
+  let countObj = {}
+  for (let i = PRIZE_MINIMUM; i < array.length + 1; i++) {
+    countObj[i] = 0;
+  }
+  // 컴퓨터의 번호를 저장할 객체
   let arrayObj = {};
   for (let i = 0; i < array.length; i++) {
     arrayObj[array[i]] = true;
   }
+
   // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
   let len = myLottos.length;
   for (var i = 0; i < len; i++) {
     let compeleted = checkNumber(arrayObj, myLottos[i]);
-    if (compeleted > 2) countObj[compeleted] += 1;
+    if (compeleted >= PRIZE_MINIMUM) countObj[compeleted.toString()] += 1;
   }
 
   // 나의 총 당첨금액을 저장
@@ -76,13 +79,13 @@ checkNumber = (comNum, myNum) => {
 
 }
 // 수익률을 계산
-function calculateEarningRate(totalPrizeMoney, investMoney) {
+calculateEarningRate = (totalPrizeMoney, investMoney) => {
   let result = (totalPrizeMoney / investMoney) * 100;
   return result;
 }
 
 // 당첨통계를 출력
-function printResult(three, four, five, six) {
+printResult = (three, four, five, six) => {
   let myEarningRate = calculateEarningRate(myTotalPrize, myInvest);
   console.log(`당첨 통계
   ---------
