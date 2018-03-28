@@ -10,10 +10,10 @@ let myLottos = [];
 
 // 맞춘 개수별 담청금액 객체
 const PRIZE_MONEY = {
-  THREE: 5000,
-  FOUR: 50000,
-  FIVE: 1500000,
-  SIX: 2000000000
+  3: 5000,
+  4: 50000,
+  5: 1500000,
+  6: 2000000000
 };
 
 let myTotalPrize = 0; // 총 수익
@@ -43,7 +43,7 @@ function publishNumber(num = 6) {
 
 // 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
 let setLuckyNumber = array => {
-  let countArr = {
+  let countObj = {
     3: 0,
     4: 0,
     5: 0,
@@ -57,14 +57,16 @@ let setLuckyNumber = array => {
   let len = myLottos.length;
   for (var i = 0; i < len; i++) {
     let compeleted = checkNumber(arrayObj, myLottos[i]);
-    console.log(compeleted);
-    if (compeleted > 2) countArr[compeleted] += 1;
+    if (compeleted > 2) countObj[compeleted] += 1;
   }
 
   // 나의 총 당첨금액을 저장
-  myTotalPrize += countArr[3] * PRIZE_MONEY.THREE + countArr[4] * PRIZE_MONEY.FOUR +
-    countArr[5] * PRIZE_MONEY.FIVE + countArr[6] * PRIZE_MONEY.SIX;
-  printResult(countArr[3], countArr[4], countArr[5], countArr[6]);
+  for (let i = 3; i <= 6; i++) {
+    myTotalPrize += countObj[i] * PRIZE_MONEY[i];
+  }
+
+  // 당첨결과를 출력
+  printResult(countObj[3], countObj[4], countObj[5], countObj[6]);
 }
 
 // 로또 체크 함수
