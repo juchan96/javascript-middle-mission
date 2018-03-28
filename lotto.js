@@ -61,9 +61,7 @@ let setLuckyNumber = array => {
   }
 
   // 나의 총 당첨금액을 저장
-  for (let i = 3; i <= 6; i++) {
-    myTotalPrize += countObj[i] * PRIZE_MONEY[i];
-  }
+  myTotalPrize = Object.keys(countObj).reduce(((prev, curr) => prev + countObj[curr] * PRIZE_MONEY[curr]), 0);
 
   // 당첨결과를 출력
   printResult(countObj[3], countObj[4], countObj[5], countObj[6]);
