@@ -287,5 +287,7 @@ const a = function(){console.log('hello')} // 변수에 넣어줄 때
 
 abc.reduce(function(){}) // 함수의 인자로 들어갈 때
 
-(function(){console.log('hello')})() // 
+(function(){console.log('hello')})() // 즉시 실행 함수
 ```
+__Comment__  
+arrow function을 익혀서 익명함수를 간단하게 사용하고 있는데 무척 편리하다 
