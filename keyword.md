@@ -186,12 +186,15 @@ var module = {
 module.getX(); // 81
 
 var retrieveX = module.getX;
-retrieveX();
+retrieveX(); // 9 function만 가져와서 저장됐기 때문에 호출할 때 전역변수를 참조한다
 
 var boundGetX = retrieveX.bind(module);
 boundGetX(); // 81
 ```
-
+__Comment__  
+다시 이해하려고 하니 call과 apply랑 똑같은 기능을 하는 것 같은데  
+차이점이 하나 있다 call과 apply는 함수를 바로 실행시켜서 함수의 리턴값을 반환하는데  
+bind는 함수 자체를 반환한다 ()로 실행시켜줘야 하는 셈이다
 ## 10. this가 가리키는 것은 언제 결정되는가
 일반적으로 this는 객체의 프로퍼티인 함수에서 의미가 있다.  
 메서드를 호출하면 this는 호출한 메서드를 소유하는 객체가 된다.  
