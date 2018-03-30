@@ -20,7 +20,7 @@ let myTotalPrize = 0; // 총 수익
 let myInvest = 0; //총 투자액
 
 // 로또를 넣은 돈만큼 구매
-buyLottos = money => {
+const buyLottos = money => {
   const PRICE = 1000;
   let number = Math.floor(money / PRICE);
   myInvest += number * 1000;
@@ -33,7 +33,7 @@ buyLottos = money => {
 }
 
 // 로또 자동 생성기
-publishNumber = (num = 6) => {
+const publishNumber = (num = 6) => {
   let lottoArray = [];
   for (let i = 0; i < num; i++) {
     lottoArray.push(Math.floor(Math.random() * 45) + 1);
@@ -42,7 +42,7 @@ publishNumber = (num = 6) => {
 }
 
 // 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
-setLuckyNumber = array => {
+const setLuckyNumber = array => {
   const PRIZE_MINIMUM = 3; // 당첨 최소 개수 
 
   // 로또마다 맞춘 개수를 담아줄 객체, array의 길이만큼 생성
@@ -71,7 +71,7 @@ setLuckyNumber = array => {
 }
 
 // 로또 체크 함수
-checkNumber = (comNum, myNum) => {
+const checkNumber = (comNum, myNum) => {
   return myNum.reduce((prev, curr) => {
     if (comNum[curr]) return prev + 1;
     return prev;
@@ -79,13 +79,13 @@ checkNumber = (comNum, myNum) => {
 
 }
 // 수익률을 계산
-calculateEarningRate = (totalPrizeMoney, investMoney) => {
+const calculateEarningRate = (totalPrizeMoney, investMoney) => {
   let result = (totalPrizeMoney / investMoney) * 100;
   return result;
 }
 
 // 당첨통계를 출력
-printResult = (three, four, five, six) => {
+const printResult = (three, four, five, six) => {
   let myEarningRate = calculateEarningRate(myTotalPrize, myInvest);
   console.log(`당첨 통계
   ---------
