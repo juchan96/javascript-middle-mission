@@ -25,7 +25,7 @@ const buyLottos = money => {
   let number = Math.floor(money / PRICE);
   myInvest += number * 1000;
   for (var i = 0; i < number; i++) {
-    myLottos.push(publishNumber());
+    myLottos.push(publishNumber(6, 45));
   }
   console.log(`로또 ${number}개를 발행했습니다`);
   console.log(myLottos);
@@ -33,10 +33,10 @@ const buyLottos = money => {
 }
 
 // 로또 자동 생성기
-const publishNumber = (num = 6) => {
+const publishNumber = (num = 6, max = 45) => {
   let lottoArray = [];
   for (let i = 0; i < num; i++) {
-    lottoArray.push(Math.floor(Math.random() * 45) + 1);
+    lottoArray.push(Math.floor(Math.random() * max) + 1);
   }
   return lottoArray;
 }
