@@ -10,6 +10,8 @@ let myLottos = [];
 
 // 맞춘 개수별 담청금액 객체
 const PRIZE_MONEY = {
+  1: 100,
+  2: 500,
   3: 5000,
   4: 50000,
   5: 1500000,
@@ -40,34 +42,40 @@ const publishNumber = (num = 6, max = 45) => {
   }
   return lottoArray;
 }
-
+// 당첨 총 금액 계산 (최소당첨개수 아래는 계산하지 않는다)
+let calTotalPrize = (obj, min) => {
+  myTotalPrize = Object.keys(obj).reduce(((prev, curr, idx) => {
+    if (curr >= min) return prev + obj[curr] * PRIZE_MONEY[curr]
+    return 0;
+  }), 0);
+}
 // 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
-const setLuckyNumber = array => {
-  const PRIZE_MINIMUM = 3; // 당첨 최소 개수 
-
+const setLuckyNumber = (arr, prizeMin = 3) => {
   // 로또마다 맞춘 개수를 담아줄 객체, array의 길이만큼 생성
   let countObj = {}
-  for (let i = PRIZE_MINIMUM; i < array.length + 1; i++) {
+  for (let i = 1; i < arr.length + 1; i++) {
     countObj[i] = 0;
   }
+
   // 컴퓨터의 번호를 저장할 객체
   let arrayObj = {};
-  for (let i = 0; i < array.length; i++) {
-    arrayObj[array[i]] = true;
-  }
+  console.log(arr);
+  arr.reduce((prev, curr) => arrayObj[curr] = true, {});
 
   // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
   let len = myLottos.length;
   for (var i = 0; i < len; i++) {
     let compeleted = checkNumber(arrayObj, myLottos[i]);
-    if (compeleted >= PRIZE_MINIMUM) countObj[compeleted.toString()] += 1;
+    countObj[compeleted.toString()] += 1;
   }
-
+  delete countObj[0]; // 0개를 맞춘 개수는 카운트하지 않는다 
   // 나의 총 당첨금액을 저장
-  myTotalPrize = Object.keys(countObj).reduce(((prev, curr) => prev + countObj[curr] * PRIZE_MONEY[curr]), 0);
+  calTotalPrize(countObj, prizeMin);
 
   // 당첨결과를 출력
-  printResult(countObj[3], countObj[4], countObj[5], countObj[6]);
+  let prize = [...Array(arr.length - prizeMin + 1).keys()].map(v => v + prizeMin);
+  console.log(prize);
+  printResult(countObj, prize);
 }
 
 // 로또 체크 함수
@@ -85,17 +93,15 @@ const calculateEarningRate = (totalPrizeMoney, investMoney) => {
 }
 
 // 당첨통계를 출력
-const printResult = (three, four, five, six) => {
-  let myEarningRate = calculateEarningRate(myTotalPrize, myInvest);
+const printResult = (countObj, printNumber = [3, 4, 5, 6]) => {
+  let myEarningRate = calculateEarningRate(myTotalPrize, myInvest); // 수익률 계산
+  let prizeMsg = printNumber.map(v => `${v}개 일치 (${PRIZE_MONEY[v]}원) - ${countObj[v]}개`);
   console.log(`당첨 통계
-  ---------
-  3개 일치 (5,000원) - ${three}개
-  4개 일치 (50,000원) - ${four}개
-  5개 일치 (1,500,000원 - ${five}개
-  6개 일치 (2,000,000,000원) - ${six}개
-  나의 수익률은 ${myEarningRate}%입니다`);
+-----------------`);
+  console.log(prizeMsg.join('\n'));
+  console.log(`나의 수익률 : ${myEarningRate}%`);
 }
 
 buyLottos(10000);
 buyLottos(10000);
-setLuckyNumber([1, 4, 40, 3, 10, 6]);
+setLuckyNumber([1, 4, 40, 3, 10, 6], 3);
