@@ -66,7 +66,7 @@ const setLuckyNumber = (arr, prizeMin = 3) => {
   let len = myLottos.length;
   for (var i = 0; i < len; i++) {
     let compeleted = checkNumber(arrayObj, myLottos[i]);
-    countObj[compeleted.toString()] += 1;
+    countObj[compeleted] += 1;
   }
   delete countObj[0]; // 0개를 맞춘 개수는 카운트하지 않는다 
   // 나의 총 당첨금액을 저장
