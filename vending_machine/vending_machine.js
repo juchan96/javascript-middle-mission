@@ -9,6 +9,8 @@
  * 안내 및 경고문을 객체로 별도로 만들어 출력하도록 하기
  * 
  */
+var coin = 10000;
+
 var noticeWord = {
   "emptyDrink": "현재 판매하는 물건이 없습니다.",
   "emptyCoin": "동전을 넣어주세요.",
@@ -34,17 +36,19 @@ function insertCoin(coin) {
   // 위에 기능을 사용하면 selectItem() 함수로 넘기기
 }
 
-function selectItem() {
+function selectItem(coin) {
   // 사용가능한 음료중 무엇을 선택할지 안내문 출력
   // 선택한 물품이 있으면 코인-해당물품 가격을 계산한다.
   // returnMoney()로 계산된 가격을 전달
 }
 
-function returnMoney() {
+function returnMoney(coin) {
    // 나머지 값이 있는가 없는가?
     // yes) 나머지 가격을 보여주고 반환
     // no) 나머지 값이 없음을 보여줌
 }
+
+insertCoin(coin);
 
 
 
