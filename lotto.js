@@ -6,7 +6,7 @@
 // 4. 비교해서 일치한 개수를 3개부터 6개까지 각각 출력하고 수익률도 계산해서 출력
 
 
-let lottoObj = {
+let lotto = {
   myLottos: [],
   myTotalPrize: 0,
   myInvest: 0
@@ -27,10 +27,10 @@ const PRIZE_MONEY = {
 const buyLottos = money => {
   const PRICE = 1000;
   let number = Math.floor(money / PRICE);
-  lottoObj.myInvest += number * PRICE;
-  lottoObj.myLottos = [...Array(number)].reduce((prev, curr) => (prev.push(publishNumber(6, 45)), prev), []);
+  lotto.myInvest += number * PRICE;
+  lotto.myLottos = [...Array(number)].reduce((prev, curr) => (prev.push(publishNumber(6, 45)), prev), []);
   console.log(`로또 ${number}개를 발행했습니다`);
-  console.log(lottoObj.myLottos);
+  console.log(lotto.myLottos);
 }
 
 // 로또 자동 생성기
@@ -39,31 +39,36 @@ const publishNumber = (num = 6, max = 45) => {
 }
 // 당첨 총 금액 계산 (최소당첨개수 아래는 계산하지 않는다)
 let calTotalPrize = (obj, min) => {
-  lottoObj.myTotalPrize = Object.keys(obj).reduce(((prev, curr, idx) => {
+  lotto.myTotalPrize = Object.keys(obj).reduce(((prev, curr, idx) => {
     if (curr >= min) return prev + obj[curr] * PRIZE_MONEY[curr]
     return 0;
   }), 0);
 }
-// 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
-const setLuckyNumber = (arr, prizeMin = 3) => {
-  let countObj = {};
-  let comObj = {};
-  arr.reduce((prev, curr) => comObj[curr] = true, {});
 
-  // 숫자를 비교하여 맞춘 개수대로 선언한 변수에 저장
-  let len = lottoObj.myLottos.length;
-  for (var i = 0; i < len; i++) {
-    let compeleted = checkNumber(comObj, lottoObj.myLottos[i]);
-    countObj[compeleted] = countObj[compeleted] || 0;
-    countObj[compeleted] += 1;
+// 맞춘 개수대로 선언한 객체에 저장
+const savaCorrectedNumber = (computerNumber) => {
+  let countedNumber = {};
+  let computerNumberFlag = {};
+  computerNumber.reduce((prev, curr) => computerNumberFlag[curr] = true, {});
+  for (let i = 0, len = lotto.myLottos.length; i < len; i++) {
+    let compeleted = checkNumber(computerNumberFlag, lotto.myLottos[i]);
+    countedNumber[compeleted] = countedNumber[compeleted] || 0;
+    countedNumber[compeleted] += 1;
   }
+  return countedNumber;
+};
+// 당첨 범위 배열 반환
+const prizeRange = (computerNumber, prizeMin) => [...Array(computerNumber.length - prizeMin + 1).keys()].map(v => v + prizeMin);
 
+// 임의로 여섯 개 숫자의 배열을 넣고 실행하면 배열값과 내가 산 로또들과 비교해서 당첨을 결정한다
+const setLuckyNumber = (computerNumber, prizeMin = 3) => {
+  let countedNumber = savaCorrectedNumber(computerNumber);
   // 나의 총 당첨금액을 저장
-  calTotalPrize(countObj, prizeMin);
+  calTotalPrize(countedNumber, prizeMin);
 
   // 당첨결과를 출력
-  let prize = [...Array(arr.length - prizeMin + 1).keys()].map(v => v + prizeMin);
-  printResult(countObj, prize);
+  let prize = prizeRange(computerNumber, prizeMin);
+  printResult(countedNumber, prize);
 }
 
 // 로또 체크 함수
@@ -81,15 +86,14 @@ const calculateEarningRate = (totalPrizeMoney, investMoney) => {
 }
 
 // 당첨통계를 출력
-const printResult = (countObj, printNumber = [3, 4, 5, 6]) => {
-  let myEarningRate = calculateEarningRate(lottoObj.myTotalPrize, lottoObj.myInvest); // 수익률 계산
-  let prizeMsg = printNumber.map(v => `${v}개 일치 (${PRIZE_MONEY[v]}원) - ${countObj[v]||0}개`);
+const printResult = (countedNumber, printNumber = [3, 4, 5, 6]) => {
+  let myEarningRate = calculateEarningRate(lotto.myTotalPrize, lotto.myInvest); // 수익률 계산
+  let prizeMsg = printNumber.map(v => `${v}개 일치 (${PRIZE_MONEY[v]}원) - ${countedNumber[v]||0}개`);
   console.log(`당첨 통계
 -----------------`);
   console.log(prizeMsg.join('\n'));
   console.log(`나의 수익률 : ${myEarningRate}%`);
 }
 
-buyLottos(10000);
-buyLottos(10000);
-setLuckyNumber([1, 4, 40, 3, 10, 6], 3);
+buyLottos(100000);
+setLuckyNumber([1, 4, 40, 3, 10, 6], 4);
