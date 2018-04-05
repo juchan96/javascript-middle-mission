@@ -48,10 +48,8 @@ let calTotalPrize = (obj, min) => {
 // 맞춘 개수대로 선언한 객체에 저장
 const savaCorrectedNumber = (computerNumber) => {
   let countedNumber = {};
-  let computerNumberFlag = {};
-  computerNumber.reduce((prev, curr) => computerNumberFlag[curr] = true, {});
   for (let i = 0, len = lotto.myLottos.length; i < len; i++) {
-    let compeleted = checkNumber(computerNumberFlag, lotto.myLottos[i]);
+    let compeleted = checkNumber(computerNumber, lotto.myLottos[i]);
     countedNumber[compeleted] = countedNumber[compeleted] || 0;
     countedNumber[compeleted] += 1;
   }
@@ -72,10 +70,10 @@ const setLuckyNumber = (computerNumber, prizeMin = 3) => {
 }
 
 // 로또 체크 함수
-const checkNumber = (comNum, myNum) => {
-  return myNum.reduce((prev, curr) => {
-    if (comNum[curr]) return prev + 1;
-    return prev;
+const checkNumber = (computerNumber, myNum) => {
+  return myNum.reduce((ac, cv) => {
+    if (computerNumber.indexOf(cv) !== -1) return ac + 1;
+    return ac;
   }, 0)
 
 }
@@ -95,5 +93,5 @@ const printResult = (countedNumber, printNumber = [3, 4, 5, 6]) => {
   console.log(`나의 수익률 : ${myEarningRate}%`);
 }
 
-buyLottos(100000);
-setLuckyNumber([1, 4, 40, 3, 10, 6], 4);
+buyLottos(10000);
+setLuckyNumber([1, 4, 40, 3, 10, 6], 3);
