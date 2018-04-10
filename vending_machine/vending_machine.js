@@ -1,7 +1,7 @@
 /* 
 
 */
-var itemData = require("./drinkItem.js");
+var itemList = require("./drinkItem.js");
 
 var coin = 1900;
 var notCoin = "1000";
@@ -19,13 +19,15 @@ var noticeWord = {
 
 function getSellingItem(coin) {
   let shoppingItem = {
-    sellItem: [], // 구매 가능한 물품명
-    printWord: [] // 탐색 결과 출력
+    sellItem: [], // 구매 가능한 물품명만
+    sellItemStock: [], // 상품+물량 결과
+    sellItemPrice: [] // 상품+가격 결과
   };
-  for (let i = 0; i < itemData.length; i++) {
-    if (coin >= itemData[i].price) {
-      shoppingItem.sellItem.push(itemData[i].item);
-      shoppingItem.printWord.push(itemData[i].item + "/" + itemData[i].stock);
+  for (let i = 0; i < itemList.length; i++) {
+    if (coin >= itemList[i].price) {
+      shoppingItem.sellItem.push(itemList[i].item);
+      shoppingItem.sellItemStock.push(itemList[i].item + "/" + itemList[i].stock);
+      shoppingItem.sellItemPrice.push(itemList[i].item + "$" + itemList[i].price);
     }
   }
   let print = "사용가능한 음료수 목록 => " + shoppingItem.sellItem + "\n" + noticeWord.whatChoice;
@@ -38,17 +40,17 @@ function getChooseItem(wantItem, resultData) {
   let sellItem = [];
   let noneItem = [];
 
-  resultData.printWord.filter(value => {
+  resultData.sellItemStock.filter(value => {
     let splitData = value.split("/");
     if (splitData[0] === wantItem) {
       (splitData[1] === "재고없음") ? noneItem.push(splitData[0]): sellItem.push(splitData[0]);
     }
   });
 
-  if (noneItem.length === 1 && noneItem) {
+  if (noneItem.length === 1) {
     let dontBuyItem = noneItem + " 상품의 재고가 없습니다." + coin + "을 반환합니다.";
     return dontBuyItem;
-  } else {
+  } else if(sellItem.length === 1) {
     let giveItem = sellItem + " 상품을 드립니다."
     console.log(giveItem);
   }
@@ -57,16 +59,20 @@ function getChooseItem(wantItem, resultData) {
 
 function getRestMoney(coin, sellItem, addBuyItem) {
   let restCoin = 0;
-
-  let result = itemData.forEach(value => {
-    if (sellItem[0] === value.item) {
-      restCoin = coin - value.price; // 현재 코인 - 재고가 있는 상품의 가격 = 나머지값 구하기
+  itemList.forEach(value => {
+    if(value.item === sellItem[0]){
+      restCoin = coin - value.price;
       return restCoin;
     }
   });
 
-  if (restCoin >= itemData.price && addBuyItem) {
-    return getSellingItem(restCoin);
+  if(addBuyItem){
+    let rebuying = getSellingItem(restCoin);
+    rebuying.sellItemPrice.filter(value => {
+      let sliceValue = value.split("$");
+      // (recoin >= sliceValue[1]) ? rebuying : false; 
+    });
+    let rechoose = getChooseItem(addBuyItem, rebuying);
   } else {
     let restCoinPrint = "더이상 구매하실수 없습니다 금액을 반환합니다." + "\n" + "남은 금액은 " + restCoin + " 입니다.";
     console.log(restCoinPrint);
@@ -74,26 +80,12 @@ function getRestMoney(coin, sellItem, addBuyItem) {
   }
 }
 
-// function vendingMachine(coin) {
-//   if (typeof coin !== "number") {
-//     let reBuyItem = itemData.forEach(value => {
-//       let result = (restCoin >= value.price) ? getSellingItem(restCoin) : restCoinPrint;
-//       return result;
-//     });
-//     console.log(reBuyItem);
-//     (restCoin >= itemData.price) ? getSellingItem(restCoin): restCoinPrint;
-//     console.log(noticeWordnotNumber);
-//   } else {
-//     return insertCoin(coin);
-//     // returnMoney(coin);
-//   }
-// }
-
-// vendingMachine(coin); // 동전을 넣어 주세요.
-
 // var result = getChooseItem("파워에이드", getSellingItem(coin));
 // console.log(result + "\n");
 
-getRestMoney(coin, getChooseItem("딸기우유", getSellingItem(coin)), "미에로화이바");
+// getRestMoney(coin, getChooseItem("딸기우유", getSellingItem(coin)), "미에로화이바");
 
 // var result2 = getRestMoney(result, getChooseItem("파워에이드", getSellingItem(result)));
+
+var chooseItem = getChooseItem("콜라", getSellingItem(coin));
+getRestMoney(coin, chooseItem, "딸기우유");
