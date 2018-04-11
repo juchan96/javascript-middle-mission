@@ -1,91 +1,103 @@
 /* 
 
+getRestMoney(choose2, "딸기우유");
+getRestMoney(choose2, "딸기우유");
 */
 var itemList = require("./drinkItem.js");
 
-var coin = 1900;
-var notCoin = "1000";
-
 var noticeWord = {
-  "notNumber": "숫자를 입력 하십시요.",
-  "noCoin": "동전을 넣어주세요.",
-  "pickedDrink": "상품을 선택 하였습니다.",
-  "whatChoice": "어떤 상품을 선택하시겠습니까?",
-  "noDrink": "해당 상품이 없습니다.",
-  "balanceCoin": "잔액이 부족합니다.",
-  "leftMoney": "잔액이 남았습니다.",
-  "emptyMoney": "반환할 금액이 없습니다."
+  "usefulDrink": "사용 가능한 음료수 목록 => ",
+  "choiceDrink": "어떤 상품을 선택하시겠습니까?",
+  "dontBuyDrink": "제품의 구매 금액이 부족합니다.",
+  "noneStock": "해당 제품은 제고가 없습니다",
+  "returnCoin": "원이 반환 되었습니다."
 };
 
+// var coin = 3500;
+var coin2 = 3000;
+var coin3 = 500;
+var notCoin = "1000";
+
+// 돈을 넣었을때 그 돈만큼 살수 있는 물건 탐색 / 저장 => 반환값: 탐색한 물건들 객체안 []로 전달
 function getSellingItem(coin) {
   let shoppingItem = {
-    sellItem: [], // 구매 가능한 물품명만
-    sellItemStock: [], // 상품+물량 결과
-    sellItemPrice: [] // 상품+가격 결과
+    sellPrintItem: [],
+    sellItemStock: [],
+    sellItemPrice: []
   };
+
   for (let i = 0; i < itemList.length; i++) {
     if (coin >= itemList[i].price) {
-      shoppingItem.sellItem.push(itemList[i].item);
+      shoppingItem.sellPrintItem.push(itemList[i].item + "(" + itemList[i].stock + ")");
       shoppingItem.sellItemStock.push(itemList[i].item + "/" + itemList[i].stock);
       shoppingItem.sellItemPrice.push(itemList[i].item + "$" + itemList[i].price);
+    } else {
+      let dontBuy = noticeWord.dontBuyDrink + "\n";
+      console.log(dontBuy);
+      return false;
     }
   }
-  let print = "사용가능한 음료수 목록 => " + shoppingItem.sellItem + "\n" + noticeWord.whatChoice;
+  let print = noticeWord.usefulDrink + shoppingItem.sellPrintItem + "\n" + noticeWord.choiceDrink + "\n";
   console.log(print);
   return shoppingItem;
 }
 
-
-function getChooseItem(wantItem, resultData) {
-  let sellItem = [];
-  let noneItem = [];
-
-  resultData.sellItemStock.filter(value => {
-    let splitData = value.split("/");
-    if (splitData[0] === wantItem) {
-      (splitData[1] === "재고없음") ? noneItem.push(splitData[0]): sellItem.push(splitData[0]);
-    }
-  });
-
-  if (noneItem.length === 1) {
-    let dontBuyItem = noneItem + " 상품의 재고가 없습니다." + coin + "을 반환합니다.";
-    return dontBuyItem;
-  } else if(sellItem.length === 1) {
-    let giveItem = sellItem + " 상품을 드립니다."
-    console.log(giveItem);
-  }
-  return sellItem;
-}
-
-function getRestMoney(coin, sellItem, addBuyItem) {
-  let restCoin = 0;
-  itemList.forEach(value => {
-    if(value.item === sellItem[0]){
-      restCoin = coin - value.price;
-      return restCoin;
-    }
-  });
-
-  if(addBuyItem){
-    let rebuying = getSellingItem(restCoin);
-    rebuying.sellItemPrice.filter(value => {
-      let sliceValue = value.split("$");
-      // (recoin >= sliceValue[1]) ? rebuying : false; 
-    });
-    let rechoose = getChooseItem(addBuyItem, rebuying);
+// 구매할 수 있는 목록 중 재고의 유무를 탐색 해주는 기능 => 반환값: 재고가 있는 제품이라면 제품의 가격 / 없다면 재고가 없다는 걸 출력
+function getChooseItem(wantItem, sellItem) {
+  if (sellItem === false) {
+    return sellItem;
   } else {
-    let restCoinPrint = "더이상 구매하실수 없습니다 금액을 반환합니다." + "\n" + "남은 금액은 " + restCoin + " 입니다.";
-    console.log(restCoinPrint);
-    return restCoin;
+    let result = [];
+    sellItem.sellItemStock.filter(value => {
+      let splitData = value.split("/");
+      if (splitData[0] === wantItem && splitData[1] >= 1) {
+        result.push(wantItem);
+        console.log(wantItem + "가 나왔습니다.");
+      } else if (splitData[0] === wantItem && splitData[1] === "재고없음") {
+        result.push("재고없음");
+        console.log(noticeWord.noneStock + "\n");
+      }
+    });
+    return result;
   }
 }
 
-// var result = getChooseItem("파워에이드", getSellingItem(coin));
-// console.log(result + "\n");
+// 현재 투입한 돈에서 제고가 있는 구매 할 수 있는 제품의 가격값을 뺀 나머지 값 반환 => 반환값: 나머지 가격 
+function getRestMoney(stockItem, coin) {
+  if (stockItem[0] !== "재고없음") {
+    let restCoin = 0;
+    sellItem.sellItemPrice.forEach(value => {
+      let splitDataStock = value.split("$");
+      if (splitDataStock[0] === stockItem[0]) {
+        restCoin = coin - splitDataStock[1];
+      }
+    });
+    let print = "현재잔돈: " + restCoin + "원 " + "\n";
+    console.log(print);
+    return restCoin;
+  } else {
+    return stockItem;
+  }
+}
 
-// getRestMoney(coin, getChooseItem("딸기우유", getSellingItem(coin)), "미에로화이바");
 
-// var result2 = getRestMoney(result, getChooseItem("파워에이드", getSellingItem(result)));
+// 현 나머지 값에서 다시 탐색해 구매할 수 있는 제품이 있는지 확인하는 함수 => 반환값: 있다면 다시 제품목록을 반환 / 없다면 돈을 반환해 준다.
+function getReSellingItem(coin, wantMoreItem) {
+  var reSelling = getSellingItem(coin);
+  if(wantMoreItem){
+    let reChoose = getChooseItem(wantMoreItem, reSelling);
+    let returnCoin = getRestMoney(reChoose, coin);
+    console.log(returnCoin);
+  } else {
+    let finalPrint ="잔돈 " + coin +  noticeWord.returnCoin;
+    console.log(finalPrint);
+    return coin;
+  }
+}
 
-var chooseItem = getChooseItem("콜라", getSellingItem(coin));
-getRestMoney(coin, chooseItem, "딸기우유");
+var sellItem = getSellingItem(coin3); // 제품의 구매 금액이 부족합니다.
+
+var sellItem = getSellingItem(coin2);
+var chooseItem = getChooseItem("콜라", sellItem);
+var restCoin = getRestMoney(chooseItem, coin2);
+var resultAction = getReSellingItem(restCoin);
