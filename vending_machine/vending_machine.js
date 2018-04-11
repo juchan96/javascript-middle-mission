@@ -102,8 +102,7 @@ function getReSellingItem(coin, wantMoreItem) {
 getSellingItem(notCoin); // 숫자만 입력하십시오.
 getSellingItem(coin3); // 제품의 구매 금액이 부족합니다.
 
-
-// var sellItem = getSellingItem(coin2);
-// var chooseItem = getChooseItem("콜라", sellItem);
-// var restCoin = getRestMoney(chooseItem, coin2);
-// var resultAction = getReSellingItem(restCoin);
+var sellItem = getSellingItem(coin2);
+var chooseItem = getChooseItem("콜라", sellItem);
+var restCoin = getRestMoney(chooseItem, coin2);
+var resultAction = getReSellingItem(restCoin);
