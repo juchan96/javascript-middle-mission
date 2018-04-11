@@ -1,8 +1,3 @@
-/* 
-
-getRestMoney(choose2, "딸기우유");
-getRestMoney(choose2, "딸기우유");
-*/
 var itemList = require("./drinkItem.js");
 
 var noticeWord = {
@@ -18,7 +13,8 @@ var coin2 = 3000;
 var coin3 = 500;
 var notCoin = "1000";
 
-// 돈을 넣었을때 그 돈만큼 살수 있는 물건 탐색 / 저장 => 반환값: 탐색한 물건들 객체안 []로 전달
+// 돈을 넣었을때 그 돈만큼 살수 있는 물건 탐색 / 저장 
+// => 반환값: 탐색한 물건들 객체안 []로 전달
 function getSellingItem(coin) {
   let shoppingItem = {
     sellPrintItem: [],
@@ -26,23 +22,30 @@ function getSellingItem(coin) {
     sellItemPrice: []
   };
 
-  for (let i = 0; i < itemList.length; i++) {
-    if (coin >= itemList[i].price) {
-      shoppingItem.sellPrintItem.push(itemList[i].item + "(" + itemList[i].stock + ")");
-      shoppingItem.sellItemStock.push(itemList[i].item + "/" + itemList[i].stock);
-      shoppingItem.sellItemPrice.push(itemList[i].item + "$" + itemList[i].price);
-    } else {
-      let dontBuy = noticeWord.dontBuyDrink + "\n";
-      console.log(dontBuy);
-      return false;
+  if(typeof coin === "number"){
+    for (let i = 0; i < itemList.length; i++) {
+      if (coin >= itemList[i].price) {
+        shoppingItem.sellPrintItem.push(itemList[i].item + "(" + itemList[i].stock + ")");
+        shoppingItem.sellItemStock.push(itemList[i].item + "/" + itemList[i].stock);
+        shoppingItem.sellItemPrice.push(itemList[i].item + "$" + itemList[i].price);
+      } else {
+        let dontBuy = noticeWord.dontBuyDrink + "\n";
+        console.log(dontBuy);
+        return false;
+      }
     }
+    let print = noticeWord.usefulDrink + shoppingItem.sellPrintItem + "\n" + noticeWord.choiceDrink + "\n";
+    console.log(print);
+    return shoppingItem;
+  } else {
+    let notCoinPrint = "숫자만 입력하십시오."
+    console.log(notCoinPrint);
+    return notCoinPrint;
   }
-  let print = noticeWord.usefulDrink + shoppingItem.sellPrintItem + "\n" + noticeWord.choiceDrink + "\n";
-  console.log(print);
-  return shoppingItem;
 }
 
-// 구매할 수 있는 목록 중 재고의 유무를 탐색 해주는 기능 => 반환값: 재고가 있는 제품이라면 제품의 가격 / 없다면 재고가 없다는 걸 출력
+// 구매할 수 있는 목록 중 재고의 유무를 탐색 해주는 기능 
+// => 반환값: 재고가 있는 제품이라면 제품의 가격 / 없다면 재고가 없다는 걸 출력
 function getChooseItem(wantItem, sellItem) {
   if (sellItem === false) {
     return sellItem;
@@ -62,7 +65,8 @@ function getChooseItem(wantItem, sellItem) {
   }
 }
 
-// 현재 투입한 돈에서 제고가 있는 구매 할 수 있는 제품의 가격값을 뺀 나머지 값 반환 => 반환값: 나머지 가격 
+// 현재 투입한 돈에서 제고가 있는 구매 할 수 있는 제품의 가격값을 뺀 나머지 값 반환 
+// => 반환값: 나머지 가격 
 function getRestMoney(stockItem, coin) {
   if (stockItem[0] !== "재고없음") {
     let restCoin = 0;
@@ -80,8 +84,8 @@ function getRestMoney(stockItem, coin) {
   }
 }
 
-
-// 현 나머지 값에서 다시 탐색해 구매할 수 있는 제품이 있는지 확인하는 함수 => 반환값: 있다면 다시 제품목록을 반환 / 없다면 돈을 반환해 준다.
+// 현 나머지 값에서 다시 탐색해 구매할 수 있는 제품이 있는지 확인하는 함수 
+// => 반환값: 있다면 다시 제품목록을 반환 / 없다면 돈을 반환해 준다.
 function getReSellingItem(coin, wantMoreItem) {
   var reSelling = getSellingItem(coin);
   if(wantMoreItem){
@@ -95,9 +99,11 @@ function getReSellingItem(coin, wantMoreItem) {
   }
 }
 
-var sellItem = getSellingItem(coin3); // 제품의 구매 금액이 부족합니다.
+getSellingItem(notCoin); // 숫자만 입력하십시오.
+getSellingItem(coin3); // 제품의 구매 금액이 부족합니다.
 
-var sellItem = getSellingItem(coin2);
-var chooseItem = getChooseItem("콜라", sellItem);
-var restCoin = getRestMoney(chooseItem, coin2);
-var resultAction = getReSellingItem(restCoin);
+
+// var sellItem = getSellingItem(coin2);
+// var chooseItem = getChooseItem("콜라", sellItem);
+// var restCoin = getRestMoney(chooseItem, coin2);
+// var resultAction = getReSellingItem(restCoin);
