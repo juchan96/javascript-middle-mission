@@ -1,3 +1,29 @@
+/* 
+## 변수명 
+- itemList: 전체 물품 데이터 객체 (item: 물품명, price: 물품가격, stock: 물품수량)
+- noticeWord: 안내 문구 객체
+- coin2, coin3: 투입 금액
+- notCoin: 문자형(테스트)
+- shoppintItem: 구매가능한 물건의 탐색 값들
+
+## 함수 기능
+- getSellingItem 함수 (투입금액)
+돈을 넣었을때 그 돈만큼 살수 있는 물건 탐색 / 저장 
+=> 반환값: 탐색한 물건들 객체안 []로 전달
+
+- getChooseItem 함수 (원하는물품명, 탐색물건의 배열)
+구매할 수 있는 목록 중 재고의 유무를 탐색 해주는 기능 
+=> 반환값: 재고가 있는 제품이라면 제품의 가격 / 없다면 재고가 없다는 걸 출력
+
+- getRestMoney 함수 (재고있는 물품명, 투입금액)
+현재 투입한 돈에서 제고가 있는 구매 할 수 있는 제품의 가격값을 뺀 나머지 값 반환 
+=> 반환값: 나머지 가격 
+
+- getReSellingItem 함수 (나머지 금액, 추가로 구매하고싶은 제품명)
+구매하고 싶은 제품명이 있다면 나머지 값에 다시 구매할 수 있는 제품이 있는지 탐색
+=> 반환값: 제품명이 있다면 다시 제품목록을 출력 / 없다면 돈을 반환해 준다.
+*/
+
 var itemList = require("./drinkItem.js");
 
 var noticeWord = {
@@ -13,8 +39,6 @@ var coin2 = 3000;
 var coin3 = 500;
 var notCoin = "1000";
 
-// 돈을 넣었을때 그 돈만큼 살수 있는 물건 탐색 / 저장 
-// => 반환값: 탐색한 물건들 객체안 []로 전달
 function getSellingItem(coin) {
   let shoppingItem = {
     sellPrintItem: [],
@@ -44,8 +68,6 @@ function getSellingItem(coin) {
   }
 }
 
-// 구매할 수 있는 목록 중 재고의 유무를 탐색 해주는 기능 
-// => 반환값: 재고가 있는 제품이라면 제품의 가격 / 없다면 재고가 없다는 걸 출력
 function getChooseItem(wantItem, sellItem) {
   if (sellItem === false) {
     return sellItem;
@@ -65,8 +87,6 @@ function getChooseItem(wantItem, sellItem) {
   }
 }
 
-// 현재 투입한 돈에서 제고가 있는 구매 할 수 있는 제품의 가격값을 뺀 나머지 값 반환 
-// => 반환값: 나머지 가격 
 function getRestMoney(stockItem, coin) {
   if (stockItem[0] !== "재고없음") {
     let restCoin = 0;
@@ -84,8 +104,6 @@ function getRestMoney(stockItem, coin) {
   }
 }
 
-// 현 나머지 값에서 다시 탐색해 구매할 수 있는 제품이 있는지 확인하는 함수 
-// => 반환값: 있다면 다시 제품목록을 반환 / 없다면 돈을 반환해 준다.
 function getReSellingItem(coin, wantMoreItem) {
   var reSelling = getSellingItem(coin);
   if(wantMoreItem){
