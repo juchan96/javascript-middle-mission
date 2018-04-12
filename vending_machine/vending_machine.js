@@ -35,34 +35,34 @@ var noticeWord = {
 };
 
 // var coin = 3500;
-var coin2 = 3000;
+var coin2 = 2000;
 var coin3 = 500;
 var notCoin = "1000";
 
 function getSellingItem(coin) {
-  let shoppingItem = {
-    sellPrintItem: [],
-    sellItemStock: [],
-    sellItemPrice: []
+  let items = {
+    product: [],
+    stock: [],
+    price: []
   };
 
   if(typeof coin === "number"){
     for (let i = 0; i < itemList.length; i++) {
       if (coin >= itemList[i].price) {
-        shoppingItem.sellPrintItem.push(itemList[i].item + "(" + itemList[i].stock + ")");
-        shoppingItem.sellItemStock.push(itemList[i].item + "/" + itemList[i].stock);
-        shoppingItem.sellItemPrice.push(itemList[i].item + "$" + itemList[i].price);
+        items.product.push(itemList[i].item + "(" + itemList[i].stock + ")");
+        items.stock.push(itemList[i].item + "/" + itemList[i].stock);
+        items.price.push(itemList[i].item + "$" + itemList[i].price);
       } else {
         let dontBuy = noticeWord.dontBuyDrink + "\n";
         console.log(dontBuy);
         return false;
       }
     }
-    let print = noticeWord.usefulDrink + shoppingItem.sellPrintItem + "\n" + noticeWord.choiceDrink + "\n";
+    let print = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink + "\n";
     console.log(print);
-    return shoppingItem;
+    return items;
   } else {
-    let notCoinPrint = "숫자만 입력하십시오."
+    let notCoinPrint = "숫자만 입력하십시오.";
     console.log(notCoinPrint);
     return notCoinPrint;
   }
@@ -73,12 +73,12 @@ function getChooseItem(wantItem, sellItem) {
     return sellItem;
   } else {
     let result = [];
-    sellItem.sellItemStock.filter(value => {
-      let splitData = value.split("/");
-      if (splitData[0] === wantItem && splitData[1] >= 1) {
+    sellItem.stock.filter(value => {
+      let splitStock = value.split("/");
+      if (splitStock[0] === wantItem && splitStock[1] >= 1) {
         result.push(wantItem);
         console.log(wantItem + "가 나왔습니다.");
-      } else if (splitData[0] === wantItem && splitData[1] === "재고없음") {
+      } else if (splitStock[0] === wantItem && splitStock[1] === "재고없음") {
         result.push("재고없음");
         console.log(noticeWord.noneStock + "\n");
       }
@@ -90,10 +90,10 @@ function getChooseItem(wantItem, sellItem) {
 function getRestMoney(stockItem, coin) {
   if (stockItem[0] !== "재고없음") {
     let restCoin = 0;
-    sellItem.sellItemPrice.forEach(value => {
-      let splitDataStock = value.split("$");
-      if (splitDataStock[0] === stockItem[0]) {
-        restCoin = coin - splitDataStock[1];
+    sellItem.price.forEach(value => {
+      let splitPrice = value.split("$");
+      if (splitPrice[0] === stockItem[0]) {
+        restCoin = coin - splitPrice[1];
       }
     });
     let print = "현재잔돈: " + restCoin + "원 " + "\n";
