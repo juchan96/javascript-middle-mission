@@ -46,26 +46,28 @@ function getSellingItem(coin) {
     price: []
   };
 
-  if(typeof coin === "number"){
-    for (let i = 0; i < itemList.length; i++) {
-      if (coin >= itemList[i].price) {
-        items.product.push(itemList[i].item + "(" + itemList[i].stock + ")");
-        items.stock.push(itemList[i].item + "/" + itemList[i].stock);
-        items.price.push(itemList[i].item + "$" + itemList[i].price);
-      } else {
-        let dontBuy = noticeWord.dontBuyDrink + "\n";
-        console.log(dontBuy);
-        return false;
-      }
-    }
-    let sellingMSG = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink + "\n";
-    console.log(sellingMSG);
-    return items;
-  } else {
+  let checkType = Object.prototype.toString.call(coin);
+
+  if (checkType !== "[object Number]") {
     let notCoinPrint = "숫자만 입력하십시오.";
     console.log(notCoinPrint);
     return notCoinPrint;
   }
+
+  for (let i = 0; i < itemList.length; i++) {
+    if (coin >= itemList[i].price) {
+      items.product.push(itemList[i].item + "(" + itemList[i].stock + ")");
+      items.stock.push(itemList[i].item + "/" + itemList[i].stock);
+      items.price.push(itemList[i].item + "$" + itemList[i].price);
+    } else {
+      let dontBuy = noticeWord.dontBuyDrink + "\n";
+      console.log(dontBuy);
+      return false;
+    }
+  }
+  let sellingMSG = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink + "\n";
+  console.log(sellingMSG);
+  return items;
 }
 
 function getChooseItem(wantItem, sellItem) {
@@ -106,12 +108,12 @@ function getRestMoney(stockItem, coin) {
 
 function getReSellingItem(coin, wantMoreItem) {
   var reSelling = getSellingItem(coin);
-  if(wantMoreItem){
+  if (wantMoreItem) {
     let reChoose = getChooseItem(wantMoreItem, reSelling);
     let returnCoin = getRestMoney(reChoose, coin);
     console.log(returnCoin);
   } else {
-    let returnCoin ="잔돈 " + coin +  noticeWord.returnCoin;
+    let returnCoin = "잔돈 " + coin + noticeWord.returnCoin;
     console.log(returnCoin);
     return coin;
   }
