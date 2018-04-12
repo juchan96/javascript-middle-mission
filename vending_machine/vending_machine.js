@@ -24,9 +24,9 @@
 => 반환값: 제품명이 있다면 다시 제품목록을 출력 / 없다면 돈을 반환해 준다.
 */
 
-var itemList = require("./drinkItem.js");
+let itemList = require("./drinkItem.js");
 
-var noticeWord = {
+const noticeWord = {
   "usefulDrink": "사용 가능한 음료수 목록 => ",
   "choiceDrink": "어떤 상품을 선택하시겠습니까?",
   "dontBuyDrink": "제품의 구매 금액이 부족합니다.",
@@ -34,10 +34,10 @@ var noticeWord = {
   "returnCoin": "원이 반환 되었습니다."
 };
 
-// var coin = 3500;
-var coin2 = 2000;
-var coin3 = 500;
-var notCoin = "1000";
+// let coin = 3500;
+let coin2 = 2000;
+let coin3 = 500;
+let notCoin = "1000";
 
 function getSellingItem(coin) {
   let items = {
@@ -46,7 +46,7 @@ function getSellingItem(coin) {
     price: []
   };
 
-  let checkType = Object.prototype.toString.call(coin);
+  const checkType = Object.prototype.toString.call(coin);
 
   if (checkType !== "[object Number]") {
     let notCoinPrint = "숫자만 입력하십시오.";
@@ -107,7 +107,7 @@ function getRestMoney(stockItem, coin) {
 }
 
 function getReSellingItem(coin, wantMoreItem) {
-  var reSelling = getSellingItem(coin);
+  const reSelling = getSellingItem(coin);
   if (wantMoreItem) {
     let reChoose = getChooseItem(wantMoreItem, reSelling);
     let returnCoin = getRestMoney(reChoose, coin);
@@ -122,7 +122,7 @@ function getReSellingItem(coin, wantMoreItem) {
 getSellingItem(notCoin); // 숫자만 입력하십시오.
 getSellingItem(coin3); // 제품의 구매 금액이 부족합니다.
 
-var sellItem = getSellingItem(coin2);
-var chooseItem = getChooseItem("콜라", sellItem);
-var restCoin = getRestMoney(chooseItem, coin2);
-var resultAction = getReSellingItem(restCoin);
+const sellItem = getSellingItem(coin2);
+const chooseItem = getChooseItem("콜라", sellItem);
+const restCoin = getRestMoney(chooseItem, coin2);
+const resultAction = getReSellingItem(restCoin);
