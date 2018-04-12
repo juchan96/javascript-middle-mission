@@ -73,20 +73,20 @@ function getSellingItem(coin) {
 function getChooseItem(wantItem, sellItem) {
   if (sellItem === false) {
     return sellItem;
-  } else {
-    let result = [];
-    sellItem.stock.forEach(value => {
-      let splitStock = value.split("/");
-      if (splitStock[0] === wantItem && splitStock[1] >= 1) {
-        result.push(wantItem);
-        console.log(wantItem + "가 나왔습니다.");
-      } else if (splitStock[0] === wantItem && splitStock[1] === "재고없음") {
-        result.push("재고없음");
-        console.log(noticeWord.noneStock + "\n");
-      }
-    });
-    return result;
   }
+
+  let result = [];
+  sellItem.stock.forEach(value => {
+    let splitStock = value.split("/");
+    if (splitStock[0] === wantItem && splitStock[1] >= 1) {
+      result.push(wantItem);
+      console.log(wantItem + "가 나왔습니다.");
+    } else if (splitStock[0] === wantItem && splitStock[1] === "재고없음") {
+      result.push("재고없음");
+      console.log(noticeWord.noneStock + "\n");
+    }
+  });
+  return result;
 }
 
 function getRestMoney(stockItem, coin) {
