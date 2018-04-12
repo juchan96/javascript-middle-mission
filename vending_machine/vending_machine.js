@@ -58,8 +58,8 @@ function getSellingItem(coin) {
         return false;
       }
     }
-    let print = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink + "\n";
-    console.log(print);
+    let sellingMSG = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink + "\n";
+    console.log(sellingMSG);
     return items;
   } else {
     let notCoinPrint = "숫자만 입력하십시오.";
@@ -73,7 +73,7 @@ function getChooseItem(wantItem, sellItem) {
     return sellItem;
   } else {
     let result = [];
-    sellItem.stock.filter(value => {
+    sellItem.stock.forEach(value => {
       let splitStock = value.split("/");
       if (splitStock[0] === wantItem && splitStock[1] >= 1) {
         result.push(wantItem);
@@ -96,8 +96,8 @@ function getRestMoney(stockItem, coin) {
         restCoin = coin - splitPrice[1];
       }
     });
-    let print = "현재잔돈: " + restCoin + "원 " + "\n";
-    console.log(print);
+    let restMSG = "현재잔돈: " + restCoin + "원 " + "\n";
+    console.log(restMSG);
     return restCoin;
   } else {
     return stockItem;
@@ -111,8 +111,8 @@ function getReSellingItem(coin, wantMoreItem) {
     let returnCoin = getRestMoney(reChoose, coin);
     console.log(returnCoin);
   } else {
-    let finalPrint ="잔돈 " + coin +  noticeWord.returnCoin;
-    console.log(finalPrint);
+    let returnCoin ="잔돈 " + coin +  noticeWord.returnCoin;
+    console.log(returnCoin);
     return coin;
   }
 }
