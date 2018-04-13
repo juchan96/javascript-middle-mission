@@ -31,98 +31,38 @@ const noticeWord = {
   "choiceDrink": "어떤 상품을 선택하시겠습니까?",
   "dontBuyDrink": "제품의 구매 금액이 부족합니다.",
   "noneStock": "해당 제품은 제고가 없습니다",
-  "returnCoin": "원이 반환 되었습니다."
+  "returnCoin": "원이 반환 되었습니다.",
+  "notNumber": "숫자형태를 기입해 주십시요."
 };
 
-// let coin = 3500;
+let coin = 3500;
 let coin2 = 2000;
 let coin3 = 500;
 let notCoin = "1000";
 
-function getSellingItem(coin) {
+
+function insertCoin(coin) {
+  const checkType = Object.prototype.toString.call(coin);
+  
   let items = {
     product: [],
     stock: [],
     price: []
   };
 
-  const checkType = Object.prototype.toString.call(coin);
-
-  if (checkType !== "[object Number]") {
-    let notCoinPrint = "숫자만 입력하십시오.";
-    console.log(notCoinPrint);
-    return notCoinPrint;
-  }
-
-  for (let i = 0; i < itemList.length; i++) {
-    if (coin >= itemList[i].price) {
-      items.product.push(itemList[i].item + "(" + itemList[i].stock + ")");
-      items.stock.push(itemList[i].item + "/" + itemList[i].stock);
-      items.price.push(itemList[i].item + "$" + itemList[i].price);
-    } else {
-      let dontBuy = noticeWord.dontBuyDrink + "\n";
-      console.log(dontBuy);
-      return false;
+  if(checkType !== '[object Number]') return noticeWord.notNumber; 
+  
+  for(selling in itemList){
+    if(coin >= itemList[selling].price){
+      items.product.push("\n" + itemList[selling].item + "(" + "가격:" + itemList[selling].price + " / 재고:"+ itemList[selling].stock + ")" );
+      items.price.push(itemList[selling].item + "$" + itemList[selling].price);
+      items.stock.push(itemList[selling].item + "/" + itemList[selling].stock);
     }
   }
-  let sellingMSG = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink + "\n";
-  console.log(sellingMSG);
+  
+  let sellItem = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink;
+  console.log(sellItem);
+
   return items;
 }
 
-function getChooseItem(wantItem, sellItem) {
-  if (sellItem === false) {
-    return sellItem;
-  }
-
-  let result = [];
-  sellItem.stock.forEach(value => {
-    let splitStock = value.split("/");
-    if (splitStock[0] === wantItem && splitStock[1] >= 1) {
-      result.push(wantItem);
-      console.log(wantItem + "가 나왔습니다.");
-    } else if (splitStock[0] === wantItem && splitStock[1] === "재고없음") {
-      result.push("재고없음");
-      console.log(noticeWord.noneStock + "\n");
-    }
-  });
-  return result;
-}
-
-function getRestMoney(stockItem, coin) {
-  if (stockItem[0] !== "재고없음") {
-    let restCoin = 0;
-    sellItem.price.forEach(value => {
-      let splitPrice = value.split("$");
-      if (splitPrice[0] === stockItem[0]) {
-        restCoin = coin - splitPrice[1];
-      }
-    });
-    let restMSG = "현재잔돈: " + restCoin + "원 " + "\n";
-    console.log(restMSG);
-    return restCoin;
-  } else {
-    return stockItem;
-  }
-}
-
-function getReSellingItem(coin, wantMoreItem) {
-  const reSelling = getSellingItem(coin);
-  if (wantMoreItem) {
-    let reChoose = getChooseItem(wantMoreItem, reSelling);
-    let returnCoin = getRestMoney(reChoose, coin);
-    console.log(returnCoin);
-  } else {
-    let returnCoin = "잔돈 " + coin + noticeWord.returnCoin;
-    console.log(returnCoin);
-    return coin;
-  }
-}
-
-getSellingItem(notCoin); // 숫자만 입력하십시오.
-getSellingItem(coin3); // 제품의 구매 금액이 부족합니다.
-
-const sellItem = getSellingItem(coin2);
-const chooseItem = getChooseItem("콜라", sellItem);
-const restCoin = getRestMoney(chooseItem, coin2);
-const resultAction = getReSellingItem(restCoin);
