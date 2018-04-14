@@ -1,18 +1,12 @@
-var drinkItem = [
-  {
+var drinkItem = [{
     "item": "콜라",
     "price": 1000,
-    "stock": 35
+    "stock": 5
   },
   {
     "item": "사이다",
     "price": 1000,
-    "stock": 132
-  },
-  {
-    "item": "파워에이드",
-    "price": 1300,
-    "stock": "재고없음"
+    "stock": 2
   },
   {
     "item": "포도주스",
@@ -21,18 +15,23 @@ var drinkItem = [
   },
   {
     "item": "딸기우유",
-    "price": 1000,
-    "stock": 25
+    "price": 500,
+    "stock": 5
   },
   {
     "item": "미에로화이바",
     "price": 900,
-    "stock": 44
+    "stock": 4
   },
   {
     "item": "물",
-    "price": 250,
-    "stock": 44
+    "price": 500,
+    "stock": 4
+  },
+  {
+    "item": "파워에이드",
+    "price": 1000,
+    "stock": "재고없음"
   }
 ];
 

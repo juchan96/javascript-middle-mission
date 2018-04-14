@@ -28,6 +28,7 @@ let itemList = require("./drinkItem.js");
 
 const noticeWord = {
   "usefulDrink": "사용 가능한 음료수 목록 => ",
+  "outputDrink": " 상품이 나왔습니다.",
   "choiceDrink": "어떤 상품을 선택하시겠습니까?",
   "dontBuyDrink": "제품의 구매 금액이 부족합니다.",
   "noneStock": "해당 제품은 제고가 없습니다",
@@ -35,9 +36,7 @@ const noticeWord = {
   "notNumber": "숫자형태를 기입해 주십시요."
 };
 
-let coin = 3500;
-let coin2 = 2000;
-let coin3 = 500;
+let coin = 1000;
 let notCoin = "1000";
 
 
@@ -45,24 +44,75 @@ function insertCoin(coin) {
   const checkType = Object.prototype.toString.call(coin);
   
   let items = {
+    tableData: [],
     product: [],
     stock: [],
     price: []
   };
-
-  if(checkType !== '[object Number]') return noticeWord.notNumber; 
+  
+  let INPUT_NUMBER_ERROR_MSG = "[object Number]";
+  if(checkType !== INPUT_NUMBER_ERROR_MSG) return noticeWord.notNumber; 
   
   for(selling in itemList){
     if(coin >= itemList[selling].price){
-      items.product.push("\n" + itemList[selling].item + "(" + "가격:" + itemList[selling].price + " / 재고:"+ itemList[selling].stock + ")" );
-      items.price.push(itemList[selling].item + "$" + itemList[selling].price);
-      items.stock.push(itemList[selling].item + "/" + itemList[selling].stock);
+      items.tableData.push(itemList[selling].item + "(" + itemList[selling].price + ")");
+      items.product.push(itemList[selling].item + "$" + itemList[selling].price + "$" + itemList[selling].stock);
+    } else {
+      items.tableData.push( itemList[selling].item + "(" + "구매불가" + ")");
+      let dontBuy = noticeWord.usefulDrink + "없음";
+      return dontBuy; 
     }
   }
   
-  let sellItem = noticeWord.usefulDrink + items.product + "\n" + noticeWord.choiceDrink;
+  let sellItem = noticeWord.usefulDrink + items.tableData + "\n" + noticeWord.choiceDrink;
   console.log(sellItem);
 
   return items;
 }
 
+function selectItem(inputItem, sellItem) {
+  if(!sellItem) return "잔돈" + coin + "이 반환했습니다.";
+  
+  let sale = sellItem.product;
+  let selectResult = []; 
+
+  sale.forEach(value => {
+    let splitData = value.split("$");
+    let nameData = splitData[0]; 
+    let priceData = splitData[1];
+    
+    if(nameData === inputItem && splitData[2] === "재고없음"){
+      console.log("\n" + noticeWord.noneStock);
+      return noticeWord.noneStock; 
+    } else if(nameData === inputItem) {
+      let calculateCoin = coin - priceData; 
+      selectResult.push(nameData, calculateCoin);
+    }
+  });
+
+  let setItem = selectResult[0] + noticeWord.outputDrink; 
+  let setRestCoin = " 현재잔돈: " + selectResult[1] + "원"; 
+  let reSelect = insertCoin(selectResult[1]);
+  console.log(setItem + setRestCoin);
+  return selectResult;
+}
+
+function returnMoney(returnCoin, selectResult) {
+  let result = selectResult;
+  if(!result){
+    let backChange = "잔돈 "+ returnCoin[1] + "이 반환했습니다.";
+    console.log(backChange);
+    return backChange;
+  }
+}
+
+const sell_item = insertCoin(coin); // 사용 가능한 음료수 목록 => ....
+
+// selectItem("파워에이드", sell_item); // 해당 제품은 제고가 없습니다.
+const select = selectItem("미에로화이바", sell_item); // ...가 나왔습니다. ...
+returnMoney(select);
+
+
+const sellingItem = insertCoin(900);
+selectItem(sellingItem);
+// returnMoney();
