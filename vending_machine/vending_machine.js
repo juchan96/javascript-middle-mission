@@ -28,86 +28,80 @@ let itemList = require("./drinkItem.js");
 
 const noticeWord = {
   "usefulDrink": "사용 가능한 음료수 목록 => ",
-  "outputDrink": " 상품이 나왔습니다.",
-  "choiceDrink": "어떤 상품을 선택하시겠습니까?",
-  "dontBuyDrink": "제품의 구매 금액이 부족합니다.",
-  "noneStock": "해당 제품은 제고가 없습니다",
-  "returnCoin": "원이 반환 되었습니다.",
-  "notNumber": "숫자형태를 기입해 주십시요."
+  "outputDrink": " 상품이 나왔습니다. ",
+  "dontBuyDrink": "제품의 구매 금액이 부족합니다. ",
+  "noneStock": " 제품은 제고가 없습니다. ",
+  "returnCoin": " 원이 반환 되었습니다. ",
+  "notNumber": "숫자형태를 기입해 주십시요. "
 };
 
-let coin = 1000;
-let notCoin = "1000";
-
-
-function insertCoin(coin) {
+function vendingMachine(coin, wantItem) {
+  // insertCoin()
   const checkType = Object.prototype.toString.call(coin);
+  let INPUT_NUMBER_ERROR_MSG = "[object Number]";
+  if (checkType !== INPUT_NUMBER_ERROR_MSG) return noticeWord.notNumber;
   
+  if (coin < 500) {
+    console.log(noticeWord.dontBuyDrink);
+    return coin + noticeWord.returnCoin;
+  }
+  
+  let productArr = [];
+  let tableArr = [];
   let items = {
-    productArr: [],
-    noneStockArr: [],
+    buyItem: [],
+    dontBuyItem: []
   };
   
-  let INPUT_NUMBER_ERROR_MSG = "[object Number]";
-  if(checkType !== INPUT_NUMBER_ERROR_MSG) return noticeWord.notNumber; 
-  
-  for(selling in itemList){
-    let price = itemList[selling].price;
-
-    let product = itemList[selling].item + "$" + itemList[selling].price + "$" + itemList[selling].stock;
-    let nonTable = itemList[selling].item + "(" + "구매불가" + ")";
+  for (sell in itemList) {
+    let product = itemList[sell].item + "$" + itemList[sell].price + "$" + itemList[sell].stock;
+    let restCoin = coin - itemList[sell].price;
     
-    if(coin >= price){
-      items.productArr.push(product);
-    } else {
-      items.noneStockArr.push(nonTable);
+    if (coin >= itemList[sell].price) {
+      tableArr.push(itemList[sell].item + "(" + itemList[sell].price + ")");
+      productArr.push(product + "$" + restCoin);
     }
   }
-  return items;
-}
+  console.log(noticeWord.usefulDrink + tableArr);
 
-function selectItem(inputItem, sellItem) {
-  let sale = sellItem.productArr;
-  let selectResult = []; 
-
-  sale.forEach(value => {
+  // selectItem()
+  productArr.forEach(value => {
     let splitData = value.split("$");
-    let nameData = splitData[0]; 
+    let itemData = splitData[0];
     let priceData = splitData[1];
-    
-    if(nameData === inputItem){
-    //  어차피 inputItem이 없으므로 ...상품이 나왔습니다. 현재잔돈 : 사용가능음료수: ....
-      console.log(nameData);
-    } else {
-    // nameData 에 없으므로 해당 상품 없음 return 
+    let stockData = splitData[2];
+    let restCoinData = splitData[3];
+
+    let stock = itemData === wantItem && stockData === "재고없음";
+    let noneStock = itemData === wantItem && stockData !== "재고없음"; 
+
+    if(stock){
+      items.dontBuyItem.push(itemData + "/" + coin);
+    } else if (noneStock){
+      items.buyItem.push(itemData + "/" + restCoinData);
     }
   });
+  console.log(wantItem + noticeWord.outputDrink);
 
-  // console.log(inputItem + " 상품은 선택 할 수 없습니다.");
-  // return sellItem.noneStock; 
-  let setItem = selectResult[0] + noticeWord.outputDrink; 
-  let setRestCoin = " 현재잔돈: " + selectResult[1] + "원"; 
-  let reSelect = insertCoin(selectResult[1]);
-  console.log(setItem + setRestCoin);
-  return selectResult;
+
+  // returnCoin()
+  items.buyItem.forEach(value => {
+    let splitValue = value.split("/");
+    let itemValue = splitValue[0];
+    let restCoinValue = splitValue[1];
+
+    if(restCoinValue === 0 || restCoinValue < 500){
+      console.log(noticeWord.dontBuyDrink + restCoinValue + noticeWord.returnCoin);
+      return restCoinValue;
+    } else {
+      // 제품탐색실행
+    }
+  });
 }
 
-// function returnMoney(returnCoin, selectResult) {
-//   let result = selectResult;
-//   if(!result){
-//     let backChange = "잔돈 "+ returnCoin[1] + "이 반환했습니다.";
-//     console.log(backChange);
-//     return backChange;
-//   }
-// }
-
-const sell_item = insertCoin(coin); // 사용 가능한 음료수 목록 => ....
-
-selectItem("파워에이드", sell_item); // 해당 제품은 제고가 없습니다.
-const select = selectItem("미에로화이바", sell_item); // ...가 나왔습니다. ...
-// returnMoney(select);
+console.log(vendingMachine(400, "파워에이드"));
+console.log(vendingMachine(1000, "파워에이드"));
+console.log(vendingMachine(1000, "콜라"));
 
 
-// const sellingItem = insertCoin(900);
-// selectItem(sellingItem);
-// returnMoney();
+
