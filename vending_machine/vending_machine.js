@@ -84,7 +84,28 @@ function selectItem(wantItem, productArr) {
   return items;
 }
 
+function returnCoin(items) {
+  items.buyItem.forEach(value => {
+    let splitValue = value.split("/");
+    let itemValue = splitValue[0];
+    let restCoinValue = splitValue[1];
+
+    if (restCoinValue === 0 || restCoinValue < 500) {
+      console.log(noticeWord.dontBuyDrink + restCoinValue + noticeWord.returnCoin);
+      return restCoinValue;
+    } else {
+      let transNumCoin = parseInt(restCoinValue);
+      let reSellingItem = insertCoin(transNumCoin);
+    }
+  });
+}
+
 // testData1
 insertCoin(400); // 제품의 구매 금액이 부족합니다. / ...원이 반환 되었습니다
 selectItem("파워에이드", insertCoin(1600)); // 사용가능한 음료수 목록 => ..... / ... 제품은 제고가 업습니다.
 let getItem = selectItem("콜라", insertCoin(1600)); // 사용가능한 음료수 목록 => .... / ".. 상품이 나왔습니다."  "(나머지금액)원" 
+returnCoin(getItem); // 나머지 금액이 있다면: 사용 가능한 음료수 목록 => ....
+
+// testData2 
+let getOtherItem = selectItem("물", insertCoin(500)); // 사용 가능한 음료수 목록 => ... / 나머지금액이 구매할 정도의 금액이 없다면 : ... 반환되었습니다.
+returnCoin(getOtherItem);
