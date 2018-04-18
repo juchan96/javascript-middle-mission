@@ -56,6 +56,35 @@ function insertCoin(coin) {
   console.log(noticeWord.usefulDrink + tableArr);
   return productArr;
 }
+
+function selectItem(wantItem, productArr) {
+  let items = {
+    buyItem: []
+  };
+
+  productArr.forEach(value => {
+    let splitData = value.split("$");
+    let itemData = splitData[0];
+    let priceData = splitData[1];
+    let stockData = splitData[2];
+    let restCoinData = splitData[3];
+    let insertCoinData = splitData[4];
+
+    let stock = itemData === wantItem && stockData !== "재고없음";
+    let noneStock = itemData === wantItem && stockData === "재고없음";
+
+    if (stock) {
+      items.buyItem.push(itemData + "/" + restCoinData);
+      console.log(itemData + noticeWord.outputDrink + restCoinData + "원");
+    } else if (noneStock) {
+      console.log(itemData + noticeWord.noneStock);
+    }
+  });
+
+  return items;
+}
+
 // testData1
 insertCoin(400); // 제품의 구매 금액이 부족합니다. / ...원이 반환 되었습니다
-insertCoin(1600); // 사용가능한 음료수 목록 => ..... / ... 제품은 제고가 업습니다.
+selectItem("파워에이드", insertCoin(1600)); // 사용가능한 음료수 목록 => ..... / ... 제품은 제고가 업습니다.
+let getItem = selectItem("콜라", insertCoin(1600)); // 사용가능한 음료수 목록 => .... / ".. 상품이 나왔습니다."  "(나머지금액)원" 
