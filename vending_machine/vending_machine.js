@@ -11,7 +11,7 @@
 
 > 반환값: 탐색한 물건들 객체안 []로 전달,
 
-- selectItem 함수 (원하는물품명, 탐색물건의 배열)
+- checkStock 함수 (원하는물품명, 탐색물건의 배열)
 구매할 수 있는 목록 중 재고의 유무를 탐색 해주는 기능
 > 반환값: 재고가 있는 제품이라면 제품의 가격 / 없다면 재고가 없다는 걸 출력
 
@@ -70,5 +70,28 @@ function searchItem(coin) {
   return sellingItem;
 }
 
+
+// 선택된 아이템이 재고가 있는 지 없는지 확인 하는 함수 
+function checkStock(wantItem, sellingItem) {
+  let buyItem = [];
+
+  sellingItem.productArr.filter(product => {
+    if (wantItem === product.item && product.stock === "재고없음") {
+      console.log(product.item + noticeWord.noneStock);
+    } else if (wantItem === product.item && product.stock !== "재고없음") {
+      let restCoin = sellingItem.insertCoin - product.price;
+      buyItem.push(product.item, restCoin);
+      console.log(product.item + noticeWord.outputDrink + "현재잔돈 : " + restCoin);
+    }
+  });
+
+  return buyItem;
+}
+
+
+
 insertCoin(400); // 제품의 구매 금액이 부족합니다. / ...원이 반환 되었습니다
 const sellingItem = insertCoin(1500); // 사용가능한 음료수 목록 => ..... 
+
+checkStock("파워에이드", sellingItem);  // ... 제품은 제고가 업습니다.
+let isRestCoin = checkStock("콜라", sellingItem); // 콜라 상품이 나왔습니다. 현재잔돈 : 500
