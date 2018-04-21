@@ -32,92 +32,43 @@ const noticeWord = {
   "notNumber": "숫자형태를 기입해 주십시요. "
 };
 
-function searchItem(coin) {
-  let sellingItem = {
-    productArr : [], // 자판기 내부 활용 배열 데이터 (아이템명 / 가격 / 제고 / 나머지값) 
-    tableArr : [] // 출력용 배열 데이터 ( 아이템명 / 가격 )
-  };
 
-  for (sell in itemList) {
-    let product = itemList[sell].item + "$" + itemList[sell].price + "$" + itemList[sell].stock;
-    let restCoin = coin - itemList[sell].price;
-  
-    if (coin >= itemList[sell].price) {
-      sellingItem.tableArr.push(itemList[sell].item + "(" + itemList[sell].price + ")");
-      sellingItem.productArr.push(product + "$" + restCoin);
-    }
-  }
-  return sellingItem;
-}
-
+// 동전확인 
 function insertCoin(coin) {
   const checkType = Object.prototype.toString.call(coin);
   let INPUT_NUMBER_ERROR_MSG = "[object Number]";
   if (checkType !== INPUT_NUMBER_ERROR_MSG) return noticeWord.notNumber;
-
+  
   if (coin < 500) {
     console.log(noticeWord.dontBuyDrink + "\n" + coin + noticeWord.returnCoin);
     return coin;
   }
-  let items =  searchItem(coin);
-
-  console.log(noticeWord.usefulDrink + items.tableArr);
+  let actingMachine = searchItem(coin);
+  
+  console.log(noticeWord.usefulDrink + actingMachine.tableArr);
+  return actingMachine;
 }
 
-// function selectItem(wantItem, productArr) {
-//   let items = {
-//     buyItem: []
-//   };
 
-//   productArr.forEach(value => {
-//     let splitData = value.split("$");
-//     let itemData = splitData[0];
-//     let priceData = splitData[1];
-//     let stockData = splitData[2];
-//     let restCoinData = splitData[3];
+// 구매가능 물품 탐색
+function searchItem(coin) {
+  let sellingItem = {
+    productArr : [], // 자판기 내부 활용 배열 데이터 (아이템명 / 가격 / 제고 / 나머지값) 
+    tableArr : [], // 출력용 배열 데이터 ( 아이템명 / 가격 )
+    insertCoin: []
+  };
 
-//     let stock = itemData === wantItem && stockData !== "재고없음";
-//     let noneStock = itemData === wantItem && stockData === "재고없음";
+  // for & in, for & of, filter, forEach, map메서드의 차이점과 실험 해보기
+  for (let sell of itemList) {
+    if (coin >= sell.price) {
+      sellingItem.productArr.push(sell);
+      sellingItem.tableArr.push(sell.item + "(" + sell.price + ")");
+    }
+  }
 
-    
-//   //   if (stock) {
-//   //     items.buyItem.push(itemData + "/" + restCoinData);
-//   //     console.log(itemData + noticeWord.outputDrink + restCoinData + "원");
-//   //   } else if (noneStock) {
-//   //     console.log(itemData + noticeWord.noneStock);
-//   //   }
-//   // });
+  sellingItem.insertCoin.push(coin);
+  return sellingItem;
+}
 
-//   return items;
-// }
-
-// function restCoin(params) {
-//   items.buyItem.forEach(
-//   //   value => {
-//   //   let splitValue = value.split("/");
-//   //   let itemValue = splitValue[0];
-//   //   let restCoinValue = splitValue[1];
-  
-//   //   if (restCoinValue === 0 || restCoinValue < 500) {
-//   //     console.log(noticeWord.dontBuyDrink + restCoinValue + noticeWord.returnCoin);
-//   //     return restCoinValue;
-//   //   } else {
-//   //     let transNumCoin = parseInt(restCoinValue);
-//   //     let reSellingItem = insertCoin(transNumCoin);
-//   //   }
-//   // });
-// }
-
-// function returnCoin(items) {
-//   // 탐색된 값을 반환만 해주는 함수
-// }
-
-// // testData1
-// insertCoin(400); // 제품의 구매 금액이 부족합니다. / ...원이 반환 되었습니다
-// selectItem("파워에이드", insertCoin(1600)); // 사용가능한 음료수 목록 => ..... / ... 제품은 제고가 업습니다.
-// let getItem = selectItem("콜라", insertCoin(1600)); // 사용가능한 음료수 목록 => .... / ".. 상품이 나왔습니다."  "(나머지금액)원" 
-// returnCoin(getItem); // 나머지 금액이 있다면: 사용 가능한 음료수 목록 => ....
-
-// // testData2 
-// let getOtherItem = selectItem("물", insertCoin(500)); // 사용 가능한 음료수 목록 => ... / 나머지금액이 구매할 정도의 금액이 없다면 : ... 반환되었습니다.
-// returnCoin(getOtherItem);
+insertCoin(400); // 제품의 구매 금액이 부족합니다. / ...원이 반환 되었습니다
+const sellingItem = insertCoin(1500); // 사용가능한 음료수 목록 => ..... 
