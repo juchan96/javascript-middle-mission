@@ -54,9 +54,9 @@
 
 1-1. 'n'원 만큼의 금액을 입력받는다.
 
-    => 'n'원의 금액을 인자로 받고, 사용 가능한 음료의 목록(음료 명, 가격, 재고 수량)을 반환해주는 insertCoin()함수 선언.
+    => 금액과 자판기 데이터를 인자로 받고, 사용 가능한 음료의 목록(음료 명, 가격, 재고 수량)을 반환해주는 insertCoin()함수 선언.
 
-    function insertCoin(coin) {
+    function insertCoin(coin, vendingMacData) {
       ......
       return result;
     }
@@ -65,13 +65,12 @@
 
 -반복문을 사용하여, 입력 금액 >= 음료가격 을 만족하는 음료 목록을 노출.
 
-    function insertCoin(coin) {
+    function insertCoin(coin, vendingMacData) {
       
 
       for(let i = 0; i<beverageData.length; i++) {
         if( coin <= beverageData[i][drinkPrice])
       }
-      c
 
       ......
     }
@@ -87,9 +86,9 @@
   - [ ]  잔액에서 구매할 수 있는 음료의 목록 노출시키기
 
 
-2-1. 음료를 입력받는다. (재고가 없는 음료를 입력받을시 선택할 수 없다는 메시지 노출)
+2-1. 음료와 자판기 데이터를 입력받는다. (재고가 없는 음료를 입력받을시 선택할 수 없다는 메시지 노출)
     
-    function selectItem(drink) {
+    function selectItem(drink, vendingMacData) {
     ......
     return result
     }
@@ -101,23 +100,23 @@
   - beverageData[i]["drink"]의 'i'에서 만약, beverageData[n]["drinkStock"] === 0, return "재고 없음"
 <?>
 
-    function selectItem(drink) {
+    function selectItem(drink, vendingMacData) {
       for(let i = 0; i < beverageData.length; i++) {
-        if(beverageData[i]["drink"] === beverageData[i]["drinkName"] && beverageData[i]["drinkStock"] === 0) {
+        if(beverageData[i]["drinkName"] === drink && beverageData[i]["drinkStock"] === 0) {
           const message = "재고 없음";
           return message;
         }
       }
     }
 
-    selectItem("미에로화이바")
+    selectItem("파워에이드")
     //만약, 파워에이드를 선택하면 선택할수 없다는 메시지 노출.
 
 #### (3) 음료 반환.
 
   3-1. 음료를 반환하고, 해당 음료가 나왔다는 메시지 노출.
   
-    function selectItem(drink) {
+    function selectItem(drink, vendingMacData) {
     console.log("선택하신 음료" + drink + "가 나왔습니다.");
     return result
     }
