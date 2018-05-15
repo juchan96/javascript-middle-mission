@@ -52,7 +52,7 @@
     - [ ]  재고가 없는 음료는 재고가 없다는 메시지 노출하기.
     - [ ]  식별한 값들을 반환하기.
 
-1-1. 'n'원 만큼의 금액을 입력받는다.
+1-1. 금액을 입력받는다.
 
     => 금액과 자판기 데이터를 인자로 받고, 사용 가능한 음료의 목록(음료 명, 가격, 재고 수량)을 반환해주는 insertCoin()함수 선언.
 
@@ -75,7 +75,7 @@
       ......
     }
 
-#### (2) 음료 입력.
+#### (2) 음료 입력과 반환.
 
 - **to-do list**
   - [ ]  사용 가능한 음료 목록 중, 선택할 음료를 인자로 받을 함수 선언하기. => selectItem(drink)
@@ -86,70 +86,69 @@
   - [ ]  잔액에서 구매할 수 있는 음료의 목록 노출시키기
 
 
-2-1. 음료와 자판기 데이터를 입력받는다. (재고가 없는 음료를 입력받을시 선택할 수 없다는 메시지 노출)
-    
-    function selectItem(drink, vendingMacData) {
+2-1. 음료와 자판기 데이터를 입력받는다.
+
+    function selectItem(availableDrinkList, drink) {
     ......
     return result
     }
 
-    selectItem("미에로화이바")
-    //만약, 파워에이드를 선택하면 선택할수 없다는 메시지 노출.
+    selectItem(availableDrinkData, "미에로화이바")
 
-- 파워에이드를 선택했을 때, 재고가 없다는 메시지 노출하기.
+2-2 입력 받은 음료가 나왔다는 메시지 노출.
+
+    function selectItem(drink, vendingMacData) {
+    let message = "";
+    message = "선택하신 음료" + drink + "가 나왔습니다."
+    return message;
+    }
+
+    selectItem(availableDrinkData, "미에로화이바")
+
+- 재고가 없는 음료를 선택했을 때, 재고가 없다는 메시지 노출하기.
   - beverageData[i]["drink"]의 'i'에서 만약, beverageData[n]["drinkStock"] === 0, return "재고 없음"
 <?>
 
-    function selectItem(drink, vendingMacData) {
-      for(let i = 0; i < beverageData.length; i++) {
-        if(beverageData[i]["drinkName"] === drink && beverageData[i]["drinkStock"] === 0) {
-          const message = "재고 없음";
+    function selectItem(availableDrinkList, drink) {
+      let message = "";
+      for(let i = 0; i < availableDrinkList.length; i++) {
+        if(availableDrinkList[i]["drinkName"] === drink && availableDrinkList[i]["drinkStock"] === 0) {
+          message = "재고 없음";
           return message;
         }
       }
     }
 
-    selectItem("파워에이드")
-    //만약, 파워에이드를 선택하면 선택할수 없다는 메시지 노출.
+    selectItem(availableDrinkData, "파워에이드")
 
-#### (3) 음료 반환.
+2-3. 현재 잔액과 입력가능한 음료 목록을 출력한다.
+- 글로벌 영역에 잔액을 저장하는 변수 balance = 0; 선언.   
+<?>
 
-  3-1. 음료를 반환하고, 해당 음료가 나왔다는 메시지 노출.
-  
-    function selectItem(drink, vendingMacData) {
-    console.log("선택하신 음료" + drink + "가 나왔습니다.");
-    return result
-    }
-
-    selectItem("미에로화이바")
-    //만약, 파워에이드를 선택하면 선택할수 없다는 메시지 노출.
-
-  3-2. 현재 잔액과 입력가능한 음료 목록을 출력한다.
-  
     => 현재잔돈 : 100원,  사용가능한 음료수 : 없음
   
-#### (4) 음료 (추가)입력.
-  4-1. 음료를 추가로 입력할시
+#### (3) 음료 (추가)입력.
+  3-1. 음료를 추가로 입력할시
   
-  4-1-1. (2)로 이동
+  3-1-1. (2)로 이동
     
     ex)
     => insertCoin(900);
     => 사용가능한 음료수 목록
     => 콜라(1000), 사이다(1000), 포도쥬스(700), 딸기우유(500), 미에로화이바(900), 물(500), 파워에이드(재고없음)
     
-  4-2. 음료를 추가로 입력하지 않을시
+  3-2. 음료를 추가로 입력하지 않을시
   
-  4-2-1. (5)로 이동
+  3-2-1. (4)로 이동
 
-#### (5) 잔액 반환.
-  5-1. 잔액이 '0'원 일시
+#### (4) 잔액 반환.
+  4-1. 잔액이 '0'원 일시
   
-  5-1-1. 마침.
+  4-1-1. 마침.
    
-  5-2. 잔액이 '0'원 이상 일시
+  4-2. 잔액이 '0'원 이상 일시
   
-  5-2-1. 잔액을 반환하고 반환되었다는 메시지를 노출한다.
+  4-2-1. 잔액을 반환하고 반환되었다는 메시지를 노출한다.
     
       => selectItem함수로부터 현재 잔액을 받아, 잔액을 반환할 것인지 아닌지를 선택하여, 반환할시에 잔액을 반환해주는 returnMoney();
       => 잔돈 1000원이 반환됐습니다.

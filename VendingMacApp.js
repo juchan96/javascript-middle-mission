@@ -38,6 +38,7 @@ const beverageData = [
 
 //금액을 인자로 받고, 사용 가능한 음료의 목록(음료 명, 가격, 재고 수량)을 반환해주는 함수
 function insertCoin(coin, vendingMacData) {
+  balance = coin;
   const availableDrinks = vendingMacData.map((currentVal, index) => {
     if (coin >= currentVal["drinkPrice"]) {
       return currentVal
@@ -49,14 +50,22 @@ function insertCoin(coin, vendingMacData) {
 }
 
 //음료를 인자로 받아, 나온 음료에대한 메시지를 노출하고, 현재 잔액과, 잔액에 대한 음료 목록을 반환한다.
-function selectItem(drink, vendingMacData) {
-  for (let i = 0; i < vendingMacData.length; i++) {
-    if (vendingMacData[i]["drinkName"] === drink && vendingMacData[i]["drinkStock"] === 0) {
-      const message = "재고 없음";
+function selectItem(availableDrinkList, drink) {
+  let message = "";
+  for (let i = 0; i < availableDrinkList.length; i++) {
+    if (availableDrinkList[i]["drinkName"] === drink && availableDrinkList[i]["drinkStock"] === 0) {
+      message = "재고 없음";
       return message;
+    } else if (availableDrinkList[i]["drinkName"] === drink) {
+    balance = balance - availableDrinkData[i]["drinkPrice"];
+    message = "선택하신 음료, " + drink + "가(이) 나왔습니다.\n" + "현재 잔액: " + balance +"원";
+    return message;
     }
   }
 }
 
-console.log(insertCoin(1000, beverageData));
-console.log(selectItem("파워에이드", beverageData));
+let balance = 0;
+const availableDrinkData = insertCoin(1000, beverageData);
+
+console.log(availableDrinkData);
+console.log(selectItem(availableDrinkData, "물"));
