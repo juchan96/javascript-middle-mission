@@ -61,12 +61,17 @@ function insertCoin(coin, vendingMacData) {
 function selectItem(availableDrinkList, drink) {
   let message = "";
   for (let i = 0; i < availableDrinkList.length; i++) {
+    if (balance === 0) {
+      message = "잔액이 부족합니다."
+      return message;
+    }
     if (availableDrinkList[i]["drinkName"] === drink && availableDrinkList[i]["drinkStock"] === 0) {
       message = "재고 없음";
       return message;
     }
 
     else if (availableDrinkList[i]["drinkName"] === drink) {
+      availableDrinkList[i]["drinkStock"] = availableDrinkList[i]["drinkStock"] - 1;
       message = "\n선택하신 음료, " + drink + "가(이) 나왔습니다.";
       return message;
     }
@@ -89,9 +94,13 @@ function showAvailableDrinkOfBalance(availableDrinkList, drink) {
 }
 
 
-let balance = 0;
+let balance = "";
 const availableDrinkData = insertCoin(1000, beverageData);
 
 console.log(availableDrinkData);
-console.log(selectItem(availableDrinkData, "물"));
+console.log(selectItem(availableDrinkData,"물"));
 console.log(showAvailableDrinkOfBalance(availableDrinkData,"물"));
+console.log(selectItem(availableDrinkData,"물"));
+console.log(showAvailableDrinkOfBalance(availableDrinkData,"물"));
+console.log(selectItem(availableDrinkData,"물"));
+
