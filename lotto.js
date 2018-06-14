@@ -1,17 +1,28 @@
-//당첨번호 랜덤으로 만드는 함수
-function SetRandomNum() {
-  const LottoNumRange = 45 + 1;
-  const luckyLottoNum = [""];
-  const lottoLength = 7;
-
-  for(let i =1; i < lottoLength; i++) {
-    const randomNum = Math.floor(Math.random() * LottoNumRange);
-    luckyLottoNum.push(randomNum);
+//당첨 번호와 로또를 랜덤으로 생성하는 객체안의 함수
+const getRandomNum = {
+  LottoNumRange : 45 + 1,
+  luckyLottoNum : [""],
+  lottoNum : [""],
+  lottoLength : 7,
+  getLuckyLottoNum() {
+    for (let i = 1; i < this.lottoLength; i++) {
+      const randomNum = Math.floor(Math.random() * this.LottoNumRange);
+      this.luckyLottoNum.push(randomNum);
+    }
+    this.luckyLottoNum.shift();
+    console.log(this.luckyLottoNum)
+    return this.luckyLottoNum;
+  },
+  getLottoRandomNum() {
+    this.lottoNum = [""];
+    while (this.lottoNum.length !== this.lottoLength) {
+      const randomNum = Math.floor(Math.random() * this.LottoNumRange);
+      const setLottoNum = this.lottoNum.includes(randomNum);
+      if (!setLottoNum) this.lottoNum.push(randomNum);
+    }
+    this.lottoNum.shift();
+    return this.lottoNum;
   }
-
-  luckyLottoNum.shift();
-  console.log(luckyLottoNum);
-  return luckyLottoNum
 }
 
 //당첨 번호와 구매한 로또의 번호를 비교하여, 당첨 통계를 반환.
@@ -27,25 +38,10 @@ function buyLottos(coin) {
   const lottoAmount = coin / 1000;
   const lottoStorage = [];
   for (let i = 0; i < lottoAmount; i++) {
-    lottoStorage.push(setLottoNum());
+    lottoStorage.push(getRandomNum.getLottoRandomNum());
   }
   console.log(lottoStorage)
   return lottoStorage;
-}
-
-// 로또 번호를 무작위로 설정해주는 함수.
-function setLottoNum() {
-  const LottoNumRange = 45 + 1;
-  const lottoNum = [""];
-  const lottoLength = 7;
-  while (lottoNum.length !== lottoLength) {
-    const randomNum = Math.floor(Math.random() * LottoNumRange);
-    const setLottoNum = lottoNum.includes(randomNum);
-    if (!setLottoNum) lottoNum.push(randomNum);
-  }
-
-  lottoNum.shift();
-  return lottoNum
 }
 
 //몇 개가 당첨되었는지, 그 개수를 반환해주는 함수.
@@ -100,5 +96,5 @@ function showMatchNum(winningNumSum) {
   return count;
 }
 
-console.log(setLuckyNumber(SetRandomNum(), 10000));
+console.log(setLuckyNumber(getRandomNum.getLuckyLottoNum(), 10000));
 // console.log(setLuckyNumber([1, 2, 3, 4, 5, 6], 10000));
