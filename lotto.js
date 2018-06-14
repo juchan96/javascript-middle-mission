@@ -1,9 +1,10 @@
-//당첨 번호와 로또를 랜덤으로 생성하는 객체안의 함수
+//당첨 번호와 로또를 랜덤으로 생성하는 함수를 담은 객체
 const getRandomNum = {
   LottoNumRange : 45 + 1,
   luckyLottoNum : [""],
   lottoNum : [""],
   lottoLength : 7,
+  //당첨 번호를 무작위로 설정해주는 함수 
   getLuckyLottoNum() {
     for (let i = 1; i < this.lottoLength; i++) {
       const randomNum = Math.floor(Math.random() * this.LottoNumRange);
@@ -13,6 +14,7 @@ const getRandomNum = {
     console.log(this.luckyLottoNum)
     return this.luckyLottoNum;
   },
+  //구매한 로또의 번호를 무작위로 설정해주는 함수
   getLottoRandomNum() {
     this.lottoNum = [""];
     while (this.lottoNum.length !== this.lottoLength) {
