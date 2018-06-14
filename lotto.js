@@ -27,15 +27,17 @@ const getRandomNum = {
 
 //당첨 번호와 구매한 로또의 번호를 비교하여, 당첨 통계를 반환.
 function setLuckyNumber(winningNum, coin) {
-  const lottoA = buyLottos(coin);
-  const winningNumSum = getWinningNumSum(lottoA, winningNum);
+  const lottoPrice = 1000;
+  const lottoAmount = coin / lottoPrice;
+  const lottoLength = 6;
+  const lottoA = buyLottos(coin, lottoAmount);
+  const winningNumSum = getWinningNumSum(lottoA, winningNum, lottoLength);
   const WinningStatistics = showWinStats(winningNumSum, coin);
   return WinningStatistics;
 }
 
 //금액을 투입하여 금액 만큼 로또를 구입하는 함수.
-function buyLottos(coin) {
-  const lottoAmount = coin / 1000;
+function buyLottos(coin, lottoAmount) {
   const lottoStorage = [];
   for (let i = 0; i < lottoAmount; i++) {
     lottoStorage.push(getRandomNum.getLottoRandomNum());
@@ -45,10 +47,9 @@ function buyLottos(coin) {
 }
 
 //몇 개가 당첨되었는지, 그 개수를 반환해주는 함수.
-function getWinningNumSum(lottoA, winningNum) {
+function getWinningNumSum(lottoA, winningNum, lottoLength) {
   let winningNumSum = [];
   let arr = [];
-  const lottoLength = 6;
   for (let lottoNum in lottoA) {
     for (let i = 0; i < lottoLength; i++) {
       if (winningNum.includes(lottoA[lottoNum][i])) {
