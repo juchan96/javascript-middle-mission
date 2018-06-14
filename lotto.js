@@ -1,3 +1,19 @@
+//당첨번호 랜덤으로 만드는 함수
+function SetRandomNum() {
+  const LottoNumRange = 45 + 1;
+  const luckyLottoNum = [""];
+  const lottoLength = 7;
+
+  for(let i =1; i < lottoLength; i++) {
+    const randomNum = Math.floor(Math.random() * LottoNumRange);
+    luckyLottoNum.push(randomNum);
+  }
+
+  luckyLottoNum.shift();
+  console.log(luckyLottoNum);
+  return luckyLottoNum
+}
+
 //당첨 번호와 구매한 로또의 번호를 비교하여, 당첨 통계를 반환.
 function setLuckyNumber(winningNum, coin) {
   const lottoA = buyLottos(coin);
@@ -8,20 +24,22 @@ function setLuckyNumber(winningNum, coin) {
 
 //금액을 투입하여 금액 만큼 로또를 구입하는 함수.
 function buyLottos(coin) {
-  const lottoAmount = coin / 1000
+  const lottoAmount = coin / 1000;
   const lottoStorage = [];
   for (let i = 0; i < lottoAmount; i++) {
     lottoStorage.push(setLottoNum());
   }
+  console.log(lottoStorage)
   return lottoStorage;
 }
 
 // 로또 번호를 무작위로 설정해주는 함수.
 function setLottoNum() {
+  const LottoNumRange = 45 + 1;
   const lottoNum = [""];
   const lottoLength = 7;
   while (lottoNum.length !== lottoLength) {
-    const randomNum = Math.floor(Math.random() * 10 + 1);
+    const randomNum = Math.floor(Math.random() * LottoNumRange);
     const setLottoNum = lottoNum.includes(randomNum);
     if (!setLottoNum) lottoNum.push(randomNum);
   }
@@ -45,7 +63,7 @@ function getWinningNumSum(lottoA, winningNum) {
     winningNumSum.push(arr.length);
     arr = [];
   }
-
+  console.log(winningNumSum)
   return winningNumSum;
 }
 
@@ -82,4 +100,5 @@ function showMatchNum(winningNumSum) {
   return count;
 }
 
-console.log(setLuckyNumber([1, 2, 3, 4, 5, 6], 10000));
+console.log(setLuckyNumber(SetRandomNum(), 10000));
+// console.log(setLuckyNumber([1, 2, 3, 4, 5, 6], 10000));
